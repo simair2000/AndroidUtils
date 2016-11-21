@@ -1,12 +1,14 @@
 package com.simair.android.androidutils;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
+
+import com.simair.android.androidutils.network.NetworkException;
 
 import org.json.JSONException;
 
@@ -26,14 +28,14 @@ public abstract class Command implements Serializable {
     private CommandListener listener;
     private Context context;
     private boolean showWait;
-//    private CustomPopup popup = null;
+    private ProgressDialog popup = null;
     private DownloadListener downListener;
 
     public Command() {
         showWait = false;
     }
 
-    public abstract void doAction(Bundle data) throws CustomException, JSONException;
+    public abstract void doAction(Bundle data) throws NetworkException, JSONException;
 
     public interface CommandListener extends Serializable {
         void onSuccess(Command command, Bundle data);
@@ -64,32 +66,17 @@ public abstract class Command implements Serializable {
     public Command showWaitDialog(Context context) {
         this.context = context;
         this.showWait = true;
-//        popup = new CustomPopup(context);
-//        popup.build(R.layout.common_loading_view, null);
-        return this;
-    }
-
-    public Command showWaitDialog(Context context, int layoutResId) {
-        this.context = context;
-        this.showWait = true;
-//        popup = new CustomPopup(context);
-//        popup.build(layoutResId, null);
-        return this;
-    }
-
-    public Command showWaitDialog(Context context, boolean backgroundTranslucent) {
-        this.context = context;
-        this.showWait = true;
-//        popup = new CustomPopup(context, backgroundTranslucent);
-//        popup.build(R.layout.common_loading_view, null);
+        popup = new ProgressDialog(context);
+        popup.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        popup.setMessage("loading...");
         return this;
     }
 
     public void hideWaitDialog() {
-//        if(popup != null) {
-//            popup.hideDialog();
-//            popup = null;
-//        }
+        if(popup != null) {
+            popup.dismiss();
+            popup = null;
+        }
     }
 
     public Bundle getData() {
@@ -102,8 +89,8 @@ public abstract class Command implements Serializable {
 
     public Command start(long delay) {
         if(showWait) {
-//            popup.show();
-//            popup.setCancelable(false);
+            popup.show();
+            popup.setCancelable(false);
         }
         new Timer().schedule(new TimerTask() {
             @Override
@@ -111,7 +98,7 @@ public abstract class Command implements Serializable {
                 try {
                     doAction(data);
                     handler.sendEmptyMessage(WHAT_SUCCESS);
-                } catch (CustomException e) {
+                } catch (NetworkException e) {
                     Log.w(TAG, (TextUtils.isEmpty(e.message) ? "unknown exception - " + e.messageResId : e.message));
                     Message msg = handler.obtainMessage(WHAT_FAIL, e.code, e.messageResId, (TextUtils.isEmpty(e.message) ? "unknown exception - " + e.messageResId : e.message));
                     handler.sendMessage(msg);
@@ -120,10 +107,10 @@ public abstract class Command implements Serializable {
                     Message msg = handler.obtainMessage(WHAT_FAIL, ErrorCode.ERROR_JSON.code, 0, "invalid response");
                     handler.sendMessage(msg);
                 } finally {
-//                    if(popup != null) {
-//                        popup.hideDialog();
-//                        popup = null;
-//                    }
+                    if(popup != null) {
+                        popup.dismiss();
+                        popup = null;
+                    }
                 }
             }
         }, delay);
@@ -132,8 +119,8 @@ public abstract class Command implements Serializable {
 
     public Command start() {
         if(showWait) {
-//            popup.show();
-//            popup.setCancelable(false);
+            popup.show();
+            popup.setCancelable(false);
         }
         new Thread(new Runnable() {
 
@@ -142,7 +129,7 @@ public abstract class Command implements Serializable {
                 try {
                     doAction(data);
                     handler.sendEmptyMessage(WHAT_SUCCESS);
-                } catch (CustomException e) {
+                } catch (NetworkException e) {
                     Log.w(TAG, (TextUtils.isEmpty(e.message) ? "unknown exception - " + e.messageResId : e.message));
                     Message msg = handler.obtainMessage(WHAT_FAIL, e.code, e.messageResId, (TextUtils.isEmpty(e.message) ? "unknown exception - " + e.messageResId : e.message));
                     handler.sendMessage(msg);
@@ -151,10 +138,10 @@ public abstract class Command implements Serializable {
                     Message msg = handler.obtainMessage(WHAT_FAIL, ErrorCode.ERROR_JSON.code, 0, "invalid response");
                     handler.sendMessage(msg);
                 } finally {
-//                    if(popup != null) {
-//                        popup.hideDialog();
-//                        popup = null;
-//                    }
+                    if(popup != null) {
+                        popup.dismiss();
+                        popup = null;
+                    }
                 }
             }
         }).start();
