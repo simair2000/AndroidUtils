@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.simair.android.androidutils">
+    package="com.simair.android.androidutils"
+    android:versionCode="100"
+    android:versionName="1.0.0">
 
     <application
         android:allowBackup="true"
