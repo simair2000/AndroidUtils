@@ -1,4 +1,4 @@
-package com.ti2.mvp.proto.common;
+package com.simair.android.androidutils.model;
 
 import com.google.gson.Gson;
 
