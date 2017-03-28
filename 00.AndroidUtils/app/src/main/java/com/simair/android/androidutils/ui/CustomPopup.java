@@ -130,6 +130,12 @@ public class CustomPopup implements View.OnClickListener {
         }
     }
 
+    public static void hideDialog(CustomPopup popup) {
+        if(popup != null) {
+            popup.hideDialog();
+        }
+    }
+
     public boolean isShowDialog(){
         if(dialog != null && dialog.isShowing()){
             return true;
