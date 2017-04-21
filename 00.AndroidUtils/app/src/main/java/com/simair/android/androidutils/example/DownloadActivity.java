@@ -71,6 +71,7 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
         this.sums = 0;
         textProgress.setText("0% 0/" + this.total);
         progress.setMax(100);
+        // kb
     }
 
     @Override
