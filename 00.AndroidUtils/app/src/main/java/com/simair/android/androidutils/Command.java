@@ -33,6 +33,7 @@ public abstract class Command implements Serializable {
 
     public Command() {
         showWait = false;
+        data = new Bundle();
     }
 
     public abstract void doAction(Bundle data) throws NetworkException, JSONException;

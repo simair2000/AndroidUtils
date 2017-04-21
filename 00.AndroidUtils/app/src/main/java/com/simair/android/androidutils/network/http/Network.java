@@ -690,20 +690,34 @@ public class Network {
             // check HTTP Errors
             if(method.equals(METHOD.POST) || method.equals(METHOD.GET) || method.equals(METHOD.DELETE)) {
                 if(status != 200) {
-                    if(RETRY_COUNT <= tryCount) {
-                        tryCount = 1;
-                        String errorMessage = "";
-                        InputStream is = conn.getErrorStream();
-                        if(is != null) {
-                            errorMessage = InputStreamToString(is);
-                        } else {
-                            errorMessage = conn.getResponseMessage();
+                    if(status == HttpURLConnection.HTTP_MOVED_PERM || status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_SEE_OTHER) {
+                        // redirect process
+                        String newUrl = conn.getHeaderField("Location");
+                        String cookies = conn.getHeaderField("Set-Cookie");
+                        if(!TextUtils.isEmpty(cookies)) {
+                            if(header == null) {
+                                header = new Properties();
+                            }
+                            header.setProperty("Cookie", cookies);
                         }
-                        Log.e(TAG + ".RAW", "request - status : " + status + ", conn.getResponseMessage() - " + errorMessage);
-                        throw new NetworkException(status, errorMessage);
+                        return request(newUrl, method, header, body, timeout, authUser, authPasswd, queryParam);
+
                     } else {
-                        tryCount++;
-                        return request(originEndpoint, method, header, body, timeout, authUser, authPasswd, queryParam);
+                        if(RETRY_COUNT <= tryCount) {
+                            tryCount = 1;
+                            String errorMessage = "";
+                            InputStream is = conn.getErrorStream();
+                            if(is != null) {
+                                errorMessage = InputStreamToString(is);
+                            } else {
+                                errorMessage = conn.getResponseMessage();
+                            }
+                            Log.e(TAG + ".RAW", "request - status : " + status + ", conn.getResponseMessage() - " + errorMessage);
+                            throw new NetworkException(status, errorMessage);
+                        } else {
+                            tryCount++;
+                            return request(originEndpoint, method, header, body, timeout, authUser, authPasswd, queryParam);
+                        }
                     }
                 }
             }
@@ -839,6 +853,8 @@ public class Network {
 
         try {
             httpsConn = (HttpsURLConnection) url.openConnection();
+            httpsConn.setInstanceFollowRedirects(true);
+            HttpURLConnection.setFollowRedirects(true);
             httpsConn.setConnectTimeout(TIME_OUT);
             httpsConn.setReadTimeout(TIME_OUT);
             httpsConn.setHostnameVerifier(new HostnameVerifier() {
