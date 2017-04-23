@@ -50,7 +50,7 @@ public class ARadioGroup implements View.OnClickListener {
             }
         }
         if (listener != null) {
-            listener.onCheckedChanged(null);
+            listener.onCheckedChanged(this, null);
         }
     }
 
@@ -89,7 +89,7 @@ public class ARadioGroup implements View.OnClickListener {
          * @param radioButton the unique RadioButton instance of the newly checked
          *            radio button
          */
-        void onCheckedChanged(RadioButton radioButton);
+        void onCheckedChanged(ARadioGroup radiograoup, RadioButton radioButton);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class ARadioGroup implements View.OnClickListener {
             }
         }
         if (listener != null) {
-            listener.onCheckedChanged((RadioButton) arg0);
+            listener.onCheckedChanged(this, (RadioButton) arg0);
         }
     }
 }

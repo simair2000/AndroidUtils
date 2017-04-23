@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         public enum ListItem {
             HTTP_GET_TEST(HttpActivity.getIntent(context)),
             DOWNLOAD_TEST(DownloadActivity.getIntent(context)),
-            UI_TEST(null),
+            UI_TEST(UIExamActivity.getIntent(context)),
             ;
 
             private final Intent intent;
