@@ -476,6 +476,15 @@ public class Network {
         return file;
     }
 
+    /**
+     *
+     * @param strUrl
+     * @param folderPath
+     * @param fileName null이면 URL에서 file 이름을 따온다
+     * @param handler
+     * @return
+     * @throws NetworkException
+     */
     public static String download(String strUrl, String folderPath, String fileName, Command.CommandHandler handler) throws NetworkException {
         URL url;
         try {

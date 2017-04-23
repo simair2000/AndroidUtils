@@ -57,7 +57,7 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
                     public void doAction(Bundle data) throws NetworkException, JSONException {
                         String url = editText.getText().toString();
                         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                        String resultPath = Network.download(url, path.getAbsolutePath(), "test.mp4", getHandler());
+                        String resultPath = Network.download(url, path.getAbsolutePath(), null, getHandler());
                         data.putString("path", resultPath);
                     }
                 }.setOnCommandListener(this).setOnDownloadListener(this).start();
@@ -69,7 +69,7 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
     public void onDownloadStart(String url, int total) {
         this.total = total / 1000;
         this.sums = 0;
-        textProgress.setText("0% 0/" + this.total);
+        textProgress.setText("0%\n0/" + this.total);
         progress.setMax(100);
         // kb
     }
@@ -79,7 +79,7 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
         sums += (read / 1000);
         int percent = (sums * 100) / total;
         progress.setProgress(percent);
-        textProgress.setText(percent + "% " + sums + "/" + total);
+        textProgress.setText(percent + "%\n" + sums + "/" + total);
     }
 
     @Override
@@ -95,6 +95,8 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onFail(Command command, int errorCode, String errorMessage) {
+        textProgress.setText("Download failed!!");
+        progress.setProgress(0);
         Snackbar.make(this.getCurrentFocus(), "download fail!!", Snackbar.LENGTH_SHORT).show();
     }
 }
