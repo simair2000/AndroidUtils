@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.simair.android.androidutils.R;
 import com.simair.android.androidutils.ui.ARadioGroup;
 import com.simair.android.androidutils.ui.ColorTextView;
+import com.simair.android.androidutils.ui.CustomPopup;
 
 public class UIExamActivity extends AppCompatActivity implements ARadioGroup.CheckedChangeListener, View.OnClickListener {
 
@@ -26,6 +27,7 @@ public class UIExamActivity extends AppCompatActivity implements ARadioGroup.Che
     private ARadioGroup languageRadioGroup;
     private ColorTextView textColor;
     private ColorTextView textColor2;
+    private CustomPopup popup;
 
     public static Intent getIntent(Context context) {
         Intent i = new Intent(context, UIExamActivity.class);
@@ -141,6 +143,27 @@ public class UIExamActivity extends AppCompatActivity implements ARadioGroup.Che
             case R.id.btnImageState:
                 Toast.makeText(this, "button clicked ; " + view.toString(), Toast.LENGTH_SHORT).show();
                 break;
+            case R.id.btnShowPopup:
+                showCustomPopup();
+                break;
         }
+    }
+
+    private void showCustomPopup() {
+        CustomPopup.hideDialog(popup);
+        popup = new CustomPopup(this).build(R.layout.popup_test, new CustomPopup.CustomPopupListener() {
+            @Override
+            public void onButtonClicked(View button) {
+                CustomPopup.hideDialog(popup);
+                switch (button.getId()) {
+                    case R.id.btnOK:
+                        Toast.makeText(UIExamActivity.this, "확인", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.btnCancel:
+                        Toast.makeText(UIExamActivity.this, "취소", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, R.id.btnOK, R.id.btnCancel).setCancelable(false).show();
     }
 }
