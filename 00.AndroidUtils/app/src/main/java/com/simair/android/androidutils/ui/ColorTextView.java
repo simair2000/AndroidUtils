@@ -15,6 +15,8 @@ import android.widget.TextView;
  * Created by simair on 2016-03-16.
  */
 public class ColorTextView extends TextView {
+    private SpannableString spannableString;
+
     public ColorTextView(Context context) {
         this(context, null, 0);
     }
@@ -25,6 +27,7 @@ public class ColorTextView extends TextView {
 
     public ColorTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        spannableString = new SpannableString(getText().toString());
     }
 
     public class Part {
@@ -62,7 +65,6 @@ public class ColorTextView extends TextView {
         }
 
         String text = getText().toString();
-        SpannableString ss = new SpannableString(text);
 
         int start = 0;
         int end = 0;
@@ -73,9 +75,9 @@ public class ColorTextView extends TextView {
                 break;
             }
             end = start + subString.length();
-            ss.setSpan(fColor, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(fColor, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        setText(ss);
+        setText(spannableString);
     }
 
     public void setBGColor(String subString, int color) {
@@ -84,7 +86,6 @@ public class ColorTextView extends TextView {
         }
 
         String text = getText().toString();
-        SpannableString ss = new SpannableString(text);
 
         int start = 0;
         int end = 0;
@@ -95,9 +96,9 @@ public class ColorTextView extends TextView {
                 break;
             }
             end = start + subString.length();
-            ss.setSpan(bColor, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(bColor, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        setText(ss);
+        setText(spannableString);
     }
 
     public void removeAllColor() {

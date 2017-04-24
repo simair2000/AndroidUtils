@@ -189,6 +189,47 @@
                 android:background="@mipmap/btn_white"
                 app:layout_constraintLeft_toRightOf="@+id/btnState"
                 app:layout_constraintTop_toBottomOf="@+id/textView2"/>
+
+            <ImageView
+                android:id="@+id/view5"
+                android:layout_width="368dp"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="12dp"
+                android:background="#000"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnImageState"/>
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="15dp"
+                android:text="Color Text"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:layout_constraintHorizontal_bias="0.501"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/view5"/>
+
+            <com.simair.android.androidutils.ui.ColorTextView
+                android:id="@+id/textColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="15dp"
+                android:text="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView4"/>
         </android.support.constraint.ConstraintLayout>
     </LinearLayout>
 </ScrollView>
