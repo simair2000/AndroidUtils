@@ -3,7 +3,6 @@ package com.simair.android.androidutils.ui;
 import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.BackgroundColorSpan;
@@ -45,7 +44,6 @@ public class ColorTextView extends TextView {
         }
 
         String text = getText().toString();
-        SpannableStringBuilder sb = new SpannableStringBuilder(getText());
         for(Part part : parts) {
             if(text.indexOf(part.subString) != -1) {
                 setTextColor(part.subString, part.color);
