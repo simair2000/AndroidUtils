@@ -25,6 +25,7 @@ public class UIExamActivity extends AppCompatActivity implements ARadioGroup.Che
     private RadioButton radioAda;
     private ARadioGroup languageRadioGroup;
     private ColorTextView textColor;
+    private ColorTextView textColor2;
 
     public static Intent getIntent(Context context) {
         Intent i = new Intent(context, UIExamActivity.class);
@@ -83,6 +84,22 @@ public class UIExamActivity extends AppCompatActivity implements ARadioGroup.Che
         textColor.setTextColor("X", Color.parseColor("#FF0080"));
         textColor.setTextColor("Y", Color.parseColor("#FF0040"));
         textColor.setTextColor("Z", Color.parseColor("#848484"));
+
+
+
+
+        textColor2 = (ColorTextView)findViewById(R.id.textColor2);
+
+        ColorTextView.Part part1 = new ColorTextView.Part("ABC", Color.parseColor("#FF0000"));
+        ColorTextView.Part part2 = new ColorTextView.Part("DEF", Color.parseColor("#FF8000"));
+        ColorTextView.Part part3 = new ColorTextView.Part("GHI", Color.parseColor("#FFFF00"));
+        ColorTextView.Part part4 = new ColorTextView.Part("JKL", Color.parseColor("#01DF01"));
+        ColorTextView.Part part5 = new ColorTextView.Part("MNO", Color.parseColor("#0000FF"));
+        ColorTextView.Part part6 = new ColorTextView.Part("PQR", Color.parseColor("#3A01DF"));
+        ColorTextView.Part part7 = new ColorTextView.Part("STU", Color.parseColor("#BF00FF"));
+        ColorTextView.Part part8 = new ColorTextView.Part("VWX", Color.parseColor("#F6CEF5"));
+        ColorTextView.Part part9 = new ColorTextView.Part("YZ", Color.parseColor("#F2F5A9"));
+        textColor2.setTextColor(part1, part2, part3, part4, part5, part6, part7, part8, part9);
     }
 
     private void initStateButton() {

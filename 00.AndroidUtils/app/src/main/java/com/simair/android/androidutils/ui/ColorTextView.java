@@ -29,9 +29,14 @@ public class ColorTextView extends TextView {
         spannableString = new SpannableString(getText().toString());
     }
 
-    public class Part {
+    public static class Part {
         String subString;
         int color;
+
+        public Part(String subString, int color) {
+            this.subString = subString;
+            this.color = color;
+        }
     }
 
     /**
