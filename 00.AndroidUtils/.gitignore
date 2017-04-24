@@ -7,3 +7,10 @@
 /build
 /captures
 .externalNativeBuild
+.idea
+.project
+.settings
+.classpath
+target
+MANIFEST.MF
+out
