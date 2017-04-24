@@ -2,15 +2,16 @@ package com.simair.android.androidutils.example;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.simair.android.androidutils.R;
 import com.simair.android.androidutils.ui.ARadioGroup;
 
-public class UIExamActivity extends AppCompatActivity implements ARadioGroup.CheckedChangeListener {
+public class UIExamActivity extends AppCompatActivity implements ARadioGroup.CheckedChangeListener, View.OnClickListener {
 
     private RadioButton radioApple;
     private RadioButton radioBanana;
@@ -36,6 +37,12 @@ public class UIExamActivity extends AppCompatActivity implements ARadioGroup.Che
 
     private void initView() {
         initRadioGroup();
+        initStateButton();
+    }
+
+    private void initStateButton() {
+        findViewById(R.id.btnState).setOnClickListener(this);
+        findViewById(R.id.btnImageState).setOnClickListener(this);
     }
 
     private void initRadioGroup() {
@@ -62,6 +69,16 @@ public class UIExamActivity extends AppCompatActivity implements ARadioGroup.Che
             Toast.makeText(this, "fruit checked : " + radioButton.toString(), Toast.LENGTH_SHORT).show();
         } else if(radioGroup == languageRadioGroup) {
             Toast.makeText(this, "language checked : " + radioButton.toString(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btnState:
+            case R.id.btnImageState:
+                Toast.makeText(this, "button clicked ; " + view.toString(), Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 }

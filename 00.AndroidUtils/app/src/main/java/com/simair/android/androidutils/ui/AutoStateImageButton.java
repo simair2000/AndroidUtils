@@ -24,7 +24,7 @@ public class AutoStateImageButton extends ImageButton {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean dispatchTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN: {
                 if(isEnabled()) {
@@ -37,7 +37,7 @@ public class AutoStateImageButton extends ImageButton {
                 getBackground().clearColorFilter();
                 break;
         }
-        return super.onTouchEvent(event);
+        return super.dispatchTouchEvent(event);
     }
 
     @Override
