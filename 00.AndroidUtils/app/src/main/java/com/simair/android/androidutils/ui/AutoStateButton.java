@@ -30,14 +30,16 @@ public class AutoStateButton extends Button {
     public boolean dispatchTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN: {
-                if(isEnabled()) {
+                if(isEnabled() && getBackground() != null) {
                     getBackground().setColorFilter(Color.parseColor("#4c000000"), PorterDuff.Mode.SRC_ATOP);
                 }
                 break;
             }
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                getBackground().clearColorFilter();
+                if(getBackground() != null) {
+                    getBackground().clearColorFilter();
+                }
                 break;
         }
         return super.dispatchTouchEvent(event);

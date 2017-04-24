@@ -25,9 +25,9 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
     private EditText editText;
     private Command commandDownload;
     private ProgressBar progress;
-    private int total = 0;
+    private long total = 0;
     private TextView textProgress;
-    private int sums = 0;
+    private long sums = 0;
 
     public static Intent getIntent(Context context) {
         Intent i = new Intent(context, DownloadActivity.class);
@@ -57,7 +57,7 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
                     public void doAction(Bundle data) throws NetworkException, JSONException {
                         String url = editText.getText().toString();
                         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                        String resultPath = Network.download(url, path.getAbsolutePath(), null, getHandler());
+                        String resultPath = Network.download(url, path.getAbsolutePath(), null, this);
                         data.putString("path", resultPath);
                     }
                 }.setOnCommandListener(this).setOnDownloadListener(this).start();
@@ -66,26 +66,31 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public void onDownloadStart(String url, int total) {
-        this.total = total / 1000;
-        this.sums = 0;
-        textProgress.setText("0%\n0/" + this.total);
-        progress.setMax(100);
-        // kb
+    public void onDownloadStart(Command command, String url, long total) {
+        if(command == commandDownload) {
+            this.total = total;
+            this.sums = 0;
+            textProgress.setText("0%\n0/" + total);
+            progress.setMax(100);
+        }
     }
 
     @Override
-    public void onDownloading(String url, int read) {
-        sums += (read / 1000);
-        int percent = (sums * 100) / total;
-        progress.setProgress(percent);
-        textProgress.setText(percent + "%\n" + sums + "/" + total);
+    public void onDownloading(Command command, String url, long read) {
+        if(command == commandDownload) {
+            sums += read;
+            long percent = (sums * 100) / total;
+            progress.setProgress((int) percent);
+            textProgress.setText(percent + "%\n" + sums + "/" + total);
+        }
     }
 
     @Override
-    public void onDownloadEnd(String url) {
-        textProgress.setText("100%");
-        progress.setProgress(100);
+    public void onDownloadEnd(Command command, String url, long total) {
+        if(command == commandDownload) {
+            textProgress.setText("100%\n" + total + "/" + this.total);
+            progress.setProgress(100);
+        }
     }
 
     @Override

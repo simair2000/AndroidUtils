@@ -1,5 +1,7 @@
 package com.simair.android.androidutils.network.http;
 
+import android.os.Bundle;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -481,11 +483,11 @@ public class Network {
      * @param strUrl
      * @param folderPath
      * @param fileName null이면 URL에서 file 이름을 따온다
-     * @param handler
+     * @param command
      * @return
      * @throws NetworkException
      */
-    public static String download(String strUrl, String folderPath, String fileName, Command.CommandHandler handler) throws NetworkException {
+    public static String download(String strUrl, String folderPath, String fileName, Command command) throws NetworkException {
         URL url;
         try {
             url = new URL(strUrl);
@@ -498,6 +500,12 @@ public class Network {
         BufferedOutputStream bos = null;
         HttpURLConnection conn;
         File file = null;
+        long fileLength = 0;
+
+        Command.CommandHandler handler = null;
+        if(command != null && command.getHandler() != null) {
+            handler = command.getHandler();
+        }
         try {
             conn = getHttpURLConnection(url);
             // set Header info
@@ -515,24 +523,38 @@ public class Network {
             os = new FileOutputStream(file);
             bos = new BufferedOutputStream(os);
 
-            int fileLength = conn.getContentLength();
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                fileLength = conn.getContentLengthLong();
+            } else {
+                fileLength = conn.getContentLength();
+            }
+            Bundle data = new Bundle();
             if(handler != null) {
-                handler.sendMessage(handler.obtainMessage(Command.WHAT_DOWN_START, fileLength, 0, strUrl));
+                data.putString("url", strUrl);
+                data.putLong("total", fileLength);
+                handler.sendMessageAtFrontOfQueue(handler.obtainMessage(Command.WHAT_DOWN_START, 0, 0, data));
             }
 
             int bufferLength = 0;
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[4096];
+            int tempSum = 0;
             while((bufferLength = is.read(buffer)) > 0) {
                 bos.write(buffer, 0, bufferLength);
-                if(handler != null) {
-                    handler.sendMessage(handler.obtainMessage(Command.WHAT_DOWNLOADING, bufferLength, 0, strUrl));
-                }
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                tempSum += bufferLength;
+                if(handler != null && tempSum > 1024 * 100) {
+                    data.putString("url", strUrl);
+                    data.putLong("read", tempSum);
+                    handler.sendMessage(handler.obtainMessage(Command.WHAT_DOWNLOADING, 0, 0, data));
+                    tempSum = 0;
+                    SystemClock.sleep(1);
                 }
             }
+            // send last event
+            data.putString("url", strUrl);
+            data.putLong("read", tempSum);
+            handler.sendMessage(handler.obtainMessage(Command.WHAT_DOWNLOADING, 0, 0, data));
+
             bos.flush();
         } catch (SocketTimeoutException e) {
             // time out은 공통 처리한다
@@ -545,7 +567,10 @@ public class Network {
         } finally {
             try {
                 if(handler != null) {
-                    handler.sendMessage(handler.obtainMessage(Command.WHAT_DOWN_END, strUrl));
+                    Bundle data = new Bundle();
+                    data.putString("url", strUrl);
+                    data.putLong("total", fileLength);
+                    handler.sendMessage(handler.obtainMessage(Command.WHAT_DOWN_END, 0, 0, data));
                 }
                 if(os != null) {
                     os.close();

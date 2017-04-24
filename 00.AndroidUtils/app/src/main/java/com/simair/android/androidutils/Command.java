@@ -44,9 +44,9 @@ public abstract class Command implements Serializable {
     }
 
     public interface DownloadListener {
-        void onDownloadStart(String url, int total);
-        void onDownloading(String url, int read);
-        void onDownloadEnd(String url);
+        void onDownloadStart(Command command, String url, long total);
+        void onDownloading(Command command, String url, long read);
+        void onDownloadEnd(Command command, String url, long total);
     }
 
     public Command setOnCommandListener(CommandListener l) {
@@ -185,17 +185,20 @@ public abstract class Command implements Serializable {
                     break;
                 case Command.WHAT_DOWN_START:
                     if(command.downListener != null) {
-                        command.downListener.onDownloadStart((String)msg.obj, msg.arg1);
+                        Bundle extra = (Bundle) msg.obj;
+                        command.downListener.onDownloadStart(command.instance, extra.getString("url"), extra.getLong("total"));
                     }
                     break;
                 case Command.WHAT_DOWNLOADING:
                     if(command.downListener != null) {
-                        command.downListener.onDownloading((String)msg.obj, msg.arg1);
+                        Bundle extra = (Bundle) msg.obj;
+                        command.downListener.onDownloading(command.instance, extra.getString("url"), extra.getLong("read"));
                     }
                     break;
                 case Command.WHAT_DOWN_END:
                     if(command.downListener != null) {
-                        command.downListener.onDownloadEnd((String)msg.obj);
+                        Bundle extra = (Bundle) msg.obj;
+                        command.downListener.onDownloadEnd(command.instance, extra.getString("url"), extra.getLong("total"));
                     }
                     break;
             }
