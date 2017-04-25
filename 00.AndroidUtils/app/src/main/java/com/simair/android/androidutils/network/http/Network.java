@@ -1,7 +1,6 @@
 package com.simair.android.androidutils.network.http;
 
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -484,10 +483,11 @@ public class Network {
      * @param folderPath
      * @param fileName null이면 URL에서 file 이름을 따온다
      * @param command
+     * @param overwrite 파일이 이미 존재 할때 덮어 쓸지 여부
      * @return
      * @throws NetworkException
      */
-    public static String download(String strUrl, String folderPath, String fileName, Command command) throws NetworkException {
+    public static String download(String strUrl, String folderPath, String fileName, Command command, boolean overwrite) throws NetworkException {
         URL url;
         try {
             url = new URL(strUrl);
@@ -519,6 +519,11 @@ public class Network {
             } else {
                 file = new File(folderPath + "/" + fileName);
             }
+            if(file.exists()) {
+                if(!overwrite) {
+                    throw new NetworkException(ErrorCode.FILE_EXIST);
+                }
+            }
             is = conn.getInputStream();
             os = new FileOutputStream(file);
             bos = new BufferedOutputStream(os);
@@ -539,20 +544,24 @@ public class Network {
             int bufferLength = 0;
             byte[] buffer = new byte[4096];
             int tempSum = 0;
+            int i = 0;
+            long total = 0;
             while((bufferLength = is.read(buffer)) > 0) {
                 bos.write(buffer, 0, bufferLength);
+                total += bufferLength;
                 tempSum += bufferLength;
-                if(handler != null && tempSum > 1024 * 100) {
+                // 매번 보내면 너무 많기 때문에 500KB 까지 모이면 한번씩 보내기로 함
+                if(handler != null && tempSum > 1024 * 500) {
                     data.putString("url", strUrl);
-                    data.putLong("read", tempSum);
+                    data.putLong("read", total);
                     handler.sendMessage(handler.obtainMessage(Command.WHAT_DOWNLOADING, 0, 0, data));
                     tempSum = 0;
-                    SystemClock.sleep(1);
+//                    SystemClock.sleep(1);
                 }
             }
             // send last event
             data.putString("url", strUrl);
-            data.putLong("read", tempSum);
+            data.putLong("read", total);
             handler.sendMessage(handler.obtainMessage(Command.WHAT_DOWNLOADING, 0, 0, data));
 
             bos.flush();
