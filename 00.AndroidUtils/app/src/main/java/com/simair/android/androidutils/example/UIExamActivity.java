@@ -10,6 +10,7 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.simair.android.androidutils.R;
+import com.simair.android.androidutils.network.tcp.TCPBlockingServer;
 import com.simair.android.androidutils.ui.ARadioGroup;
 import com.simair.android.androidutils.ui.ColorTextView;
 import com.simair.android.androidutils.ui.CustomPopup;
@@ -144,9 +145,15 @@ public class UIExamActivity extends AppCompatActivity implements ARadioGroup.Che
                 Toast.makeText(this, "button clicked ; " + view.toString(), Toast.LENGTH_SHORT).show();
                 break;
             case R.id.btnShowPopup:
-                showCustomPopup();
+//                showCustomPopup();
+                test();
                 break;
         }
+    }
+
+    private void test() {
+        TCPBlockingServer server = new TCPBlockingServer();
+        server.startServer(5002);
     }
 
     private void showCustomPopup() {

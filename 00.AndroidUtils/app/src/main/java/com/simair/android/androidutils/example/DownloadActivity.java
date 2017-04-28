@@ -67,11 +67,13 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
         progress = (ProgressBar)findViewById(R.id.progressBar);
         textProgress = (TextView)findViewById(R.id.textProgress);
 
-//        editText.setText("http://221.140.57.225:9000/smartguard/papais_the_plan.mp4");    // 1.4GB
-        editText.setText("http://221.140.57.225:9000/smartguard/yours.mp4");    // 58.6MB
+        editText.setText("http://221.140.57.225:9000/smartguard/papais_the_plan.mp4");    // 1.4GB
+//        editText.setText("http://221.140.57.225:9000/smartguard/yours.mp4");    // 58.6MB
 //        editText.setText("http://221.140.57.225:9000/smartguard/KTSmartGuard.zip");    // 9.6MB
 //        editText.setText("http://221.140.57.225:9000/smartguard/PKI.pptx");    // 43.3KB
 //        editText.setText("http://221.140.57.225:9000/smartguard/test.html");    // 3.0KB
+//        editText.setText("http://221.140.57.225:9000/smartguard/Wikiki_CD1.mp4");
+//        editText.setText("http://221.140.57.225:9000/smartguard/Wikiki_CD2.mp4");
 
         textTime = (TextView) findViewById(R.id.textTime);
     }

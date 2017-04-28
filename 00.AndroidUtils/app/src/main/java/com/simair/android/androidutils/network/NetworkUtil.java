@@ -11,18 +11,21 @@ import android.util.Log;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
 
 /**
  * Created by simair on 16. 11. 17.
  */
 
 public class NetworkUtil {
-    public static final String LOG_TAG = "NetworkUtil";
+    private static final String TAG = NetworkUtil.class.getSimpleName();
 
     public static final int NONE = 0;
     public static final int WIFI = 1;
-    public static final int MOBILE = 2;
 
+    public static final int MOBILE = 2;
     //
     public static final int RAT_ETC = 0;
     public static final int RAT_3G = 1;
@@ -98,7 +101,7 @@ public class NetworkUtil {
     }
 
     public static void setMobileDataEnabled(Context context, boolean enabled) {
-        Log.d(LOG_TAG, "setMobileDataEnabled(" + enabled + ")");
+        Log.d(TAG, "setMobileDataEnabled(" + enabled + ")");
         try {
             // ConnectivityManager manager =
             // (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -177,5 +180,29 @@ public class NetworkUtil {
             return true;
         }
         return false;
+    }
+
+    public static String getLocalIpAddress(){
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
+                 en.hasMoreElements();) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress()) {
+//                        return inetAddress.getHostAddress().toString();
+                        String ip = inetAddress.getHostAddress().toString();
+//                        Log.i(TAG, "IP Addr : " + ip);
+                        if(ip.contains(":") || ip.contains("192.168")) {
+                            continue;
+                        }
+                        return ip;
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Log.e("IP Address", ex.toString());
+        }
+        return null;
     }
 }
