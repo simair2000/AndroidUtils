@@ -30,7 +30,6 @@ public abstract class Command implements Serializable {
     private boolean showWait;
     private ProgressDialog popup = null;
     private DownloadListener downListener;
-    private TCPServerListener tcpServerListener;
 
     public Command() {
         showWait = false;
@@ -42,11 +41,6 @@ public abstract class Command implements Serializable {
     public interface CommandListener extends Serializable {
         void onSuccess(Command command, Bundle data);
         void onFail(Command command, int errorCode, String errorMessage);
-    }
-
-    public interface TCPServerListener {
-        void onAccepted(String clientAddress);
-        void onReceive(String data);
     }
 
     public interface DownloadListener {
@@ -62,11 +56,6 @@ public abstract class Command implements Serializable {
 
     public Command setOnDownloadListener(DownloadListener l) {
         this.downListener = l;
-        return this;
-    }
-
-    public Command setOnTCPServerListener(TCPServerListener l) {
-        this.tcpServerListener = l;
         return this;
     }
 
@@ -160,23 +149,11 @@ public abstract class Command implements Serializable {
         return this;
     }
 
-    public void tcpServerAccepted(String clientAddres) {
-        Message msg = handler.obtainMessage(WHAT_TCP_ACCEPTED, clientAddres);
-        handler.sendMessage(msg);
-    }
-
-    public void tcpServerReceived(String data) {
-        Message msg = handler.obtainMessage(WHAT_TCP_RECEIVED, data);
-        handler.sendMessage(msg);
-    }
-
     private static final int WHAT_SUCCESS = 1;
     private static final int WHAT_FAIL = 2;
     public static final int WHAT_DOWN_START = 3;
     public static final int WHAT_DOWNLOADING = 4;
     public static final int WHAT_DOWN_END = 5;
-    public static final int WHAT_TCP_ACCEPTED = 6;
-    public static final int WHAT_TCP_RECEIVED = 7;
     private CommandHandler handler = new CommandHandler(this);
 
     public static class CommandHandler extends Handler {
@@ -222,17 +199,6 @@ public abstract class Command implements Serializable {
                     if(command.downListener != null) {
                         Bundle extra = (Bundle) msg.obj;
                         command.downListener.onDownloadEnd(command.instance, extra.getString("url"), extra.getLong("total"));
-                    }
-                    break;
-
-                case Command.WHAT_TCP_ACCEPTED:
-                    if(command.tcpServerListener != null) {
-                        command.tcpServerListener.onAccepted((String) msg.obj);
-                    }
-                    break;
-                case Command.WHAT_TCP_RECEIVED:
-                    if(command.tcpServerListener != null) {
-                        command.tcpServerReceived((String)msg.obj);
                     }
                     break;
             }

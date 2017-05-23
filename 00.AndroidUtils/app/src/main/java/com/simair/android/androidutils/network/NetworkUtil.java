@@ -3,17 +3,20 @@ package com.simair.android.androidutils.network;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
 import android.telephony.cdma.CdmaCellLocation;
 import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 
+import com.simair.android.androidutils.Command;
+import com.simair.android.androidutils.network.http.Network;
+
+import org.json.JSONException;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.util.Enumeration;
 
 /**
  * Created by simair on 16. 11. 17.
@@ -182,27 +185,13 @@ public class NetworkUtil {
         return false;
     }
 
-    public static String getLocalIpAddress(){
-        try {
-            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
-                 en.hasMoreElements();) {
-                NetworkInterface intf = en.nextElement();
-                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
-                    InetAddress inetAddress = enumIpAddr.nextElement();
-                    if (!inetAddress.isLoopbackAddress()) {
-//                        return inetAddress.getHostAddress().toString();
-                        String ip = inetAddress.getHostAddress().toString();
-//                        Log.i(TAG, "IP Addr : " + ip);
-                        if(ip.contains(":") || ip.contains("192.168")) {
-                            continue;
-                        }
-                        return ip;
-                    }
-                }
+    public static void getLocalIpAddress(Context context, Command.CommandListener listener) {
+        new Command() {
+            @Override
+            public void doAction(Bundle data) throws NetworkException, JSONException {
+                String ip = Network.get("http", "wtfismyip.com", "text", null, null);
+                data.putString("ip", ip.trim());
             }
-        } catch (Exception ex) {
-            Log.e("IP Address", ex.toString());
-        }
-        return null;
+        }.setOnCommandListener(listener).showWaitDialog(context).start();
     }
 }

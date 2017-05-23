@@ -1,13 +1,10 @@
 package com.simair.android.androidutils.network.tcp;
 
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.simair.android.androidutils.Command;
 import com.simair.android.androidutils.ErrorCode;
 import com.simair.android.androidutils.network.NetworkException;
-import com.simair.android.androidutils.network.NetworkUtil;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -25,7 +22,6 @@ import java.util.concurrent.Executors;
  * 스레드풀(ExecutorService)을 사용하여 과도한 쓰레드를 발생시키지 않도록 한다<br>
  * 참조 <a href="http://palpit.tistory.com/644">http://palpit.tistory.com/644</a>
  */
-@RequiresApi(api = Build.VERSION_CODES.N)
 public class TCPBlockingServer {
 
     private static final String TAG = TCPBlockingServer.class.getSimpleName();
@@ -41,8 +37,8 @@ public class TCPBlockingServer {
             while (true) {
                 try {
                     SocketChannel clientChannel = serverSocketChannel.accept();
-                    Log.d(TAG, "[accepted] : " +clientChannel.getRemoteAddress());
-                    command.tcpServerAccepted(clientChannel.getRemoteAddress().toString());
+                    Log.d(TAG, "[accepted] : " +clientChannel.socket().getRemoteSocketAddress());
+//                    command.tcpServerAccepted(clientChannel.getRemoteAddress().toString());
                     ConnectedClient client = new ConnectedClient(clientChannel);
                     connectedClientList.add(client);
                     Log.d(TAG, "[연결 갯수 : " + connectedClientList.size() + "]");
@@ -85,12 +81,12 @@ public class TCPBlockingServer {
      * @throws NetworkException
      */
     public String startServer(int port) throws NetworkException {
-        String ip = NetworkUtil.getLocalIpAddress();
-        Log.d(TAG, ip);
+//        String ip = NetworkUtil.getLocalIpAddress();
+//        Log.d(TAG, ip);
 
         executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         try {
-            serverSocketChannel.bind(new InetSocketAddress(port));
+            serverSocketChannel.socket().bind(new InetSocketAddress(port));
         } catch (IOException e) {
             e.printStackTrace();
             if(serverSocketChannel.isOpen()) {
@@ -100,7 +96,7 @@ public class TCPBlockingServer {
         }
         executorService.submit(acceptTask);
 
-        return ip;
+        return null;
     }
 
     private void stopServer() throws NetworkException {
