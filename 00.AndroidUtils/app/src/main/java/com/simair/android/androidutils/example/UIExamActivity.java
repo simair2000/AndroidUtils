@@ -11,9 +11,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.simair.android.androidutils.Command;
 import com.simair.android.androidutils.R;
-import com.simair.android.androidutils.network.NetworkUtil;
 import com.simair.android.androidutils.ui.ARadioGroup;
 import com.simair.android.androidutils.ui.ColorTextView;
 import com.simair.android.androidutils.ui.CustomPopup;
@@ -37,20 +35,38 @@ public class UIExamActivity extends AppCompatActivity implements ARadioGroup.Che
     private TCPServerService.TCPServerListener tcpServerListener = new TCPServerService.TCPServerListener() {
         @Override
         public void onStarted(String ip, int port) {
-            btnTCP.setText("STOP");
-            textIP.setText("0");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    btnTCP.setText("STOP");
+                    textIP.setText("0");
+                }
+            });
         }
 
         @Override
         public void onStoped() {
-            btnTCP.setText("START");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    btnTCP.setText("START");
+                }
+            });
+
         }
 
         @Override
-        public void onClientConnected(String ip, int total) {
-            textIP.setText("" + total);
+        public void onClientConnected(String ip, final int total) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    textIP.setText("" + total);
+                }
+            });
+
         }
     };
+    private CustomPopup popupTCPClient;
 
     public static Intent getIntent(Context context) {
         Intent i = new Intent(context, UIExamActivity.class);
@@ -75,6 +91,8 @@ public class UIExamActivity extends AppCompatActivity implements ARadioGroup.Che
         textIP = (TextView)findViewById(R.id.textIP);
         btnTCP = (Button)findViewById(R.id.btnTCP);
         btnTCP.setOnClickListener(this);
+
+        findViewById(R.id.btnTCPClient).setOnClickListener(this);
     }
 
     private void initColorTextView() {
@@ -183,30 +201,15 @@ public class UIExamActivity extends AppCompatActivity implements ARadioGroup.Che
                     TCPServerService.stop();
                 }
                 break;
+            case R.id.btnTCPClient:
+                showTCPClientPopup();
+                break;
         }
     }
 
-    private void toggleTCPServer() {
-        if(btnTCP.getText().toString().equalsIgnoreCase("START")) {
-            // do stop
-            btnTCP.setText("STOP");
-            NetworkUtil.getLocalIpAddress(this, new Command.CommandListener() {
-                @Override
-                public void onSuccess(Command command, Bundle data) {
-                    String ip = data.getString("ip");
-                    textIP.setText(ip);
-                }
-
-                @Override
-                public void onFail(Command command, int errorCode, String errorMessage) {
-                    textIP.setText("get ip address failed!");
-                }
-            });
-        } else {
-            // do start
-            btnTCP.setText("START");
-            textIP.setText("127.0.0.1");
-        }
+    private void showTCPClientPopup() {
+        CustomPopup.hideDialog(popupTCPClient);
+        popupTCPClient = new CustomPopup(this).build(new PopupTCPClient(this), null).show();
     }
 
     private void showCustomPopup() {

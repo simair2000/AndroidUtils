@@ -28,7 +28,7 @@ import java.util.concurrent.Executors;
 
 public class TCPServerService extends Service {
 
-    public static final int port = 12345;
+    public static int port = 0;
     private static final String TAG = TCPServerService.class.getSimpleName();
     public static Context context = null;
     private ExecutorService executorService;
@@ -90,6 +90,9 @@ public class TCPServerService extends Service {
                 stopSelf();
             }
         });
+
+//        ip = NetworkUtil.getIPAddress(true);
+//        startServer();
     }
 
     private void startServer() {
@@ -100,6 +103,7 @@ public class TCPServerService extends Service {
             serverSocketChannel.configureBlocking(true);    // blocking mode
 
             serverSocketChannel.socket().bind(new InetSocketAddress(port));
+            port = serverSocketChannel.socket().getLocalPort();
         } catch (IOException e) {
             e.printStackTrace();
             if(serverSocketChannel.isOpen()) {
