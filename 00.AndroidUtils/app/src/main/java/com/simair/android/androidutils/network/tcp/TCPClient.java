@@ -38,7 +38,7 @@ public class TCPClient {
         this.port = port;
     }
 
-    public void startClient(TCPClientListener l) {
+    public TCPClient startClient(TCPClientListener l) {
         listener = l;
         new Thread() {
             @Override
@@ -59,6 +59,7 @@ public class TCPClient {
                 receive();
             }
         }.start();
+        return this;
     }
 
     public void send(final String data) {
@@ -128,7 +129,7 @@ public class TCPClient {
         WeakReference<TCPClient> handerObject;
 
         TCPHandler(TCPClient handlerObject) {
-            this.handerObject = new WeakReference<TCPClient>(handlerObject);
+            this.handerObject = new WeakReference<>(handlerObject);
         }
 
         @Override

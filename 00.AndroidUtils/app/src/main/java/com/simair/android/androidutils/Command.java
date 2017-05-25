@@ -102,11 +102,11 @@ public abstract class Command implements Serializable {
                 } catch (NetworkException e) {
                     Log.w(TAG, (TextUtils.isEmpty(e.message) ? "unknown exception - " + e.messageResId : e.message));
                     Message msg = handler.obtainMessage(WHAT_FAIL, e.code, e.messageResId, (TextUtils.isEmpty(e.message) ? "unknown exception - " + e.messageResId : e.message));
-                    handler.sendMessage(msg);
+                    msg.sendToTarget();
                 } catch (JSONException e) {
                     Log.w(TAG, e.getLocalizedMessage());
                     Message msg = handler.obtainMessage(WHAT_FAIL, ErrorCode.ERROR_JSON.code, 0, "invalid response");
-                    handler.sendMessage(msg);
+                    msg.sendToTarget();
                 } finally {
                     if(popup != null) {
                         popup.dismiss();
@@ -133,11 +133,11 @@ public abstract class Command implements Serializable {
                 } catch (NetworkException e) {
                     Log.w(TAG, (TextUtils.isEmpty(e.message) ? "unknown exception - " + e.messageResId : e.message));
                     Message msg = handler.obtainMessage(WHAT_FAIL, e.code, e.messageResId, (TextUtils.isEmpty(e.message) ? "unknown exception - " + e.messageResId : e.message));
-                    handler.sendMessage(msg);
+                    msg.sendToTarget();
                 } catch (JSONException e) {
                     Log.w(TAG, e.getLocalizedMessage());
                     Message msg = handler.obtainMessage(WHAT_FAIL, ErrorCode.ERROR_JSON.code, 0, "invalid response");
-                    handler.sendMessage(msg);
+                    msg.sendToTarget();
                 } finally {
                     if(popup != null) {
                         popup.dismiss();
