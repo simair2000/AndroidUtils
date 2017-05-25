@@ -17,6 +17,7 @@ import java.nio.charset.Charset;
 
 public class TCPClient {
 
+    private static final int RECV_BUFF_SIZE = 1024 * 8;
     private final boolean isBlock;
     private final String hostName;
     private final int port;
@@ -83,7 +84,7 @@ public class TCPClient {
     private void receive() {
         while (true) {
             try {
-                ByteBuffer byteBuffer = ByteBuffer.allocate(100);
+                ByteBuffer byteBuffer = ByteBuffer.allocate(RECV_BUFF_SIZE);
                 int byteCount = socketChannel.read(byteBuffer);
                 if(byteCount == -1) {
                     throw new IOException();
