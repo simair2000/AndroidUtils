@@ -18,7 +18,7 @@ import java.nio.charset.Charset;
 public class TCPClient {
 
     private static final int RECV_BUFF_SIZE = 1024 * 8;
-    private final boolean isBlock;
+    private final boolean isBlock = true;
     private final String hostName;
     private final int port;
     private SocketChannel socketChannel;
@@ -33,8 +33,7 @@ public class TCPClient {
         void onSendOK();
     }
 
-    public TCPClient(boolean isBlock, String hostName, int port) {
-        this.isBlock = isBlock;
+    public TCPClient(String hostName, int port) {
         this.hostName = hostName;
         this.port = port;
     }

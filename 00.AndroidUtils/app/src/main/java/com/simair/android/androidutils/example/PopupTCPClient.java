@@ -73,8 +73,8 @@ public class PopupTCPClient extends ConstraintLayout implements View.OnClickList
                 }
                 break;
             case R.id.btnConnect:
-                if(!TextUtils.isEmpty(editIP.getText()) && !TextUtils.isEmpty(editPort.getText())) {
-                    tcpClient = new TCPClient(true, editIP.getText().toString(), Integer.parseInt(editPort.getText().toString())).startClient(this);
+                if(!TextUtils.isEmpty(editPort.getText())) {
+                    tcpClient = new TCPClient(!TextUtils.isEmpty(editIP.getText()) ? editIP.getText().toString() : "localhost", Integer.parseInt(editPort.getText().toString())).startClient(this);
                 }
                 break;
         }

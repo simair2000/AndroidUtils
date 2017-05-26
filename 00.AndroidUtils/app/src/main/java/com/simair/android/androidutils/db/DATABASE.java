@@ -16,7 +16,7 @@ import java.util.Map;
  * @author bong
  * 
  */
-public abstract class DATABASE extends SQLiteOpenHelper {
+public class DATABASE extends SQLiteOpenHelper {
 
 	private static final String TAG = DATABASE.class.getSimpleName();
 	@SuppressWarnings("rawtypes")
