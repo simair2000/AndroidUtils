@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
 
         initView();
-
     }
 
     private void initView() {
