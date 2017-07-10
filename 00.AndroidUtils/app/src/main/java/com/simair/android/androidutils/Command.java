@@ -107,6 +107,9 @@ public abstract class Command implements Serializable {
                     Log.w(TAG, e.getLocalizedMessage());
                     Message msg = handler.obtainMessage(WHAT_FAIL, ErrorCode.ERROR_JSON.code, 0, "invalid response");
                     msg.sendToTarget();
+                } catch (Exception e) {
+                    Message msg = handler.obtainMessage(WHAT_FAIL, ErrorCode.ERROR_ETC.code, 0, e.getLocalizedMessage());
+                    msg.sendToTarget();
                 } finally {
                     if(popup != null) {
                         popup.dismiss();
@@ -137,6 +140,9 @@ public abstract class Command implements Serializable {
                 } catch (JSONException e) {
                     Log.w(TAG, e.getLocalizedMessage());
                     Message msg = handler.obtainMessage(WHAT_FAIL, ErrorCode.ERROR_JSON.code, 0, "invalid response");
+                    msg.sendToTarget();
+                } catch (Exception e) {
+                    Message msg = handler.obtainMessage(WHAT_FAIL, ErrorCode.ERROR_ETC.code, 0, e.getLocalizedMessage());
                     msg.sendToTarget();
                 } finally {
                     if(popup != null) {
