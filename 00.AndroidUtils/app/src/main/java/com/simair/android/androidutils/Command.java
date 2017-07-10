@@ -38,7 +38,7 @@ public abstract class Command implements Serializable {
         data = new Bundle();
     }
 
-    public abstract void doAction(Bundle data) throws NetworkException, JSONException;
+    public abstract void doAction(Bundle data) throws NetworkException, JSONException, Exception;
 
     public interface CommandListener extends Serializable {
         void onSuccess(Command command, Bundle data);
