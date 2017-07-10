@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.simair.android.androidutils.network.NetworkException;
+import com.simair.android.androidutils.ui.CustomPopup;
 
 import org.json.JSONException;
 
@@ -29,6 +30,7 @@ public abstract class Command implements Serializable {
     private Context context;
     private boolean showWait;
     private ProgressDialog popup = null;
+    private CustomPopup customPopup = null;
     private DownloadListener downListener;
 
     public Command() {
@@ -73,6 +75,13 @@ public abstract class Command implements Serializable {
         return this;
     }
 
+    public Command showWaitDialog(Context context, CustomPopup popup) {
+        this.context = context;
+        this.showWait = true;
+        this.customPopup = popup;
+        return this;
+    }
+
     public void hideWaitDialog() {
         if(popup != null) {
             popup.dismiss();
@@ -90,8 +99,12 @@ public abstract class Command implements Serializable {
 
     public Command start(long delay) {
         if(showWait) {
-            popup.show();
-            popup.setCancelable(false);
+            if(popup != null) {
+                popup.show();
+                popup.setCancelable(false);
+            } else if(customPopup != null) {
+                customPopup.show();
+            }
         }
         new Timer().schedule(new TimerTask() {
             @Override
@@ -114,6 +127,8 @@ public abstract class Command implements Serializable {
                     if(popup != null) {
                         popup.dismiss();
                         popup = null;
+                    } else if(customPopup != null) {
+                        CustomPopup.hideDialog(customPopup);
                     }
                 }
             }
@@ -123,8 +138,12 @@ public abstract class Command implements Serializable {
 
     public Command start() {
         if(showWait) {
-            popup.show();
-            popup.setCancelable(false);
+            if(popup != null) {
+                popup.show();
+                popup.setCancelable(false);
+            } else if(customPopup != null) {
+                customPopup.show();
+            }
         }
         new Thread(new Runnable() {
 
@@ -148,6 +167,8 @@ public abstract class Command implements Serializable {
                     if(popup != null) {
                         popup.dismiss();
                         popup = null;
+                    } else if(customPopup != null) {
+                        CustomPopup.hideDialog(customPopup);
                     }
                 }
             }
