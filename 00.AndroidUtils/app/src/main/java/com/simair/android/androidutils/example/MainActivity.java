@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             HTTP_GET_TEST(HttpActivity.getIntent(context)),
             DOWNLOAD_TEST(DownloadActivity.getIntent(context)),
             UI_TEST(UIExamActivity.getIntent(context)),
+            FORE_CAST_TEST(WeatherForecastActivity.getIntent(context)),
             ;
 
             private final Intent intent;
