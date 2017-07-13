@@ -3,8 +3,8 @@ package com.simair.android.androidutils.openapi.forecast;
 import com.google.gson.Gson;
 import com.simair.android.androidutils.network.NetworkException;
 import com.simair.android.androidutils.network.http.Network;
+import com.simair.android.androidutils.openapi.forecast.data.ForecastCurrentObject;
 import com.simair.android.androidutils.openapi.forecast.data.ForecastObject;
-import com.simair.android.androidutils.openapi.forecast.data.ForecastTodayObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,9 +30,32 @@ public class APIForecast {
     private static final String hostPath = host + path;
 
     private static final String APIForecastGrib = "ForecastGrib";
+    private static final String APIForecastTimeData = "ForecastTimeData";
 
     /**
-     * 오늘날씨 조회 (초단기실황조회)<br />
+     * 앞으로 몇시간 날씨 조회
+     * @param x utmk X
+     * @param y utmk Y
+     * @return
+     * @throws NetworkException
+     * @throws JSONException
+     * @throws Exception
+     */
+    public static String requestTimeData(float x, float y) throws NetworkException, JSONException, Exception {
+        Properties params = getParam();
+        params.setProperty("nx", String.valueOf((int)x));
+        params.setProperty("ny", String.valueOf((int)y));
+
+        params.setProperty("base_date", getTodayDate());
+        params.setProperty("base_time", getCurrentTime());
+        params.setProperty("numOfRows", "1000");
+
+        String strResponse = Network.get(protocol, hostPath, APIForecastTimeData, null, params);
+        return strResponse;
+    }
+
+    /**
+     * 현재날씨 조회 (초단기실황조회)<br />
      * ex)<br />
      * {"response":{"header":{"resultCode":"0000","resultMsg":"OK"},"body":{"items":{"item":[{"baseDate":20170711,"baseTime":1500,"category":"LGT","nx":60,"ny":122,"obsrValue":0},{"baseDate":20170711,"baseTime":1500,"category":"PTY","nx":60,"ny":122,"obsrValue":0},{"baseDate":20170711,"baseTime":1500,"category":"REH","nx":60,"ny":122,"obsrValue":63},{"baseDate":20170711,"baseTime":1500,"category":"RN1","nx":60,"ny":122,"obsrValue":0},{"baseDate":20170711,"baseTime":1500,"category":"SKY","nx":60,"ny":122,"obsrValue":3},{"baseDate":20170711,"baseTime":1500,"category":"T1H","nx":60,"ny":122,"obsrValue":30.2},{"baseDate":20170711,"baseTime":1500,"category":"UUU","nx":60,"ny":122,"obsrValue":1},{"baseDate":20170711,"baseTime":1500,"category":"VEC","nx":60,"ny":122,"obsrValue":243},{"baseDate":20170711,"baseTime":1500,"category":"VVV","nx":60,"ny":122,"obsrValue":0.5},{"baseDate":20170711,"baseTime":1500,"category":"WSD","nx":60,"ny":122,"obsrValue":1.1}]},"numOfRows":10,"pageNo":1,"totalCount":10}}}
      * @param x utmk X
@@ -42,7 +65,7 @@ public class APIForecast {
      * @throws JSONException
      * @throws Exception
      */
-    public static ForecastTodayObject requestToday(float x, float y) throws NetworkException, JSONException, Exception {
+    public static ForecastCurrentObject requestCurrent(float x, float y) throws NetworkException, JSONException, Exception {
         Properties params = getParam();
         params.setProperty("base_date", getTodayDate());
         params.setProperty("base_time", getCurrentTime());
@@ -55,7 +78,7 @@ public class APIForecast {
             JSONObject body = new JSONObject(response).getJSONObject("response").getJSONObject("body");
             JSONArray items = body.getJSONObject("items").getJSONArray("item");
 
-            ForecastTodayObject todayObject = new ForecastTodayObject();
+            ForecastCurrentObject todayObject = new ForecastCurrentObject();
             for(int i = 0; i < items.length(); i++) {
                 JSONObject item = items.getJSONObject(i);
                 ForecastObject data = new Gson().fromJson(item.toString(), ForecastObject.class);
@@ -67,20 +90,27 @@ public class APIForecast {
         return null;
     }
 
-    private static String getCurrentTime() {
-        Date date = new Date();
-        SimpleDateFormat sdfMinutes = new SimpleDateFormat("mm", Locale.getDefault());
-        if(Integer.valueOf(sdfMinutes.format(date)) < 40) {
-            // API 제공 시간이 매시간 40분 마다 제공이 되므로 40분 이전이면 1시간 전 데이터를 받아와야 함
-            date = new Date(date.getTime() - (1000 * 60 * 60));
-        }
-        SimpleDateFormat sdf = new SimpleDateFormat("HHmm", Locale.getDefault());
+    private static String getDate(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         return sdf.format(date);
     }
 
+    private static String getTime(Date time) {
+        SimpleDateFormat sdfMinutes = new SimpleDateFormat("mm", Locale.getDefault());
+        if(Integer.valueOf(sdfMinutes.format(time)) < 40) {
+            // API 제공 시간이 매시간 40분 마다 제공이 되므로 40분 이전이면 1시간 전 데이터를 받아와야 함
+            time = new Date(time.getTime() - (1000 * 60 * 60));
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("HHmm", Locale.getDefault());
+        return sdf.format(time);
+    }
+
+    private static String getCurrentTime() {
+        return getTime(new Date());
+    }
+
     private static String getTodayDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
-        return sdf.format(new Date());
+        return getDate(new Date());
     }
 
     private static Properties getParam() {

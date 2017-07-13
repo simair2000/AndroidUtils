@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">AndroidUtils</string>
     <string name="title_activity_main">Simair Utils</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="sunny">맑음</string>
+    <string name="cloudy_1">구름조금</string>
+    <string name="cloudy_2">구름많음</string>
+    <string name="cloudy_3">흐림</string>
+    <string name="rainy">비</string>
+    <string name="rain_snow">진눈개비</string>
+    <string name="snow">눈</string>
+    <string name="lightning">낙뢰</string>
 </resources>

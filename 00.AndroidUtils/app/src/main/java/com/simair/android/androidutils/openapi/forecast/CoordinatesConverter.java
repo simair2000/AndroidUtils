@@ -4,7 +4,7 @@ import android.util.Log;
 
 /**
  * Created by simair on 17. 7. 11.<br />
- * 위도(latitude), 경도(longitude) 좌표와 UTMK 좌표간의 변환<br />
+ * 위도(latitude), 경도(longitude) 좌표와 동네예보 좌표간의 변환<br />
  * OpenAPI 사용자 활용가이드(기상청 신규 동네예보정보조회서비스)v1.3 참고
  */
 
@@ -63,7 +63,7 @@ public class CoordinatesConverter {
         public int first;       // 시작여부 (0 = 시작)
     }
 
-    public class UTMK {
+    public class Coord {
         public float x;
         public float y;
     }
@@ -73,7 +73,7 @@ public class CoordinatesConverter {
         public float latitude;
     }
 
-    public GeoCode utmk2geo(float x, float y) {
+    public GeoCode coord2geo(float x, float y) {
         double slat1;
         double slat2;
         double ra;
@@ -134,7 +134,7 @@ public class CoordinatesConverter {
         return ret;
     }
 
-    public UTMK geo2utmk(float lat, float lon) {
+    public Coord geo2coord(float lat, float lon) {
         double slat1;
         double slat2;
         double ra;
@@ -170,7 +170,7 @@ public class CoordinatesConverter {
             theta += 2.0 * PI;
         }
         theta *= sn;
-        UTMK ret = new UTMK();
+        Coord ret = new Coord();
         ret.x = (float)(ra * Math.sin(theta)) + map.xo;
         ret.y = (float)(ro - ra * Math.cos(theta)) + map.yo;
         return ret;

@@ -10,7 +10,7 @@ import java.io.Serializable;
  * 초단기실황 데이터
  */
 
-public class ForecastTodayObject implements Serializable {
+public class ForecastCurrentObject implements Serializable {
     @SerializedName("T1H")      float degree;                 // 기온 [℃]
     @SerializedName("RN1")      int hourlyPrecipitation;    // 시간당 강수량 [mm]
     @SerializedName("SKY")      int sky;                    // 맑음(1), 구름조금(2), 구름많음(3), 흐림(4)
