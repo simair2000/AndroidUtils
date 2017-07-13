@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -21,7 +19,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -37,10 +34,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.simair.android.androidutils.R;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
+import com.simair.android.androidutils.Utils;
+import com.simair.android.androidutils.ui.InfoWindowWeather;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleMap.OnMapClickListener, GoogleMap.OnInfoWindowClickListener {
 
@@ -61,6 +56,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     boolean askPermissionOnceAgain = false;
     private double latitude;
     private double longitude;
+    private InfoWindowAdapter infoWindowAdapter;
 
     public static Intent getIntent(Context context, double latitude, double longitude) {
         Intent i = new Intent(context, MapsActivity.class);
@@ -149,7 +145,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mGoogleMap = map;
         mGoogleMap.setOnMapClickListener(this);
 
-        InfoWindowAdapter infoWindowAdapter = new InfoWindowAdapter();
+        infoWindowAdapter = new InfoWindowAdapter();
         mGoogleMap.setInfoWindowAdapter(infoWindowAdapter);
         mGoogleMap.setOnInfoWindowClickListener(this);
 
@@ -193,7 +189,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onLocationChanged(Location location) {
 
         Log.d(TAG, "onLocationChanged");
-        String markerTitle = getCurrentAddress(location);
+        String markerTitle = Utils.getAddress(this, location.getLatitude(), location.getLongitude());
         String markerSnippet = "위도:" + String.valueOf(location.getLatitude())
                 + " 경도:" + String.valueOf(location.getLongitude());
 
@@ -269,67 +265,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Log.e(TAG, "onConnectionSuspended():  Google Play services " +
                     "connection lost.  Cause: service disconnected");
     }
-
-    public String getCurrentAddress(Location location) {
-
-        //지오코더... GPS를 주소로 변환
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        List<Address> addresses;
-
-        try {
-            addresses = geocoder.getFromLocation(
-                    location.getLatitude(),
-                    location.getLongitude(),
-                    1);
-        } catch (IOException ioException) {
-            //네트워크 문제
-            Toast.makeText(this, "지오코더 서비스 사용불가", Toast.LENGTH_LONG).show();
-            return "지오코더 서비스 사용불가";
-        } catch (IllegalArgumentException illegalArgumentException) {
-            Toast.makeText(this, "잘못된 GPS 좌표", Toast.LENGTH_LONG).show();
-            return "잘못된 GPS 좌표";
-        }
-
-        if (addresses == null || addresses.size() == 0) {
-            Toast.makeText(this, "주소 미발견", Toast.LENGTH_LONG).show();
-            return "주소 미발견";
-
-        } else {
-            Address address = addresses.get(0);
-            return address.getAddressLine(0).toString();
-        }
-    }
-
-    public String getCurrentAddress(LatLng latLng) {
-
-        //지오코더... GPS를 주소로 변환
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        List<Address> addresses;
-
-        try {
-            addresses = geocoder.getFromLocation(
-                    latLng.latitude,
-                    latLng.longitude,
-                    1);
-        } catch (IOException ioException) {
-            //네트워크 문제
-            Toast.makeText(this, "지오코더 서비스 사용불가", Toast.LENGTH_LONG).show();
-            return "지오코더 서비스 사용불가";
-        } catch (IllegalArgumentException illegalArgumentException) {
-            Toast.makeText(this, "잘못된 GPS 좌표", Toast.LENGTH_LONG).show();
-            return "잘못된 GPS 좌표";
-        }
-
-        if (addresses == null || addresses.size() == 0) {
-            Toast.makeText(this, "주소 미발견", Toast.LENGTH_LONG).show();
-            return "주소 미발견";
-
-        } else {
-            Address address = addresses.get(0);
-            return address.getAddressLine(0).toString();
-        }
-    }
-
 
     public boolean checkLocationServicesStatus() {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -538,14 +473,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onMapClick(LatLng latLng) {
-        String address = getCurrentAddress(latLng);
+        String address = Utils.getAddress(this, latLng.latitude, latLng.longitude);
         Log.d(TAG, "onMapClick : " + latLng);
         Log.d(TAG, "address : " + address);
 
-//
-
         if (currentMarker != null) currentMarker.remove();
-//
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.draggable(true);
@@ -570,6 +502,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private class InfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
+        private InfoWindowWeather view;
+
+        public InfoWindowAdapter() {
+            view = (InfoWindowWeather) InfoWindowWeather.getInstance(mActivity);
+        }
+
         @Override
         public View getInfoWindow(Marker marker) {
             return null;
@@ -577,7 +515,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         @Override
         public View getInfoContents(Marker marker) {
-            return null;
+            view.setLocation(marker);
+            return view;
         }
     }
 }

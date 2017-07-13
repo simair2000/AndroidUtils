@@ -134,7 +134,7 @@ public class CoordinatesConverter {
         return ret;
     }
 
-    public Coord geo2coord(float lat, float lon) {
+    public Coord geo2coord(double lat, double lon) {
         double slat1;
         double slat2;
         double ra;

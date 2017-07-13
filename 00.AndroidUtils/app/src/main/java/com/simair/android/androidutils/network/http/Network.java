@@ -674,7 +674,7 @@ public class Network {
                     header = new Properties();
                 }
                 String B64userAndPasswd = Base64.encodeToString((authUser + ":" + authPasswd).getBytes(), 0);
-                header.setProperty("Authorization", "Basic " + B64userAndPasswd);
+                header.setProperty("Authorization", "Basic " + B64userAndPasswd.trim());
                 conn.setRequestProperty("Content-Type", "application/json");
             }
 
