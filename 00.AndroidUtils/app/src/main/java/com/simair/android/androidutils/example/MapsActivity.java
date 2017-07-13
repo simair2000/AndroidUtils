@@ -42,7 +42,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleMap.OnMapClickListener {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleMap.OnMapClickListener, GoogleMap.OnInfoWindowClickListener {
 
     private GoogleApiClient mGoogleApiClient = null;
     private GoogleMap mGoogleMap = null;
@@ -59,11 +59,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private AppCompatActivity mActivity;
     boolean askPermissionOnceAgain = false;
-    private static LatLng lastLocation = null;
+    private double latitude;
+    private double longitude;
+
+    public static Intent getIntent(Context context, double latitude, double longitude) {
+        Intent i = new Intent(context, MapsActivity.class);
+        i.putExtra("latitude", latitude);
+        i.putExtra("longitude", longitude);
+        return i;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Bundle data = getIntent().getExtras();
+        if(data != null) {
+            this.latitude = data.getDouble("latitude", 0);
+            this.longitude = data.getDouble("longitude", 0);
+        }
 
         setContentView(R.layout.activity_maps);
 
@@ -137,9 +151,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         InfoWindowAdapter infoWindowAdapter = new InfoWindowAdapter();
         mGoogleMap.setInfoWindowAdapter(infoWindowAdapter);
+        mGoogleMap.setOnInfoWindowClickListener(this);
 
         //런타임 퍼미션 요청 대화상자나 GPS 활성 요청 대화상자 보이기전에 지도의 초기위치를 서울로 이동
-        setCurrentLocation(null, "위치정보 가져올 수 없음", "위치 퍼미션과 GPS 활성 요부 확인하세요");
+//        setCurrentLocation(null, "위치정보 가져올 수 없음", "위치 퍼미션과 GPS 활성 요부 확인하세요");
 
         mGoogleMap.getUiSettings().setCompassEnabled(true);
         mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
@@ -233,12 +248,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Location location = null;
-        if(lastLocation == null) {
+        if(latitude == 0 || longitude == 0) {
             location.setLatitude(DEFAULT_LOCATION.latitude);
             location.setLongitude(DEFAULT_LOCATION.longitude);
         } else {
-            location.setLatitude(lastLocation.latitude);
-            location.setLongitude(lastLocation.longitude);
+            location.setLatitude(latitude);
+            location.setLongitude(longitude);
         }
 
         setCurrentLocation(location, "위치정보 가져올 수 없음", "위치 퍼미션과 GPS 활성 요부 확인하세요");
@@ -337,7 +352,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
             currentMarker = mGoogleMap.addMarker(markerOptions);
             currentMarker.showInfoWindow();
-            lastLocation = currentLocation;
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
             return;
         }
 
@@ -354,7 +370,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void setCurrentLocation(Location location, String markerTitle, String markerSnippet) {
         Log.i(TAG, "setCurrentLocation(), markerTitle = " + markerTitle + ", markerSnippet = " + markerSnippet + ", location = " + location);
         showMarker(location, markerTitle, markerSnippet);
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(DEFAULT_LOCATION));
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
     }
 
     //여기부터는 런타임 퍼미션 처리을 위한 메소드들
@@ -520,11 +536,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public static Intent getIntent(Context context) {
-        Intent i = new Intent(context, MapsActivity.class);
-        return i;
-    }
-
     @Override
     public void onMapClick(LatLng latLng) {
         String address = getCurrentAddress(latLng);
@@ -544,7 +555,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         currentMarker = mGoogleMap.addMarker(markerOptions);
         currentMarker.showInfoWindow();
 
-        lastLocation = latLng;
+        latitude = latLng.latitude;
+        longitude = latLng.longitude;
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        LatLng position = marker.getPosition();
+        Intent data = new Intent();
+        data.putExtra("position", position);
+        setResult(RESULT_OK, data);
+        finish();
     }
 
     private class InfoWindowAdapter implements GoogleMap.InfoWindowAdapter {

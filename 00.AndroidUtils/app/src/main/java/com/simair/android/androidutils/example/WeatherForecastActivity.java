@@ -9,7 +9,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.simair.android.androidutils.Command;
 import com.simair.android.androidutils.R;
@@ -29,6 +31,7 @@ import java.util.Date;
 public class WeatherForecastActivity extends AppCompatActivity implements Command.CommandListener, View.OnClickListener {
 
     private static final String TAG = WeatherForecastActivity.class.getSimpleName();
+    private static final int REQ_LOCATION = 100;
     private Command commandTest;
     private Command commandForecast;
     private Context context;
@@ -40,6 +43,8 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
     private View imgLightning;
     private TextView textHumidity;
     private TextView textRain;
+    private double latitude;
+    private double longitude;
 
     public static Intent getIntent(Context context) {
         Intent i = new Intent(context, WeatherForecastActivity.class);
@@ -79,25 +84,26 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
         Utils.getCurrentLocation(this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
-                requestForecast(location);
+                requestForecast(location.getLatitude(), location.getLongitude());
             }
         });
 
         findViewById(R.id.btnRefrersh).setOnClickListener(this);
     }
 
-    private void requestForecast(final Location location) {
+    private void requestForecast(final double latitude, final double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
         commandForecast = new Command() {
             @Override
             public void doAction(Bundle data) throws NetworkException, JSONException, Exception {
-                CoordinatesConverter.Coord coord = CoordinatesConverter.getInstance().geo2coord((float) location.getLatitude(), (float) location.getLongitude());
+                CoordinatesConverter.Coord coord = CoordinatesConverter.getInstance().geo2coord((float) latitude, (float) longitude);
                 ForecastCurrentObject forecast = APIForecast.requestCurrent(coord.x, coord.y);
-//                APIForecast.requestTimeData(coord.x, coord.y);
-                String address = Utils.getAddress(context, location);
+                String address = Utils.getAddress(context, latitude, longitude);
                 data.putString("address", address);
                 data.putSerializable("forecast", forecast);
             }
-        }.setOnCommandListener(this).showWaitDialog(this, PopupWait.getPopupView(this, false)).start();
+        }.setOnCommandListener(this).showWaitDialog(this, PopupWait.getPopupView(this, true)).start();
     }
 
     private void requestTest() {
@@ -115,6 +121,10 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
         if(command == commandForecast) {
             String address = data.getString("address");
             ForecastCurrentObject forecast = (ForecastCurrentObject) data.getSerializable("forecast");
+            if(forecast == null) {
+                Toast.makeText(context, "날씨 정보 가져오기 실패!!", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             textAddress.setText(address);
             if(forecast.getSky() == 1) {
@@ -169,16 +179,22 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnMap:
-                startActivity(MapsActivity.getIntent(this));
+                startActivityForResult(MapsActivity.getIntent(context, latitude, longitude), REQ_LOCATION);
                 break;
             case R.id.btnRefrersh:
-                Utils.getCurrentLocation(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        requestForecast(location);
-                    }
-                });
+                requestForecast(latitude, longitude);
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQ_LOCATION) {
+            if(resultCode == RESULT_OK) {
+                LatLng latLng = data.getParcelableExtra("position");
+                requestForecast(latLng.latitude, latLng.longitude);
+            }
         }
     }
 }

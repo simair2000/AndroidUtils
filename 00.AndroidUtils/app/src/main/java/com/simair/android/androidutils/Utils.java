@@ -87,17 +87,13 @@ public class Utils {
         return true;
     }
 
-    public static String getAddress(Context context, Location location) {
-
+    public static String getAddress(Context context, double latitude, double longitude) {
         //지오코더... GPS를 주소로 변환
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         List<Address> addresses;
 
         try {
-            addresses = geocoder.getFromLocation(
-                    location.getLatitude(),
-                    location.getLongitude(),
-                    1);
+            addresses = geocoder.getFromLocation(latitude, longitude, 1);
         } catch (IOException ioException) {
             //네트워크 문제
 //            Toast.makeText(this, "지오코더 서비스 사용불가", Toast.LENGTH_LONG).show();
