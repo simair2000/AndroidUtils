@@ -17,11 +17,11 @@ public class DataFacade<K extends Serializable, V extends Serializable> {
         this.chains = chains;
     }
 
-    public V get(K key) throws NetworkException, JSONException {
+    public V get(K key) throws NetworkException, JSONException, Exception {
         return chains.get(key);
     }
 
-    public V getFromNetwork(K key) throws NetworkException, JSONException {
+    public V getFromNetwork(K key) throws NetworkException, JSONException, Exception {
         DataChain<K, V> chain = findNetworkChain();
         if(chain != null) {
             return chain.get(key);

@@ -20,7 +20,7 @@ public class CacheManager {
     public enum CacheCategory {
         CACHE_DEFAULT,
         CACHE_GLOBAL,
-        STS,
+        CACHE_FORCAST_CURRENT,
         ;
     }
 

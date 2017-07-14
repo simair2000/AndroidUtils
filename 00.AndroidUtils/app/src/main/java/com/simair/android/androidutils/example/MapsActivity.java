@@ -485,6 +485,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         markerOptions.snippet(latLng.toString());
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         currentMarker = mGoogleMap.addMarker(markerOptions);
+
         currentMarker.showInfoWindow();
 
         latitude = latLng.latitude;
@@ -515,6 +516,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         @Override
         public View getInfoContents(Marker marker) {
+            view.showWait(true);
             view.setLocation(marker);
             return view;
         }

@@ -19,6 +19,7 @@ import com.simair.android.androidutils.Utils;
 import com.simair.android.androidutils.network.NetworkException;
 import com.simair.android.androidutils.openapi.forecast.APIForecast;
 import com.simair.android.androidutils.openapi.forecast.CoordinatesConverter;
+import com.simair.android.androidutils.openapi.forecast.FacadeForecastCurrent;
 import com.simair.android.androidutils.openapi.forecast.data.ForecastCurrentObject;
 import com.simair.android.androidutils.openapi.forecast.data.WeatherIcon;
 import com.simair.android.androidutils.ui.PopupWait;
@@ -98,7 +99,7 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
             @Override
             public void doAction(Bundle data) throws NetworkException, JSONException, Exception {
                 CoordinatesConverter.Coord coord = CoordinatesConverter.getInstance().geo2coord((float) latitude, (float) longitude);
-                ForecastCurrentObject forecast = APIForecast.requestCurrent(coord.x, coord.y);
+                ForecastCurrentObject forecast = FacadeForecastCurrent.getInstance(context).get(coord);
                 String address = Utils.getAddress(context, latitude, longitude);
                 data.putString("address", address);
                 data.putSerializable("forecast", forecast);

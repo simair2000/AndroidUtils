@@ -17,8 +17,8 @@ import com.simair.android.androidutils.Command;
 import com.simair.android.androidutils.R;
 import com.simair.android.androidutils.Utils;
 import com.simair.android.androidutils.network.NetworkException;
-import com.simair.android.androidutils.openapi.forecast.APIForecast;
 import com.simair.android.androidutils.openapi.forecast.CoordinatesConverter;
+import com.simair.android.androidutils.openapi.forecast.FacadeForecastCurrent;
 import com.simair.android.androidutils.openapi.forecast.data.ForecastCurrentObject;
 import com.simair.android.androidutils.openapi.forecast.data.WeatherIcon;
 
@@ -87,7 +87,8 @@ public class InfoWindowWeather extends LinearLayout implements Command.CommandLi
             @Override
             public void doAction(Bundle data) throws NetworkException, JSONException, Exception {
                 CoordinatesConverter.Coord coord = CoordinatesConverter.getInstance().geo2coord(latitude, longitude);
-                ForecastCurrentObject response = APIForecast.requestCurrent(coord.x, coord.y);
+//                ForecastCurrentObject response = APIForecast.requestCurrent(coord.x, coord.y);
+                ForecastCurrentObject response = FacadeForecastCurrent.getInstance(context).get(coord);
                 String address = Utils.getAddress(context, latitude, longitude);
                 data.putString("address", address);
                 data.putSerializable("forecast", response);
@@ -134,8 +135,7 @@ public class InfoWindowWeather extends LinearLayout implements Command.CommandLi
                         textSky.setText(WeatherIcon.SNOW.strRes);
                     }
                 }
-                imgWait.setVisibility(GONE);
-                marker.hideInfoWindow();
+                showWait(false);
                 marker.showInfoWindow();
             }
 
@@ -145,5 +145,9 @@ public class InfoWindowWeather extends LinearLayout implements Command.CommandLi
     @Override
     public void onFail(Command command, int errorCode, String errorMessage) {
 
+    }
+
+    public void showWait(boolean show) {
+        imgWait.setVisibility(show ? VISIBLE : GONE);
     }
 }

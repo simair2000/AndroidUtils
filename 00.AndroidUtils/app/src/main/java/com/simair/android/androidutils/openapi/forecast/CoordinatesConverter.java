@@ -2,6 +2,8 @@ package com.simair.android.androidutils.openapi.forecast;
 
 import android.util.Log;
 
+import java.io.Serializable;
+
 /**
  * Created by simair on 17. 7. 11.<br />
  * 위도(latitude), 경도(longitude) 좌표와 동네예보 좌표간의 변환<br />
@@ -63,7 +65,7 @@ public class CoordinatesConverter {
         public int first;       // 시작여부 (0 = 시작)
     }
 
-    public class Coord {
+    public class Coord implements Serializable {
         public float x;
         public float y;
     }

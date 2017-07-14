@@ -30,7 +30,7 @@ public abstract class DataChain<K extends Serializable, V extends Serializable> 
      * @throws NetworkException
      * @throws JSONException
      */
-    protected abstract V getData(K key) throws NetworkException, JSONException;
+    protected abstract V getData(K key) throws NetworkException, JSONException, Exception;
 
     /**
      * data chain 값을 조회
@@ -39,7 +39,7 @@ public abstract class DataChain<K extends Serializable, V extends Serializable> 
      * @throws NetworkException
      * @throws JSONException
      */
-    public V get(K key) throws NetworkException, JSONException {
+    public V get(K key) throws NetworkException, JSONException, Exception {
         V v = getData(key);
         if(v != null) {
             return v;
