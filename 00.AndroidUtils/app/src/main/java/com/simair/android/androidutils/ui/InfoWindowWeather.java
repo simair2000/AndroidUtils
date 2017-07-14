@@ -118,20 +118,31 @@ public class InfoWindowWeather extends LinearLayout implements Command.CommandLi
                     textSky.setText(WeatherIcon.CLOUDY_3.strRes);
                 }
 
+                // 비
                 if(forecast.getPrecipitationType() > 0) {
                     // 강수 형태가 있음
+                    WeatherIcon icon = WeatherIcon.CLOUDY_3;
                     if(forecast.getPrecipitationType() == 1) {
                         // 비
-                        imgIcon.setImageResource(WeatherIcon.RAIN_1.iconRes);
-                        textSky.setText(WeatherIcon.RAIN_1.strRes);
+                        icon = WeatherIcon.getRainIcon(forecast.getHourlyPrecipitation());
                     } else if(forecast.getPrecipitationType() == 2) {
                         // 진눈개비
-                        imgIcon.setImageResource(WeatherIcon.RAIN_SNOW_1.iconRes);
-                        textSky.setText(WeatherIcon.RAIN_SNOW_1.strRes);
+                        icon = WeatherIcon.getRainSnowIcon(forecast.getHourlyPrecipitation());
                     } else if(forecast.getPrecipitationType() == 3) {
                         // 눈
-                        imgIcon.setImageResource(WeatherIcon.SNOW_1.iconRes);
-                        textSky.setText(WeatherIcon.SNOW_1.strRes);
+                        icon = WeatherIcon.getSnowIcon(forecast.getHourlyPrecipitation());
+                    }
+
+                    if(forecast.getThunderbolt() > 0) {
+                        imgIcon.setImageResource(WeatherIcon.RAIN_LIGHTNING.iconRes);
+                    } else {
+                        imgIcon.setImageResource(icon.iconRes);
+                    }
+                    textSky.setText(icon.strRes);
+
+                } else {
+                    if(forecast.getThunderbolt() > 0) {
+                        imgIcon.setImageResource(WeatherIcon.CLOUDY_LIGHTNING.iconRes);
                     }
                 }
                 showWait(false);
