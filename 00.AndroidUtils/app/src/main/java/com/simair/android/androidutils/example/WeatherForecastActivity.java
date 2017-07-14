@@ -26,6 +26,7 @@ import com.simair.android.androidutils.ui.PopupWait;
 
 import org.json.JSONException;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -79,8 +80,8 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
         textHumidity = (TextView)findViewById(R.id.textHumidity);
         textRain = (TextView)findViewById(R.id.textRain);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-        textDate.setText(sdf.format(new Date()));
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+//        textDate.setText(sdf.format(new Date()));
 
         Utils.getCurrentLocation(this, new OnSuccessListener<Location>() {
             @Override
@@ -127,6 +128,15 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
                 return;
             }
 
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
+                Date date = sdf.parse(forecast.getBaseDate() + forecast.getBaseTime());
+                sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+                textDate.setText("측정일시 : " + sdf.format(date));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
             textAddress.setText(address);
             if(forecast.getSky() == 1) {
                 imgIcon.setImageResource(WeatherIcon.SUNNY.iconRes);
@@ -147,23 +157,29 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
             // 비
             if(forecast.getPrecipitationType() > 0) {
                 // 강수 형태가 있음
+                WeatherIcon icon = WeatherIcon.CLOUDY_3;
                 if(forecast.getPrecipitationType() == 1) {
                     // 비
-                    imgIcon.setImageResource(WeatherIcon.RAINY.iconRes);
-                    textSky.setText(WeatherIcon.RAINY.strRes);
+                    icon = WeatherIcon.getRainIcon(forecast.getHourlyPrecipitation());
                 } else if(forecast.getPrecipitationType() == 2) {
                     // 진눈개비
-                    imgIcon.setImageResource(WeatherIcon.RAIN_SNOW.iconRes);
-                    textSky.setText(WeatherIcon.RAIN_SNOW.strRes);
+                    icon = WeatherIcon.getRainSnowIcon(forecast.getHourlyPrecipitation());
                 } else if(forecast.getPrecipitationType() == 3) {
                     // 눈
-                    imgIcon.setImageResource(WeatherIcon.SNOW.iconRes);
-                    textSky.setText(WeatherIcon.SNOW.strRes);
+                    icon = WeatherIcon.getSnowIcon(forecast.getHourlyPrecipitation());
                 }
-            }
 
-            if(forecast.getThunderbolt() > 0) {
-                imgLightning.setVisibility(View.VISIBLE);
+                if(forecast.getThunderbolt() > 0) {
+                    imgIcon.setImageResource(WeatherIcon.RAIN_LIGHTNING.iconRes);
+                } else {
+                    imgIcon.setImageResource(icon.iconRes);
+                }
+                textSky.setText(icon.strRes);
+
+            } else {
+                if(forecast.getThunderbolt() > 0) {
+                    imgIcon.setImageResource(WeatherIcon.CLOUDY_LIGHTNING.iconRes);
+                }
             }
 
             textHumidity.setText(forecast.getHumidity() + "%");

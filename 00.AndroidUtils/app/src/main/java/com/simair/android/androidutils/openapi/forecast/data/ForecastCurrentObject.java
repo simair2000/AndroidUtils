@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 public class ForecastCurrentObject implements Serializable {
     @SerializedName("T1H")      float degree;                 // 기온 [℃]
-    @SerializedName("RN1")      int hourlyPrecipitation;    // 시간당 강수량 [mm]
+    @SerializedName("RN1")      float hourlyPrecipitation;    // 시간당 강수량 [mm]
     @SerializedName("SKY")      int sky;                    // 맑음(1), 구름조금(2), 구름많음(3), 흐림(4)
     @SerializedName("UUU")      float EWWind;                 // 동서바람성분 [m/s] 동풍(+표기), 서풍(-표기)
     @SerializedName("VVV")      float SNWind;                 // 남북바람성분 [m/s] 북풍(+표기), 남풍(-표기)
@@ -21,12 +21,16 @@ public class ForecastCurrentObject implements Serializable {
     @SerializedName("LGT")      int thunderbolt;            // 낙뢰 [없음(0), 있음(1)]
     @SerializedName("VEC")      int windDirection;          // 풍향
     @SerializedName("WSD")      float windSpeed;              // 풍속
+    private String baseDate;
+    private String baseTime;
 
     public void addItem(ForecastObject item) {
+        baseDate = item.getBaseDate();
+        baseTime = item.getBaseTime();
         if(item.getCategory().equals("T1H")) {
             setDegree(Float.valueOf(item.getValue()));
         } else if(item.getCategory().equals("RN1")) {
-            setHourlyPrecipitation(Integer.valueOf(item.getValue()));
+            setHourlyPrecipitation(Float.valueOf(item.getValue()));
         } else if(item.getCategory().equals("SKY")) {
             setSky(Integer.valueOf(item.getValue()));
         } else if(item.getCategory().equals("UUU")) {
@@ -51,6 +55,22 @@ public class ForecastCurrentObject implements Serializable {
         return new Gson().toJson(this);
     }
 
+    public String getBaseDate() {
+        return baseDate;
+    }
+
+    public void setBaseDate(String baseDate) {
+        this.baseDate = baseDate;
+    }
+
+    public String getBaseTime() {
+        return baseTime;
+    }
+
+    public void setBaseTime(String baseTime) {
+        this.baseTime = baseTime;
+    }
+
     public float getDegree() {
         return degree;
     }
@@ -59,11 +79,11 @@ public class ForecastCurrentObject implements Serializable {
         this.degree = degree;
     }
 
-    public int getHourlyPrecipitation() {
+    public float getHourlyPrecipitation() {
         return hourlyPrecipitation;
     }
 
-    public void setHourlyPrecipitation(int hourlyPrecipitation) {
+    public void setHourlyPrecipitation(float hourlyPrecipitation) {
         this.hourlyPrecipitation = hourlyPrecipitation;
     }
 

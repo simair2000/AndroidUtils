@@ -34,8 +34,8 @@ public class APIForecast {
 
     /**
      * 앞으로 몇시간 날씨 조회
-     * @param x utmk X
-     * @param y utmk Y
+     * @param x coord X
+     * @param y coord Y
      * @return
      * @throws NetworkException
      * @throws JSONException
@@ -58,8 +58,8 @@ public class APIForecast {
      * 현재날씨 조회 (초단기실황조회)<br />
      * ex)<br />
      * {"response":{"header":{"resultCode":"0000","resultMsg":"OK"},"body":{"items":{"item":[{"baseDate":20170711,"baseTime":1500,"category":"LGT","nx":60,"ny":122,"obsrValue":0},{"baseDate":20170711,"baseTime":1500,"category":"PTY","nx":60,"ny":122,"obsrValue":0},{"baseDate":20170711,"baseTime":1500,"category":"REH","nx":60,"ny":122,"obsrValue":63},{"baseDate":20170711,"baseTime":1500,"category":"RN1","nx":60,"ny":122,"obsrValue":0},{"baseDate":20170711,"baseTime":1500,"category":"SKY","nx":60,"ny":122,"obsrValue":3},{"baseDate":20170711,"baseTime":1500,"category":"T1H","nx":60,"ny":122,"obsrValue":30.2},{"baseDate":20170711,"baseTime":1500,"category":"UUU","nx":60,"ny":122,"obsrValue":1},{"baseDate":20170711,"baseTime":1500,"category":"VEC","nx":60,"ny":122,"obsrValue":243},{"baseDate":20170711,"baseTime":1500,"category":"VVV","nx":60,"ny":122,"obsrValue":0.5},{"baseDate":20170711,"baseTime":1500,"category":"WSD","nx":60,"ny":122,"obsrValue":1.1}]},"numOfRows":10,"pageNo":1,"totalCount":10}}}
-     * @param x utmk X
-     * @param y utmk Y
+     * @param x coord X
+     * @param y coord Y
      * @return
      * @throws NetworkException
      * @throws JSONException
@@ -78,13 +78,13 @@ public class APIForecast {
             JSONObject body = new JSONObject(response).getJSONObject("response").getJSONObject("body");
             JSONArray items = body.getJSONObject("items").getJSONArray("item");
 
-            ForecastCurrentObject todayObject = new ForecastCurrentObject();
+            ForecastCurrentObject currentObject = new ForecastCurrentObject();
             for(int i = 0; i < items.length(); i++) {
                 JSONObject item = items.getJSONObject(i);
                 ForecastObject data = new Gson().fromJson(item.toString(), ForecastObject.class);
-                todayObject.addItem(data);
+                currentObject.addItem(data);
             }
-            return todayObject;
+            return currentObject;
         }
 
         return null;

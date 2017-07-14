@@ -87,7 +87,6 @@ public class InfoWindowWeather extends LinearLayout implements Command.CommandLi
             @Override
             public void doAction(Bundle data) throws NetworkException, JSONException, Exception {
                 CoordinatesConverter.Coord coord = CoordinatesConverter.getInstance().geo2coord(latitude, longitude);
-//                ForecastCurrentObject response = APIForecast.requestCurrent(coord.x, coord.y);
                 ForecastCurrentObject response = FacadeForecastCurrent.getInstance(context).get(coord);
                 String address = Utils.getAddress(context, latitude, longitude);
                 data.putString("address", address);
@@ -123,16 +122,16 @@ public class InfoWindowWeather extends LinearLayout implements Command.CommandLi
                     // 강수 형태가 있음
                     if(forecast.getPrecipitationType() == 1) {
                         // 비
-                        imgIcon.setImageResource(WeatherIcon.RAINY.iconRes);
-                        textSky.setText(WeatherIcon.RAINY.strRes);
+                        imgIcon.setImageResource(WeatherIcon.RAIN_1.iconRes);
+                        textSky.setText(WeatherIcon.RAIN_1.strRes);
                     } else if(forecast.getPrecipitationType() == 2) {
                         // 진눈개비
-                        imgIcon.setImageResource(WeatherIcon.RAIN_SNOW.iconRes);
-                        textSky.setText(WeatherIcon.RAIN_SNOW.strRes);
+                        imgIcon.setImageResource(WeatherIcon.RAIN_SNOW_1.iconRes);
+                        textSky.setText(WeatherIcon.RAIN_SNOW_1.strRes);
                     } else if(forecast.getPrecipitationType() == 3) {
                         // 눈
-                        imgIcon.setImageResource(WeatherIcon.SNOW.iconRes);
-                        textSky.setText(WeatherIcon.SNOW.strRes);
+                        imgIcon.setImageResource(WeatherIcon.SNOW_1.iconRes);
+                        textSky.setText(WeatherIcon.SNOW_1.strRes);
                     }
                 }
                 showWait(false);
