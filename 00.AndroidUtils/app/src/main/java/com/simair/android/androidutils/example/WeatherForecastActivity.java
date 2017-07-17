@@ -36,7 +36,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Set;
+import java.util.Iterator;
+import java.util.TreeMap;
 
 public class WeatherForecastActivity extends AppCompatActivity implements Command.CommandListener, View.OnClickListener {
 
@@ -239,10 +240,10 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
 
     private class WeatherRecyclerAdapter extends RecyclerView.Adapter<WeatherRecyclerAdapter.ViewHolder> {
 
-        private HashMap<String, ForecastTimeObject> dataMap;
+        private TreeMap<String, ForecastTimeObject> dataMap;
 
         public void setData(HashMap<String, ForecastTimeObject> timeData) {
-            dataMap = timeData;
+            dataMap = new TreeMap<>(timeData);
             notifyDataSetChanged();
         }
 
@@ -261,9 +262,10 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
         }
 
         public ForecastTimeObject getItem(int position) {
-            Set<String> keys = dataMap.keySet();
+            Iterator<String> itr = dataMap.keySet().iterator();
             int i = 0;
-            for(String key : keys) {
+            while (itr.hasNext()) {
+                String key = itr.next();
                 if(i == position) {
                     return dataMap.get(key);
                 }
