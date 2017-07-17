@@ -25,28 +25,32 @@ public class ForecastCurrentObject implements Serializable {
     private String baseTime;
 
     public void addItem(ForecastObject item) {
+        addItem(item, item.getValue());
+    }
+
+    public void addItem(ForecastObject item, String value) {
         baseDate = item.getBaseDate();
         baseTime = item.getBaseTime();
         if(item.getCategory().equals("T1H")) {
-            setDegree(Float.valueOf(item.getValue()));
+            setDegree(Float.valueOf(value));
         } else if(item.getCategory().equals("RN1")) {
-            setHourlyPrecipitation(Float.valueOf(item.getValue()));
+            setHourlyPrecipitation(Float.valueOf(value));
         } else if(item.getCategory().equals("SKY")) {
-            setSky(Integer.valueOf(item.getValue()));
+            setSky(Integer.valueOf(value));
         } else if(item.getCategory().equals("UUU")) {
-            setEWWind(Float.valueOf(item.getValue()));
+            setEWWind(Float.valueOf(value));
         } else if(item.getCategory().equals("VVV")) {
-            setSNWind(Float.valueOf(item.getValue()));
+            setSNWind(Float.valueOf(value));
         } else if(item.getCategory().equals("REH")) {
-            setHumidity(Integer.valueOf(item.getValue()));
+            setHumidity(Integer.valueOf(value));
         } else if(item.getCategory().equals("PTY")) {
-            setPrecipitationType(Integer.valueOf(item.getValue()));
+            setPrecipitationType(Integer.valueOf(value));
         } else if(item.getCategory().equals("LGT")) {
-            setThunderbolt(Integer.valueOf(item.getValue()));
+            setThunderbolt(Integer.valueOf(value));
         } else if(item.getCategory().equals("VEC")) {
-            setWindDirection(Integer.valueOf(item.getValue()));
+            setWindDirection(Integer.valueOf(value));
         } else if(item.getCategory().equals("WSD")) {
-            setWindSpeed(Float.valueOf(item.getValue()));
+            setWindSpeed(Float.valueOf(value));
         }
     }
 

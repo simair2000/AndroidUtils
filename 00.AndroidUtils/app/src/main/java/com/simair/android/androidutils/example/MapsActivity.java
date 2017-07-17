@@ -516,7 +516,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         @Override
         public View getInfoContents(Marker marker) {
-            view.showWait(true);
+//            view.showWait(true);
             view.setLocation(marker);
             return view;
         }

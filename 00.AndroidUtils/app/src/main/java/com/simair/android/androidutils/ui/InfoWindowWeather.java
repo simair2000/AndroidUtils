@@ -10,8 +10,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.maps.model.Marker;
 import com.simair.android.androidutils.Command;
 import com.simair.android.androidutils.R;
@@ -67,7 +65,7 @@ public class InfoWindowWeather extends LinearLayout implements Command.CommandLi
         textSky = (TextView)findViewById(R.id.textSky);
         textDegree = (TextView)findViewById(R.id.textDegree);
         imgWait = (ImageView)findViewById(R.id.imgWait);
-        Glide.with(context).load(R.drawable.wait_gif).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(imgWait);
+//        Glide.with(context).load(R.drawable.wait_gif).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(imgWait);
     }
 
     public static View getInstance(Context context) {

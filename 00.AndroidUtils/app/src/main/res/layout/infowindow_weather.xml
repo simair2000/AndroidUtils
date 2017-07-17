@@ -24,8 +24,7 @@
             <ImageView
                 android:id="@+id/imgIcon"
                 android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/weather_002"/>
+                android:layout_height="30dp"/>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -36,13 +35,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
-                    android:text="맑음"/>
+                    android:text="."/>
                 <TextView
                     android:id="@+id/textDegree"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
-                    android:text="0"/>
+                    android:text="."/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -53,6 +52,7 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_centerInParent="true"
-        android:src="@drawable/wait_gif"/>
+        android:src="@drawable/wait_gif"
+        android:visibility="gone"/>
 
 </RelativeLayout>

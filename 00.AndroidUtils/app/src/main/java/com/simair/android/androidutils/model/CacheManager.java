@@ -21,6 +21,7 @@ public class CacheManager {
         CACHE_DEFAULT,
         CACHE_GLOBAL,
         CACHE_FORCAST_CURRENT,
+        CACHE_FORCAST_TIME,
         ;
     }
 

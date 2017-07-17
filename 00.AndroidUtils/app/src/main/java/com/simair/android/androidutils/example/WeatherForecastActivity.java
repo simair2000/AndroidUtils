@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,15 +23,20 @@ import com.simair.android.androidutils.network.NetworkException;
 import com.simair.android.androidutils.openapi.forecast.APIForecast;
 import com.simair.android.androidutils.openapi.forecast.CoordinatesConverter;
 import com.simair.android.androidutils.openapi.forecast.FacadeForecastCurrent;
+import com.simair.android.androidutils.openapi.forecast.FacadeForecastTime;
 import com.simair.android.androidutils.openapi.forecast.data.ForecastCurrentObject;
+import com.simair.android.androidutils.openapi.forecast.data.ForecastTimeObject;
 import com.simair.android.androidutils.openapi.forecast.data.WeatherIcon;
 import com.simair.android.androidutils.ui.PopupWait;
+import com.simair.android.androidutils.ui.WeatherListItem;
 
 import org.json.JSONException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Set;
 
 public class WeatherForecastActivity extends AppCompatActivity implements Command.CommandListener, View.OnClickListener {
 
@@ -47,6 +55,8 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
     private TextView textRain;
     private double latitude;
     private double longitude;
+    private RecyclerView recyclerView;
+    private WeatherRecyclerAdapter recyclerAdapter;
 
     public static Intent getIntent(Context context) {
         Intent i = new Intent(context, WeatherForecastActivity.class);
@@ -80,6 +90,12 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
         textHumidity = (TextView)findViewById(R.id.textHumidity);
         textRain = (TextView)findViewById(R.id.textRain);
 
+        recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+        recyclerAdapter = new WeatherRecyclerAdapter();
+        recyclerView.setAdapter(recyclerAdapter);
+
 //        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 //        textDate.setText(sdf.format(new Date()));
 
@@ -104,6 +120,9 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
                 String address = Utils.getAddress(context, latitude, longitude);
                 data.putString("address", address);
                 data.putSerializable("forecast", forecast);
+
+                HashMap<String, ForecastTimeObject> timeData = FacadeForecastTime.getInstance(context).get(coord);
+                data.putSerializable("timeData", timeData);
             }
         }.setOnCommandListener(this).showWaitDialog(this, PopupWait.getPopupView(this, true)).start();
     }
@@ -184,6 +203,9 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
 
             textHumidity.setText(forecast.getHumidity() + "%");
             textRain.setText(forecast.getHourlyPrecipitation() + "mm/h");
+
+            HashMap<String, ForecastTimeObject> timeData = (HashMap<String, ForecastTimeObject>) data.getSerializable("timeData");
+            recyclerAdapter.setData(timeData);
         }
     }
 
@@ -212,6 +234,60 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
                 LatLng latLng = data.getParcelableExtra("position");
                 requestForecast(latLng.latitude, latLng.longitude);
             }
+        }
+    }
+
+    private class WeatherRecyclerAdapter extends RecyclerView.Adapter<WeatherRecyclerAdapter.ViewHolder> {
+
+        private HashMap<String, ForecastTimeObject> dataMap;
+
+        public void setData(HashMap<String, ForecastTimeObject> timeData) {
+            dataMap = timeData;
+            notifyDataSetChanged();
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+
+            private final WeatherListItem view;
+
+            public ViewHolder(WeatherListItem itemView) {
+                super(itemView);
+                this.view = itemView;
+            }
+
+            public void setData(ForecastTimeObject data) {
+                view.setData(data);
+            }
+        }
+
+        public ForecastTimeObject getItem(int position) {
+            Set<String> keys = dataMap.keySet();
+            int i = 0;
+            for(String key : keys) {
+                if(i == position) {
+                    return dataMap.get(key);
+                }
+                i++;
+            }
+            return null;
+        }
+
+        @Override
+        public WeatherRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            WeatherListItem view = new WeatherListItem(parent.getContext());
+            ViewHolder holder = new ViewHolder(view);
+            return holder;
+        }
+
+        @Override
+        public void onBindViewHolder(WeatherRecyclerAdapter.ViewHolder holder, int position) {
+            ForecastTimeObject item = getItem(position);
+            holder.setData(item);
+        }
+
+        @Override
+        public int getItemCount() {
+            return dataMap == null ? 0 : dataMap.size();
         }
     }
 }

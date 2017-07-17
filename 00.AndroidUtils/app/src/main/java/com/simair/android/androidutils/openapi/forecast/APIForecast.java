@@ -5,6 +5,7 @@ import com.simair.android.androidutils.network.NetworkException;
 import com.simair.android.androidutils.network.http.Network;
 import com.simair.android.androidutils.openapi.forecast.data.ForecastCurrentObject;
 import com.simair.android.androidutils.openapi.forecast.data.ForecastObject;
+import com.simair.android.androidutils.openapi.forecast.data.ForecastTimeObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,6 +13,7 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -41,7 +43,7 @@ public class APIForecast {
      * @throws JSONException
      * @throws Exception
      */
-    public static String requestTimeData(float x, float y) throws NetworkException, JSONException, Exception {
+    public static HashMap<String, ForecastTimeObject> requestTimeData(float x, float y) throws NetworkException, JSONException, Exception {
         Properties params = getParam();
         params.setProperty("nx", String.valueOf((int)x));
         params.setProperty("ny", String.valueOf((int)y));
@@ -51,7 +53,20 @@ public class APIForecast {
         params.setProperty("numOfRows", "1000");
 
         String strResponse = Network.get(protocol, hostPath, APIForecastTimeData, null, params);
-        return strResponse;
+        JSONObject response = new JSONObject(strResponse).getJSONObject("response");
+        JSONObject header = response.getJSONObject("header");
+        if(header.getString("resultCode").equals("0000") && header.getString("resultMsg").equals("OK")) {
+            JSONObject body = response.getJSONObject("body");
+            JSONArray items = body.getJSONObject("items").getJSONArray("item");
+            HashMap<String, ForecastTimeObject> map = new HashMap<>();
+            for(int i = 0; i < items.length(); i++) {
+                JSONObject item = items.getJSONObject(i);
+                ForecastObject data = new Gson().fromJson(item.toString(), ForecastObject.class);
+                ForecastTimeObject.addData(map, data);
+            }
+            return map;
+        }
+        return null;
     }
 
     /**
