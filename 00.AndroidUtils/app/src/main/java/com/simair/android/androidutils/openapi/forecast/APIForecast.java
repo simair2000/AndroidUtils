@@ -115,7 +115,7 @@ public class APIForecast {
         int minutes = Integer.valueOf(sdfMinutes.format(time));
         if(minutes < 40) {
             // API 제공 시간이 매시간 40분 마다 제공이 되므로 40분 이전이면 1시간 전 데이터를 받아와야 함
-            time = new Date(time.getTime() - (1000 * 60 * 60));
+            time = new Date(time.getTime() - (1000 * 60 * 30));
         }
         SimpleDateFormat sdf;
         if(minutes <= 30) {
