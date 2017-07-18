@@ -21,6 +21,7 @@ import com.simair.android.androidutils.openapi.visitkorea.data.VisitKoreaDetailC
 import com.simair.android.androidutils.openapi.visitkorea.data.VisitKoreaImageObject;
 import com.simair.android.androidutils.openapi.visitkorea.data.VisitKoreaLocationBasedListObject;
 import com.simair.android.androidutils.ui.BaseActivity;
+import com.simair.android.androidutils.ui.CirclePageIndicator;
 import com.simair.android.androidutils.ui.PopupWait;
 
 import org.json.JSONException;
@@ -38,6 +39,7 @@ public class TourGuideDetailActivity extends BaseActivity implements Command.Com
     private Command commandDetail;
     private VisitKoreaDetailCommonObject detailCommon;
     private ArrayList<VisitKoreaImageObject> imageList;
+    private CirclePageIndicator pageIndicator;
 
     public static Intent getIntent(Context context, VisitKoreaLocationBasedListObject item) {
         Intent i = new Intent(context, TourGuideDetailActivity.class);
@@ -63,6 +65,9 @@ public class TourGuideDetailActivity extends BaseActivity implements Command.Com
         viewPager = (ViewPager)findViewById(R.id.viewPager);
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(viewPagerAdapter);
+
+        pageIndicator = (CirclePageIndicator)findViewById(R.id.pageIndicator);
+        pageIndicator.setViewPager(viewPager);
 
         textOverview = (TextView)findViewById(R.id.textOverview);
         textHomepage = (TextView)findViewById(R.id.textHomepage);

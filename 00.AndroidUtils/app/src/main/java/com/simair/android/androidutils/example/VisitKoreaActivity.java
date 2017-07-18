@@ -80,7 +80,6 @@ public class VisitKoreaActivity extends BaseActivity implements AdapterView.OnIt
         spinner = (Spinner)findViewById(R.id.spinner);
         spinnerAdapter = new SpinnerAdapter();
         spinner.setAdapter(spinnerAdapter);
-        spinner.setOnItemSelectedListener(this);
 
         spinnerRange = (Spinner)findViewById(R.id.spinnerRange);
         spinnerRange.setSelection(5);
@@ -100,7 +99,6 @@ public class VisitKoreaActivity extends BaseActivity implements AdapterView.OnIt
         endlessScrollListener.resetPage();
         if(parent.equals(spinner)) {
             TourType item = spinnerAdapter.getItem(position);
-            spinnerRange.setOnItemSelectedListener(this);
 //            Toast.makeText(this, "item : " + item.name(), Toast.LENGTH_SHORT).show();
         } else if(parent.equals(spinnerRange)) {
             String[] ranges = getResources().getStringArray(R.array.visitkorea_range_list);
@@ -167,6 +165,9 @@ public class VisitKoreaActivity extends BaseActivity implements AdapterView.OnIt
         spinnerRange.setEnabled(true);
         String address = Utils.getAddress(this, location.getLatitude(), location.getLongitude());
         textAddress.setText(address);
+
+        spinner.setOnItemSelectedListener(this);
+        spinnerRange.setOnItemSelectedListener(this);
     }
 
     @Override
