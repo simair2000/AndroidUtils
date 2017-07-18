@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="visitkorea_range_list">
+        <item>100m</item>
+        <item>200m</item>
+        <item>500m</item>
+        <item>1km</item>
+        <item>2km</item>
+        <item>5km</item>
+        <item>10km</item>
+        <item>15km</item>
+        <item>20km</item>
+    </string-array>
+</resources>

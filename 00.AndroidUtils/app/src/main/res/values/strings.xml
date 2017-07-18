@@ -11,4 +11,16 @@
     <string name="snow">눈</string>
     <string name="lightning">낙뢰</string>
     <string name="rain_lightning">비,번개</string>
+    <string name="tour_spot">관광지</string>
+    <string name="cultural_facilities">문화시설</string>
+    <string name="tour_event">축제/공연/행사</string>
+    <string name="tour_course">여행코스</string>
+    <string name="leports">레포츠</string>
+    <string name="accommodation">숙박</string>
+    <string name="shopping">쇼핑</string>
+    <string name="dining">음식점</string>
+    <string name="transportation">교통</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

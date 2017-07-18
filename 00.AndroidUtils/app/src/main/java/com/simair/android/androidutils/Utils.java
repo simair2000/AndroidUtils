@@ -18,6 +18,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
@@ -109,7 +111,32 @@ public class Utils {
 
         } else {
             Address address = addresses.get(0);
-            return address.getAddressLine(0).toString();
+            return address.getAddressLine(0).toString().replaceAll("대한민국", "").trim();
+        }
+    }
+
+    public static String getCurrentLocale() {
+        try {
+            Class<?> systemProperties = Class.forName("android.os.SystemProperties");
+            try {
+                Method get = systemProperties.getMethod("get", String.class, String.class);
+                if (get == null) {
+                    return "Failure!?";
+                }
+                try {
+                    return get.invoke(systemProperties, "persist.sys.country", "") + "_" + get.invoke(systemProperties, "persist.sys.language", "");
+                } catch (IllegalAccessException e) {
+                    return "IllegalAccessException";
+                } catch (IllegalArgumentException e) {
+                    return "IllegalArgumentException";
+                } catch (InvocationTargetException e) {
+                    return "InvocationTargetException";
+                }
+            } catch (NoSuchMethodException e) {
+                return "SystemProperties.get(String key, String def) method is not found";
+            }
+        } catch (ClassNotFoundException e) {
+            return "SystemProperties class is not found";
         }
     }
 }

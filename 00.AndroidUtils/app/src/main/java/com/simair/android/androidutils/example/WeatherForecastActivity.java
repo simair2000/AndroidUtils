@@ -39,6 +39,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TreeMap;
 
+/**
+ * 동네 예보 연동 테스트 코드
+ */
 public class WeatherForecastActivity extends AppCompatActivity implements Command.CommandListener, View.OnClickListener {
 
     private static final String TAG = WeatherForecastActivity.class.getSimpleName();

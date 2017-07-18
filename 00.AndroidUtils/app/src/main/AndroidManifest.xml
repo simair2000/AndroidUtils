@@ -60,6 +60,10 @@
             android:name=".example.MapsActivity"
             android:label="@string/title_activity_maps">
         </activity>
+        <activity android:name=".example.VisitKoreaActivity">
+        </activity>
+        <activity android:name=".example.TourGuideDetailActivity">
+        </activity>
     </application>
 
 </manifest>
