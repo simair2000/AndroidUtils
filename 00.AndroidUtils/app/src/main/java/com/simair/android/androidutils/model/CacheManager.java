@@ -22,6 +22,9 @@ public class CacheManager {
         CACHE_GLOBAL,
         CACHE_FORCAST_CURRENT,
         CACHE_FORCAST_TIME,
+        CACHE_VISITKOREA,
+        CACHE_VISITKOREA_DETAIL,
+        CACHE_VISITKOREA_IMAGE,
         ;
     }
 

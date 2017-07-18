@@ -14,7 +14,9 @@ import android.widget.TextView;
 import com.simair.android.androidutils.Command;
 import com.simair.android.androidutils.R;
 import com.simair.android.androidutils.network.NetworkException;
-import com.simair.android.androidutils.openapi.visitkorea.APIVisitKorea;
+import com.simair.android.androidutils.openapi.visitkorea.FacadeDetailCommon;
+import com.simair.android.androidutils.openapi.visitkorea.FacadeImaegList;
+import com.simair.android.androidutils.openapi.visitkorea.data.ImageListParam;
 import com.simair.android.androidutils.openapi.visitkorea.data.VisitKoreaDetailCommonObject;
 import com.simair.android.androidutils.openapi.visitkorea.data.VisitKoreaImageObject;
 import com.simair.android.androidutils.openapi.visitkorea.data.VisitKoreaLocationBasedListObject;
@@ -74,8 +76,11 @@ public class TourGuideDetailActivity extends BaseActivity implements Command.Com
         commandDetail = new Command() {
             @Override
             public void doAction(Bundle data) throws NetworkException, JSONException, Exception {
-                detailCommon = APIVisitKorea.getInstance().requestDetailCommon(item.getContentId());
-                imageList = APIVisitKorea.getInstance().requestImageList(item.getContentId(), item.getContentTypeId());
+                detailCommon = FacadeDetailCommon.getInstance(context).get(item.getContentId());
+                ImageListParam param = new ImageListParam();
+                param.setContentId(item.getContentId());
+                param.setContentTypeId(item.getContentTypeId());
+                imageList = FacadeImaegList.getInstance(context).get(param);
             }
         }.setOnCommandListener(this).showWaitDialog(this, PopupWait.getPopupView(this, false)).start();
     }

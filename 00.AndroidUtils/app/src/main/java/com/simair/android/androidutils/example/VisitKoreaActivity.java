@@ -18,8 +18,9 @@ import com.simair.android.androidutils.Command;
 import com.simair.android.androidutils.R;
 import com.simair.android.androidutils.Utils;
 import com.simair.android.androidutils.network.NetworkException;
-import com.simair.android.androidutils.openapi.visitkorea.APIVisitKorea;
+import com.simair.android.androidutils.openapi.visitkorea.FacadeLocationBasedInfo;
 import com.simair.android.androidutils.openapi.visitkorea.TourType;
+import com.simair.android.androidutils.openapi.visitkorea.data.LocationBasedInfoParam;
 import com.simair.android.androidutils.openapi.visitkorea.data.VisitKoreaLocationBasedListObject;
 import com.simair.android.androidutils.ui.BaseActivity;
 import com.simair.android.androidutils.ui.EndlessScrollListener;
@@ -82,7 +83,7 @@ public class VisitKoreaActivity extends BaseActivity implements AdapterView.OnIt
         spinner.setOnItemSelectedListener(this);
 
         spinnerRange = (Spinner)findViewById(R.id.spinnerRange);
-        spinnerRange.setSelection(4);
+        spinnerRange.setSelection(5);
 
         spinner.setEnabled(false);
         spinnerRange.setEnabled(false);
@@ -96,6 +97,7 @@ public class VisitKoreaActivity extends BaseActivity implements AdapterView.OnIt
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        endlessScrollListener.resetPage();
         if(parent.equals(spinner)) {
             TourType item = spinnerAdapter.getItem(position);
             spinnerRange.setOnItemSelectedListener(this);
@@ -123,17 +125,26 @@ public class VisitKoreaActivity extends BaseActivity implements AdapterView.OnIt
                 range = 20000;
             }
         }
-        endlessScrollListener.resetPage();
+
         requestList(1, true);
     }
 
-    private void requestList(int page, boolean showWait) {
+    private void requestList(final int page, boolean showWait) {
         currentPage = page;
         commandList = new Command() {
             @Override
             public void doAction(Bundle data) throws NetworkException, JSONException, Exception {
                 TourType type = (TourType) spinner.getSelectedItem();
-                ArrayList<VisitKoreaLocationBasedListObject> list = APIVisitKorea.getInstance().requestLocationBasedInfo(MAX_ITEM_COUNT, currentPage, type, longitude, latitude, range);
+
+                LocationBasedInfoParam param = new LocationBasedInfoParam();
+                param.setCount(MAX_ITEM_COUNT);
+                param.setPageNo(currentPage);
+                param.setType(type);
+                param.setLongitude(longitude);
+                param.setLatitude(latitude);
+                param.setRange(range);
+
+                ArrayList<VisitKoreaLocationBasedListObject> list = FacadeLocationBasedInfo.getInstance(context).get(param);
                 data.putSerializable("list", list);
             }
         }.setOnCommandListener(this);
