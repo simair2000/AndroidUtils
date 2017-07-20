@@ -35,9 +35,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.simair.android.androidutils.R;
 import com.simair.android.androidutils.Utils;
+import com.simair.android.androidutils.ui.InfoWindowVisitKorea;
 import com.simair.android.androidutils.ui.InfoWindowWeather;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleMap.OnMapClickListener, GoogleMap.OnInfoWindowClickListener {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleMap.OnMapClickListener, GoogleMap.OnInfoWindowClickListener, View.OnClickListener {
 
     private GoogleApiClient mGoogleApiClient = null;
     private GoogleMap mGoogleMap = null;
@@ -57,9 +58,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private double latitude;
     private double longitude;
     private InfoWindowAdapter infoWindowAdapter;
+    private MapType mapType;
 
-    public static Intent getIntent(Context context, double latitude, double longitude) {
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnPOI:
+                onInfoWindowClick(currentMarker);
+                break;
+        }
+    }
+
+    public enum MapType {
+        TYPE_WEATHER,
+        TYPE_VISITKOREA,
+        ;
+    }
+
+    public static Intent getIntent(Context context, MapType type, double latitude, double longitude) {
         Intent i = new Intent(context, MapsActivity.class);
+        i.putExtra("type", type);
         i.putExtra("latitude", latitude);
         i.putExtra("longitude", longitude);
         return i;
@@ -71,6 +89,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         Bundle data = getIntent().getExtras();
         if(data != null) {
+            this.mapType = (MapType)data.getSerializable("type");
             this.latitude = data.getDouble("latitude", 0);
             this.longitude = data.getDouble("longitude", 0);
         }
@@ -503,10 +522,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private class InfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
-        private InfoWindowWeather view;
+        private View view;
 
         public InfoWindowAdapter() {
-            view = (InfoWindowWeather) InfoWindowWeather.getInstance(mActivity);
+            switch (mapType) {
+                case TYPE_WEATHER:
+                    view = InfoWindowWeather.getInstance(mActivity);
+                    break;
+                case TYPE_VISITKOREA:
+                    view = new InfoWindowVisitKorea(mActivity);
+                    break;
+            }
         }
 
         @Override
@@ -516,8 +542,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         @Override
         public View getInfoContents(Marker marker) {
-//            view.showWait(true);
-            view.setLocation(marker);
+            switch (mapType) {
+                case TYPE_VISITKOREA:
+                    ((InfoWindowVisitKorea)view).setOnClickListener(MapsActivity.this);
+                    break;
+                case TYPE_WEATHER:
+                    ((InfoWindowWeather)view).setLocation(marker);
+                    break;
+            }
             return view;
         }
     }

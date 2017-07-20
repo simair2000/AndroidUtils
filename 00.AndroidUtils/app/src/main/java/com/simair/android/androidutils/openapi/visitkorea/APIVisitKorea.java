@@ -123,12 +123,20 @@ public class APIVisitKorea {
             JSONObject header = json.getJSONObject("response").getJSONObject("header");
             if(header.getString("resultCode").equals("0000")) {
                 JSONObject bodyObject = json.getJSONObject("response").getJSONObject("body");
-                JSONArray array = bodyObject.getJSONObject("items").getJSONArray("item");
                 ArrayList<VisitKoreaImageObject> ret = new ArrayList<>();
-                for(int i = 0; i < array.length(); i++) {
-                    String obj = array.getJSONObject(i).toString();
-                    VisitKoreaImageObject item = new Gson().fromJson(obj, VisitKoreaImageObject.class);
-                    ret.add(item);
+                if(bodyObject.getInt("totalCount") > 0) {
+                    if(bodyObject.getInt("totalCount") == 1) {
+                        String obj = bodyObject.getJSONObject("items").getJSONObject("item").toString();
+                        VisitKoreaImageObject item = new Gson().fromJson(obj, VisitKoreaImageObject.class);
+                        ret.add(item);
+                    } else {
+                        JSONArray array = bodyObject.getJSONObject("items").getJSONArray("item");
+                        for(int i = 0; i < array.length(); i++) {
+                            String obj = array.getJSONObject(i).toString();
+                            VisitKoreaImageObject item = new Gson().fromJson(obj, VisitKoreaImageObject.class);
+                            ret.add(item);
+                        }
+                    }
                 }
                 return ret;
             }

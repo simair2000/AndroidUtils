@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.simair.android.androidutils.Command;
 import com.simair.android.androidutils.R;
@@ -32,9 +33,10 @@ import org.json.JSONException;
 import java.util.ArrayList;
 
 
-public class VisitKoreaActivity extends BaseActivity implements AdapterView.OnItemSelectedListener, OnSuccessListener<Location>,Command.CommandListener, AdapterView.OnItemClickListener {
+public class VisitKoreaActivity extends BaseActivity implements AdapterView.OnItemSelectedListener, OnSuccessListener<Location>,Command.CommandListener, AdapterView.OnItemClickListener, View.OnClickListener {
 
     private static final int MAX_ITEM_COUNT = 10;
+    private static final int REQ_LOCATION = 100;
     private Spinner spinner;
     private LayoutInflater inflater;
     private SpinnerAdapter spinnerAdapter;
@@ -92,6 +94,8 @@ public class VisitKoreaActivity extends BaseActivity implements AdapterView.OnIt
         listView.setAdapter(listAdapter);
         listView.setOnScrollListener(endlessScrollListener);
         listView.setOnItemClickListener(this);
+
+        findViewById(R.id.btnMap).setOnClickListener(this);
     }
 
     @Override
@@ -189,6 +193,36 @@ public class VisitKoreaActivity extends BaseActivity implements AdapterView.OnIt
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         VisitKoreaLocationBasedListObject item = listAdapter.getItem(position);
         startActivity(TourGuideDetailActivity.getIntent(this, item));
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnMap:
+                startActivityForResult(MapsActivity.getIntent(this, MapsActivity.MapType.TYPE_VISITKOREA, latitude, longitude), REQ_LOCATION);
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK) {
+            if(requestCode == REQ_LOCATION) {
+                LatLng location = (LatLng) data.getParcelableExtra("position");
+                this.latitude = location.latitude;
+                this.longitude = location.longitude;
+                spinner.setEnabled(true);
+                spinnerRange.setEnabled(true);
+                String address = Utils.getAddress(this, location.latitude, location.longitude);
+                textAddress.setText(address);
+
+                spinner.setOnItemSelectedListener(this);
+                spinnerRange.setOnItemSelectedListener(this);
+
+                requestList(1, true);
+            }
+        }
     }
 
     private class SpinnerAdapter extends BaseAdapter {
