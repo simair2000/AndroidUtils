@@ -10,8 +10,9 @@ import java.util.Properties;
 /**
  * Created by simair on 17. 7. 20.
  * 한국 환경공단 국가 대기오염 정보 OPEN API<br />
+ * 되도 않했네...졸라게 구림
  */
-
+@Deprecated
 public class APIAirPollution {
 
     private static final String serviceKey = "o4P1W26cv9cCzkHtvTZZsfEYc0/itc/se1bVFWgzrob0xiDZYx5w0awbexo800tXaaM74BA0FbIV174ENiFGWg==";
