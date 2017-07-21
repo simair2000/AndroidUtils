@@ -23,7 +23,7 @@ import java.util.Properties;
  * Sample Page : <a href = "http://api.visitkorea.or.kr/guide/inforArea.do">http://api.visitkorea.or.kr/guide/inforArea.do</a>
  */
 public class APIVisitKorea {
-    private static final String serviceKey = "o4P1W26cv9cCzkHtvTZZsfEYc0/itc/se1bVFWgzrob0xiDZYx5w0awbexo800tXaaM74BA0FbIV174ENiFGWg==";
+    private static final String serviceKey = "rA5V0ir6KO4pTACUyKzsmTM4NuXzqTHgTCk4iVeKGHbq5zBbEsJWNQMau6rZVIgyJubgAlIjwbxppIsFWmUlIA==";
     private static final String appName = " com.simair.android.androidutils";
 
     private static volatile APIVisitKorea instance;

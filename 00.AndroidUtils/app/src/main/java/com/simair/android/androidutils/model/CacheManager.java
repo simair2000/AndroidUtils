@@ -25,6 +25,7 @@ public class CacheManager {
         CACHE_VISITKOREA,
         CACHE_VISITKOREA_DETAIL,
         CACHE_VISITKOREA_IMAGE,
+        CACHE_AIRPOLLUTION_DUST,
         ;
     }
 

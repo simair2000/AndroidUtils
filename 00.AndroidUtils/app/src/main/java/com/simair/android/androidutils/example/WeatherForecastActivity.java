@@ -20,6 +20,9 @@ import com.simair.android.androidutils.Command;
 import com.simair.android.androidutils.R;
 import com.simair.android.androidutils.Utils;
 import com.simair.android.androidutils.network.NetworkException;
+import com.simair.android.androidutils.openapi.airpollution.FacadeAirPollution;
+import com.simair.android.androidutils.openapi.airpollution.data.AirPollutionParam;
+import com.simair.android.androidutils.openapi.airpollution.data.DustObject;
 import com.simair.android.androidutils.openapi.forecast.APIForecast;
 import com.simair.android.androidutils.openapi.forecast.CoordinatesConverter;
 import com.simair.android.androidutils.openapi.forecast.FacadeForecastCurrent;
@@ -34,6 +37,7 @@ import org.json.JSONException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -61,6 +65,9 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
     private double longitude;
     private RecyclerView recyclerView;
     private WeatherRecyclerAdapter recyclerAdapter;
+    private ImageView imgDustIcon;
+    private TextView textDust;
+    private TextView textDustValue;
 
     public static Intent getIntent(Context context) {
         Intent i = new Intent(context, WeatherForecastActivity.class);
@@ -111,6 +118,10 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
         });
 
         findViewById(R.id.btnRefrersh).setOnClickListener(this);
+
+        imgDustIcon = (ImageView)findViewById(R.id.imgDustIcon);
+        textDust = (TextView)findViewById(R.id.textDust);
+        textDustValue = (TextView)findViewById(R.id.textDustValue);
     }
 
     private void requestForecast(final double latitude, final double longitude) {
@@ -119,6 +130,12 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
         commandForecast = new Command() {
             @Override
             public void doAction(Bundle data) throws NetworkException, JSONException, Exception {
+                AirPollutionParam param = new AirPollutionParam();
+                param.setLatitude(latitude);
+                param.setLongitude(longitude);
+                ArrayList<DustObject> dustList = FacadeAirPollution.getInstance(context).get(param);
+                data.putSerializable("dustList", dustList);
+
                 CoordinatesConverter.Coord coord = CoordinatesConverter.getInstance().geo2coord((float) latitude, (float) longitude);
                 ForecastCurrentObject forecast = FacadeForecastCurrent.getInstance(context).get(coord);
                 String address = Utils.getAddress(context, latitude, longitude);
@@ -127,6 +144,7 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
 
                 HashMap<String, ForecastTimeObject> timeData = FacadeForecastTime.getInstance(context).get(coord);
                 data.putSerializable("timeData", timeData);
+
             }
         }.setOnCommandListener(this).showWaitDialog(this, PopupWait.getPopupView(this, true)).start();
     }
@@ -210,6 +228,31 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
 
             HashMap<String, ForecastTimeObject> timeData = (HashMap<String, ForecastTimeObject>) data.getSerializable("timeData");
             recyclerAdapter.setData(timeData);
+
+            ArrayList<DustObject> dustList = (ArrayList<DustObject>) data.getSerializable("dustList");
+            if(dustList != null) {
+                DustObject dustData = dustList.get(0);
+                String grade = dustData.getPm10().getGrade();
+                float dustValue = dustData.getPm10().getValue();
+                textDust.setText(grade);
+                textDustValue.setText(dustValue + "㎍/㎥");
+                if(dustValue <= 30) {
+                    // 좋음
+                    imgDustIcon.setImageResource(R.drawable.icon_good);
+                } else if(30 < dustValue && dustValue <= 80) {
+                    // 보통
+                    imgDustIcon.setImageResource(R.drawable.icon_normal);
+                } else if(80 < dustValue && dustValue <= 120) {
+                    // 약간 나쁨
+                    imgDustIcon.setImageResource(R.drawable.icon_bad_1);
+                } else if(120 < dustValue && dustValue <= 200) {
+                    // 나쁨
+                    imgDustIcon.setImageResource(R.drawable.icon_bad_2);
+                } else {
+                    // 매우 나쁨
+                    imgDustIcon.setImageResource(R.drawable.icon_bad_3);
+                }
+            }
         }
     }
 

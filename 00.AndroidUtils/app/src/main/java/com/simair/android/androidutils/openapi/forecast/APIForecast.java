@@ -25,7 +25,7 @@ import java.util.Properties;
 
 public class APIForecast {
 
-    private static final String serviceKey = "o4P1W26cv9cCzkHtvTZZsfEYc0/itc/se1bVFWgzrob0xiDZYx5w0awbexo800tXaaM74BA0FbIV174ENiFGWg==";
+    private static final String serviceKey = "rA5V0ir6KO4pTACUyKzsmTM4NuXzqTHgTCk4iVeKGHbq5zBbEsJWNQMau6rZVIgyJubgAlIjwbxppIsFWmUlIA==";
     private static final String protocol = "http";
     private static final String host = "newsky2.kma.go.kr";
     private static final String path = "/service/SecndSrtpdFrcstInfoService2";
