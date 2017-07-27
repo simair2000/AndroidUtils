@@ -9,10 +9,20 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
+import com.kakao.kakaonavi.KakaoNaviParams;
+import com.kakao.kakaonavi.KakaoNaviService;
+import com.kakao.kakaonavi.Location;
+import com.kakao.kakaonavi.NaviOptions;
+import com.kakao.kakaonavi.options.CoordType;
+import com.kakao.kakaonavi.options.RpOption;
+import com.kakao.kakaonavi.options.VehicleType;
 import com.simair.android.androidutils.Command;
 import com.simair.android.androidutils.R;
+import com.simair.android.androidutils.Utils;
 import com.simair.android.androidutils.network.NetworkException;
 import com.simair.android.androidutils.openapi.visitkorea.FacadeDetailCommon;
 import com.simair.android.androidutils.openapi.visitkorea.FacadeImaegList;
@@ -28,8 +38,9 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 
-public class TourGuideDetailActivity extends BaseActivity implements Command.CommandListener {
+public class TourGuideDetailActivity extends BaseActivity implements Command.CommandListener, View.OnClickListener {
 
+    private static final String TAG = TourGuideDetailActivity.class.getSimpleName();
     private VisitKoreaLocationBasedListObject item;
     private TextView textTitle;
     private ViewPager viewPager;
@@ -75,6 +86,8 @@ public class TourGuideDetailActivity extends BaseActivity implements Command.Com
         if(item != null) {
             requestDetailInfo();
         }
+
+        findViewById(R.id.btnNavi).setOnClickListener(this);
     }
 
     private void requestDetailInfo() {
@@ -106,6 +119,24 @@ public class TourGuideDetailActivity extends BaseActivity implements Command.Com
     @Override
     public void onFail(Command command, int errorCode, String errorMessage) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnNavi:
+                startKakaoNavi();
+                break;
+        }
+    }
+
+    private void startKakaoNavi() {
+        Log.e(TAG, "Keyhash : " + Utils.getKeyHash(this));
+        Location destination = Location.newBuilder(item.getTitle(), item.getLongitude(), item.getLatitude()).build();
+        NaviOptions options = NaviOptions.newBuilder().setCoordType(CoordType.WGS84).setVehicleType(VehicleType.FIRST).setRpOption(RpOption.SHORTEST).build();
+        KakaoNaviParams.Builder builder = KakaoNaviParams.newBuilder(destination).setNaviOptions(options);
+        KakaoNaviParams params = builder.build();
+        KakaoNaviService.navigate(this, params);
     }
 
     private class ViewPagerAdapter extends FragmentStatePagerAdapter {

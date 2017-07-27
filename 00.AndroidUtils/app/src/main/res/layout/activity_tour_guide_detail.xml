@@ -44,7 +44,7 @@
 
         <com.simair.android.androidutils.ui.CirclePageIndicator
             android:id="@+id/pageIndicator"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
@@ -56,7 +56,8 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/viewPager"
             app:pageColor="#ffffff"
-            app:strokeWidth="0dp"/>
+            app:strokeWidth="0dp"
+            android:layout_marginEnd="8dp"/>
 
         <TextView
             android:id="@+id/textOverview"
@@ -91,6 +92,16 @@
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/btnNavi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:text="카카오맵 길안내"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textHomepage"/>
 
     </android.support.constraint.ConstraintLayout>
 

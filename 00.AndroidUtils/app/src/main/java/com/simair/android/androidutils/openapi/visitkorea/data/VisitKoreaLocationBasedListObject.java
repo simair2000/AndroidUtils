@@ -17,9 +17,46 @@ public class VisitKoreaLocationBasedListObject implements Serializable {
     @SerializedName("firstimage2")      String thumbnailURL;
     @SerializedName("tel")              String contactNumber;
 
+    @SerializedName("addr2")            String address2;
+    @SerializedName("dist")             String distance;        // 거리 [m]
+    @SerializedName("mapx")             double longitude;
+    @SerializedName("mapy")             double latitude;
+
     int totalCount;
     int pageNo;
     int numOfRows;
+
+    public String getAddress2() {
+        return address2;
+    }
+
+    public void setAddress2(String address2) {
+        this.address2 = address2;
+    }
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
 
     public int getTotalCount() {
         return totalCount;
