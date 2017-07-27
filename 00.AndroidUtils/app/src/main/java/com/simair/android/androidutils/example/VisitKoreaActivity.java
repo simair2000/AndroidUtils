@@ -144,6 +144,9 @@ public class VisitKoreaActivity extends BaseActivity implements AdapterView.OnIt
                 param.setType(type);
                 param.setLongitude(longitude);
                 param.setLatitude(latitude);
+                if(range == 0) {
+                    range = 5000; // default
+                }
                 param.setRange(range);
 
                 ArrayList<VisitKoreaLocationBasedListObject> list = FacadeLocationBasedInfo.getInstance(context).get(param);
@@ -172,6 +175,8 @@ public class VisitKoreaActivity extends BaseActivity implements AdapterView.OnIt
 
         spinner.setOnItemSelectedListener(this);
         spinnerRange.setOnItemSelectedListener(this);
+
+        requestList(1, true);
     }
 
     @Override
