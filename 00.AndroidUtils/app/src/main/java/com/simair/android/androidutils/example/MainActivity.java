@@ -8,12 +8,16 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.simair.android.androidutils.R;
 
@@ -44,6 +48,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         initView();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menuNavi:
+                Toast.makeText(this, "내비게이션 설정", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.menuEtc:
+                break;
+        }
+        return true;
+    }
+
     private void initView() {
         listView = (ListView)findViewById(R.id.listView);
         listAdapter = new ListAdapter(this);
@@ -65,19 +88,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public static class ListAdapter extends BaseAdapter {
 
         public enum ListItem {
-            HTTP_GET_TEST(HttpActivity.getIntent(context), "HTTP Get 테스트", false),
-            DOWNLOAD_TEST(DownloadActivity.getIntent(context), "파일 다운로드 테스트", false),
-            UI_TEST(UIExamActivity.getIntent(context), "UI관련 유틸 테스트", false),
-            FORECAST_TEST(WeatherForecastActivity.getIntent(context), "날씨 정보", true),
-            VISIT_KOREA(VisitKoreaActivity.getIntent(context), "관광 정보", true),
+            HTTP_GET_TEST(HttpActivity.getIntent(context), R.drawable.if_bad_egg, "HTTP Get 테스트", false),
+            DOWNLOAD_TEST(DownloadActivity.getIntent(context), R.drawable.if_happy, "파일 다운로드 테스트", false),
+            UI_TEST(UIExamActivity.getIntent(context), R.drawable.if_victory, "UI관련 유틸 테스트", false),
+            FORECAST_TEST(WeatherForecastActivity.getIntent(context), R.drawable.if_victory, "날씨 정보", true),
+            VISIT_KOREA(VisitKoreaActivity.getIntent(context), R.drawable.if_happy, "관광 정보", true),
             ;
 
             private final Intent intent;
+            private final int iconRes;
             private final String title;
             private final boolean show;
 
-            ListItem(Intent intent, String title, boolean show) {
+            ListItem(Intent intent, int iconRes, String title, boolean show) {
                 this.intent = intent;
+                this.iconRes = iconRes;
                 this.title = title;
                 this.show = show;
             }
@@ -120,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 view = LayoutInflater.from(context).inflate(R.layout.list_item, null);
             }
             ListItem item = getItem(i);
+            ((ImageView)view.findViewById(R.id.imgIcon)).setImageResource(item.iconRes);
             ((TextView)view.findViewById(R.id.textView)).setText(item.title);
             return view;
         }
