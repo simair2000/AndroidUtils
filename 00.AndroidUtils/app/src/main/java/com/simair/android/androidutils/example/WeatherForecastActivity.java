@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.simair.android.androidutils.Command;
@@ -68,6 +70,7 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
     private ImageView imgDustIcon;
     private TextView textDust;
     private TextView textDustValue;
+    private ImageView imgBg;
 
     public static Intent getIntent(Context context) {
         Intent i = new Intent(context, WeatherForecastActivity.class);
@@ -122,6 +125,8 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
         imgDustIcon = (ImageView)findViewById(R.id.imgDustIcon);
         textDust = (TextView)findViewById(R.id.textDust);
         textDustValue = (TextView)findViewById(R.id.textDustValue);
+
+        imgBg = (ImageView)findViewById(R.id.imgBg);
     }
 
     private void requestForecast(final double latitude, final double longitude) {
@@ -169,6 +174,8 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
                 return;
             }
 
+            Glide.with(this).load(R.drawable.sunny).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(imgBg);
+
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
                 Date date = sdf.parse(forecast.getBaseDate() + forecast.getBaseTime());
@@ -182,15 +189,19 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
             if(forecast.getSky() == 1) {
                 imgIcon.setImageResource(WeatherIcon.SUNNY.iconRes);
                 textSky.setText(WeatherIcon.SUNNY.strRes);
+                Glide.with(this).load(R.drawable.sunny).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(imgBg);
             } else if(forecast.getSky() == 2) {
                 imgIcon.setImageResource(WeatherIcon.CLOUDY_1.iconRes);
                 textSky.setText(WeatherIcon.CLOUDY_1.strRes);
+                Glide.with(this).load(R.drawable.cloudy1).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(imgBg);
             } else if(forecast.getSky() == 3) {
                 imgIcon.setImageResource(WeatherIcon.CLOUDY_2.iconRes);
                 textSky.setText(WeatherIcon.CLOUDY_2.strRes);
+                Glide.with(this).load(R.drawable.cloudy1).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(imgBg);
             } else if(forecast.getSky() == 4) {
                 imgIcon.setImageResource(WeatherIcon.CLOUDY_3.iconRes);
                 textSky.setText(WeatherIcon.CLOUDY_3.strRes);
+                Glide.with(this).load(R.drawable.cloudy1).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(imgBg);
             }
 
             textDegree.setText(String.valueOf(forecast.getDegree()) + "°C");
@@ -202,12 +213,15 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
                 if(forecast.getPrecipitationType() == 1) {
                     // 비
                     icon = WeatherIcon.getRainIcon(forecast.getHourlyPrecipitation());
+                    Glide.with(this).load(R.drawable.rain1).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(imgBg);
                 } else if(forecast.getPrecipitationType() == 2) {
                     // 진눈개비
                     icon = WeatherIcon.getRainSnowIcon(forecast.getHourlyPrecipitation());
+                    Glide.with(this).load(R.drawable.rain2).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(imgBg);
                 } else if(forecast.getPrecipitationType() == 3) {
                     // 눈
                     icon = WeatherIcon.getSnowIcon(forecast.getHourlyPrecipitation());
+                    Glide.with(this).load(R.drawable.snow).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(imgBg);
                 }
 
                 if(forecast.getThunderbolt() > 0) {

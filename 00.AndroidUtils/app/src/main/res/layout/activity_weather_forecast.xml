@@ -7,6 +7,19 @@
     android:layout_height="match_parent"
     tools:context="com.simair.android.androidutils.example.WeatherForecastActivity">
 
+    <ImageView
+        android:id="@+id/imgBg"
+        android:layout_width="360dp"
+        android:layout_height="228dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintHorizontal_bias="0.666"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/digitalClock" />
+
     <Button
         android:id="@+id/btnMap"
         android:layout_width="wrap_content"
@@ -25,6 +38,11 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:textSize="18sp"
+        android:shadowColor="#FF464646"
+        android:shadowDx="1.0"
+        android:shadowDy="1.0"
+        android:shadowRadius="1.0"
+        android:textColor="#ffffff"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginStart="8dp"
@@ -51,6 +69,11 @@
 
     <TextView
         android:id="@+id/textAddress"
+        android:shadowColor="#FF464646"
+        android:shadowDx="1.0"
+        android:shadowDy="1.0"
+        android:shadowRadius="1.0"
+        android:textColor="#ffffff"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
@@ -98,6 +121,11 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         android:textSize="18sp"
+        android:shadowColor="#FF464646"
+        android:shadowDx="1.0"
+        android:shadowDy="1.0"
+        android:shadowRadius="1.0"
+        android:textColor="#ffffff"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutIcon"
@@ -112,6 +140,11 @@
         android:layout_marginRight="8dp"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:shadowColor="#FF464646"
+        android:shadowDx="1.0"
+        android:shadowDy="1.0"
+        android:shadowRadius="1.0"
+        android:textColor="#ffffff"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textSky"
@@ -131,12 +164,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="습도 : "
-            android:textSize="12sp"/>
+            android:textSize="12sp"
+            android:shadowColor="#FF464646"
+            android:shadowDx="1.0"
+            android:shadowDy="1.0"
+            android:shadowRadius="1.0"
+            android:textColor="#ffffff"/>
         <TextView
             android:id="@+id/textHumidity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"/>
+            android:textSize="12sp"
+            android:shadowColor="#FF464646"
+            android:shadowDx="1.0"
+            android:shadowDy="1.0"
+            android:shadowRadius="1.0"
+            android:textColor="#ffffff"/>
     </LinearLayout>
 
     <LinearLayout
@@ -156,19 +199,24 @@
             android:id="@+id/textRain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:shadowColor="#FF464646"
+            android:shadowDx="1.0"
+            android:shadowDy="1.0"
+            android:shadowRadius="1.0"
+            android:textColor="#ffffff"
             android:textSize="12sp"/>
     </LinearLayout>
 
     <Button
         android:id="@+id/btnRefrersh"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@drawable/refresh"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginStart="8dp"/>
+        android:background="@drawable/refresh"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -195,14 +243,20 @@
         app:layout_constraintLeft_toRightOf="@+id/layoutIcon"
         android:layout_marginLeft="16dp"
         app:layout_constraintTop_toTopOf="@+id/layoutIcon"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="미세먼지"
             android:textSize="15sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:shadowColor="#FF464646"
+            android:shadowDx="1.0"
+            android:shadowDy="1.0"
+            android:shadowRadius="1.0"
+            android:textColor="#ffffff"/>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -221,13 +275,23 @@
                 <TextView
                     android:id="@+id/textDust"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:shadowColor="#FF464646"
+                    android:shadowDx="1.0"
+                    android:shadowDy="1.0"
+                    android:shadowRadius="1.0"
+                    android:textColor="#ffffff"/>
 
                 <TextView
                     android:id="@+id/textDustValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="㎍/㎥"/>
+                    android:text="㎍/㎥"
+                    android:shadowColor="#FF464646"
+                    android:shadowDx="1.0"
+                    android:shadowDy="1.0"
+                    android:shadowRadius="1.0"
+                    android:textColor="#ffffff"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
