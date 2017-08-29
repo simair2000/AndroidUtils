@@ -65,6 +65,8 @@ public class WebSearchFragment extends Fragment implements AdapterView.OnItemCli
         searchResult = data;
         if(listAdapter != null) {
             if(page == 1) {
+                endlessScrollListener.resetPage();
+                listView.smoothScrollToPosition(0);
                 listAdapter.refresh(searchResult);
             } else {
                 listAdapter.addResult(data);
@@ -143,11 +145,13 @@ public class WebSearchFragment extends Fragment implements AdapterView.OnItemCli
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             WebSearchDocument item = getItem(position);
-            View view = inflater.inflate(R.layout.web_search_list_item, null);
-            ((TextView)view.findViewById(R.id.textTitle)).setText(Html.fromHtml(item.getTitle()));
-            ((TextView)view.findViewById(R.id.textContent)).setText(Html.fromHtml(item.getContents()));
-            ((TextView)view.findViewById(R.id.textDateTime)).setText(item.getDateTime());
-            return view;
+            if(convertView == null) {
+                convertView = inflater.inflate(R.layout.web_search_list_item, null);
+            }
+            ((TextView)convertView.findViewById(R.id.textTitle)).setText(Html.fromHtml(item.getTitle()));
+            ((TextView)convertView.findViewById(R.id.textContent)).setText(Html.fromHtml(item.getContents()));
+            ((TextView)convertView.findViewById(R.id.textDateTime)).setText(item.getDateTime());
+            return convertView;
         }
 
         public void refresh(WebSearchResult searchResult) {
