@@ -800,7 +800,8 @@ public class Network {
 
     private static String InputStreamToString(InputStream is) {
         try {
-            return IOUtils.toString(is, "utf-8");
+            String result = IOUtils.toString(is, "utf-8");
+            return result;
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

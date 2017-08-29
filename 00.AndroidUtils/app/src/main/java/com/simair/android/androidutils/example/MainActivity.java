@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             UI_TEST(UIExamActivity.getIntent(context), R.drawable.if_victory, "UI관련 유틸 테스트", false),
             FORECAST_TEST(WeatherForecastActivity.getIntent(context), R.drawable.if_victory, "날씨 정보", true),
             VISIT_KOREA(VisitKoreaActivity.getIntent(context), R.drawable.if_happy, "관광 정보", true),
+            DAUM_SEARCH(DaumSearchActivity.getIntent(context), R.drawable.if_amazing, "Daum 검색", true),
             ;
 
             private final Intent intent;

@@ -48,10 +48,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key"/>
-
         <meta-data
             android:name="com.kakao.sdk.AppKey"
-            android:value="@string/kakao_app_key" />
+            android:value="@string/kakao_app_key"/>
 
         <activity
             android:name=".example.MapsActivity"
@@ -60,6 +59,8 @@
         <activity android:name=".example.VisitKoreaActivity">
         </activity>
         <activity android:name=".example.TourGuideDetailActivity">
+        </activity>
+        <activity android:name=".example.DaumSearchActivity">
         </activity>
     </application>
 
