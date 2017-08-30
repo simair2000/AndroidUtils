@@ -23,12 +23,12 @@ import com.simair.android.androidutils.openapi.kakao.APISearch;
 import com.simair.android.androidutils.openapi.kakao.data.ImageSearchResult;
 import com.simair.android.androidutils.openapi.kakao.data.VideoSearchResult;
 import com.simair.android.androidutils.openapi.kakao.data.WebSearchResult;
+import com.simair.android.androidutils.ui.CustomPopup;
 import com.simair.android.androidutils.ui.PopupWait;
 
 import org.json.JSONException;
 
-public class DaumSearchActivity extends AppCompatActivity
-        implements TextView.OnEditorActionListener,
+public class DaumSearchActivity extends AppCompatActivity implements TextView.OnEditorActionListener,
         Command.CommandListener,
         WebSearchFragment.WebSearchFragmentListener,
         VideoSearchFragment.VideoSearchFragmentListener,
@@ -44,6 +44,7 @@ public class DaumSearchActivity extends AppCompatActivity
     private TabLayout tabLayout;
     private Command commandVideoSearch;
     private Command commandImageSearch;
+    private CustomPopup waitPopup;
 
     public static Intent getIntent(Context context) {
         Intent i = new Intent(context, DaumSearchActivity.class);
@@ -101,6 +102,7 @@ public class DaumSearchActivity extends AppCompatActivity
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if(!TextUtils.isEmpty(editSearch.getText())) {
+            waitPopup = PopupWait.getPopupView(this, true).show();
             requestSearch(1);
             requestVideoSearch(1);
             requestImageSearch(1);
@@ -115,7 +117,7 @@ public class DaumSearchActivity extends AppCompatActivity
             @Override
             public void doAction(Bundle data) throws NetworkException, JSONException, Exception {
                 String keyword = editSearch.getText().toString();
-                WebSearchResult webResult = APISearch.getInstance().requestWebSearch(keyword, APISearch.SortParam.accuracy, page, MAX_COUNT);
+                WebSearchResult webResult = APISearch.getInstance().requestWebSearch(keyword, APISearch.SortParam.recency, page, MAX_COUNT);
                 data.putSerializable("webResult", webResult);
                 data.putInt("page", page);
             }
@@ -128,7 +130,7 @@ public class DaumSearchActivity extends AppCompatActivity
             @Override
             public void doAction(Bundle data) throws NetworkException, JSONException, Exception {
                 String keyword = editSearch.getText().toString();
-                VideoSearchResult videoResult = APISearch.getInstance().requestVideoSearch(keyword, APISearch.SortParam.accuracy, page, MAX_COUNT);
+                VideoSearchResult videoResult = APISearch.getInstance().requestVideoSearch(keyword, APISearch.SortParam.recency, page, MAX_COUNT);
                 data.putSerializable("videoResult", videoResult);
                 data.putInt("page", page);
             }
@@ -141,7 +143,7 @@ public class DaumSearchActivity extends AppCompatActivity
             @Override
             public void doAction(Bundle data) throws NetworkException, JSONException, Exception {
                 String keyword = editSearch.getText().toString();
-                ImageSearchResult result = APISearch.getInstance().requestImageSearch(keyword, APISearch.SortParam.accuracy, page, MAX_COUNT * 3);
+                ImageSearchResult result = APISearch.getInstance().requestImageSearch(keyword, APISearch.SortParam.recency, page, MAX_COUNT * 3);
                 data.putSerializable("result", result);
                 data.putInt("page", page);
             }
@@ -150,6 +152,7 @@ public class DaumSearchActivity extends AppCompatActivity
 
     @Override
     public void onSuccess(Command command, Bundle data) {
+        CustomPopup.hideDialog(waitPopup);
         if(command == commandSearch) {
             WebSearchResult webResult = (WebSearchResult) data.getSerializable("webResult");
             int page = data.getInt("page", 1);
@@ -170,6 +173,7 @@ public class DaumSearchActivity extends AppCompatActivity
 
     @Override
     public void onFail(Command command, int errorCode, String errorMessage) {
+        CustomPopup.hideDialog(waitPopup);
         Log.e(TAG, "onFail - " + errorMessage);
     }
 
