@@ -20,13 +20,20 @@ import com.simair.android.androidutils.R;
 import com.simair.android.androidutils.Utils;
 import com.simair.android.androidutils.network.NetworkException;
 import com.simair.android.androidutils.openapi.kakao.APISearch;
+import com.simair.android.androidutils.openapi.kakao.data.ImageSearchResult;
 import com.simair.android.androidutils.openapi.kakao.data.VideoSearchResult;
 import com.simair.android.androidutils.openapi.kakao.data.WebSearchResult;
 import com.simair.android.androidutils.ui.PopupWait;
 
 import org.json.JSONException;
 
-public class DaumSearchActivity extends AppCompatActivity implements TextView.OnEditorActionListener, Command.CommandListener, WebSearchFragment.WebSearchFragmentListener, VideoSearchFragment.VideoSearchFragmentListener {
+public class DaumSearchActivity extends AppCompatActivity
+        implements TextView.OnEditorActionListener,
+        Command.CommandListener,
+        WebSearchFragment.WebSearchFragmentListener,
+        VideoSearchFragment.VideoSearchFragmentListener,
+        ImageSearchFragment.ImageSearchFragmentListener
+{
 
     private static final int MAX_COUNT = 10;
     private static final String TAG = DaumSearchActivity.class.getSimpleName();
@@ -36,6 +43,7 @@ public class DaumSearchActivity extends AppCompatActivity implements TextView.On
     private ViewPagerAdapter viewPagerAdapter;
     private TabLayout tabLayout;
     private Command commandVideoSearch;
+    private Command commandImageSearch;
 
     public static Intent getIntent(Context context) {
         Intent i = new Intent(context, DaumSearchActivity.class);
@@ -95,6 +103,7 @@ public class DaumSearchActivity extends AppCompatActivity implements TextView.On
         if(!TextUtils.isEmpty(editSearch.getText())) {
             requestSearch(1);
             requestVideoSearch(1);
+            requestImageSearch(1);
             return true;
         }
         return false;
@@ -126,6 +135,19 @@ public class DaumSearchActivity extends AppCompatActivity implements TextView.On
         }.setOnCommandListener(this).start();
     }
 
+    private void requestImageSearch(final int page) {
+        Utils.hideKeyboard(this);
+        commandImageSearch = new Command() {
+            @Override
+            public void doAction(Bundle data) throws NetworkException, JSONException, Exception {
+                String keyword = editSearch.getText().toString();
+                ImageSearchResult result = APISearch.getInstance().requestImageSearch(keyword, APISearch.SortParam.accuracy, page, MAX_COUNT);
+                data.putSerializable("result", result);
+                data.putInt("page", page);
+            }
+        }.setOnCommandListener(this).start();
+    }
+
     @Override
     public void onSuccess(Command command, Bundle data) {
         if(command == commandSearch) {
@@ -137,6 +159,11 @@ public class DaumSearchActivity extends AppCompatActivity implements TextView.On
             VideoSearchResult result = (VideoSearchResult) data.getSerializable("videoResult");
             int page = data.getInt("page", 1);
             VideoSearchFragment fragment = (VideoSearchFragment) DaumSearchTab.getInstance(DaumSearchTab.VIDEO_SEARCH_TAB.ordinal()).fragment;
+            fragment.setData(result, page);
+        } else if(command == commandImageSearch) {
+            ImageSearchResult result = (ImageSearchResult) data.getSerializable("result");
+            int page = data.getInt("page", 1);
+            ImageSearchFragment fragment = (ImageSearchFragment) DaumSearchTab.getInstance(DaumSearchTab.IMAGE_SEARCH_TAB.ordinal()).fragment;
             fragment.setData(result, page);
         }
     }
@@ -156,10 +183,15 @@ public class DaumSearchActivity extends AppCompatActivity implements TextView.On
         requestVideoSearch(page + 1);
     }
 
+    @Override
+    public void onLoadMore(ImageSearchFragment fragment, int page) {
+        requestImageSearch(page + 1);
+    }
+
     public enum DaumSearchTab {
         WEB_SEARCH_TAB("웹", WebSearchFragment.newInstance(null)),
         VIDEO_SEARCH_TAB("동영상", VideoSearchFragment.newInstance(null)),
-        IMAGE_SEARCH_TAB("이미지", TourGuideImageFragment.newInstance(null)),
+        IMAGE_SEARCH_TAB("이미지", ImageSearchFragment.newInstance(null)),
         BLOG_SEARCH_TAB("블로그", TourGuideImageFragment.newInstance(null)),
         TIP_SEARCH_TAB("팁", TourGuideImageFragment.newInstance(null)),
         BOOK_SEARCH_TAB("책", TourGuideImageFragment.newInstance(null)),

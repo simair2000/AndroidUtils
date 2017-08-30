@@ -2,6 +2,7 @@ package com.simair.android.androidutils.openapi.kakao;
 
 import com.simair.android.androidutils.network.NetworkException;
 import com.simair.android.androidutils.network.http.Network;
+import com.simair.android.androidutils.openapi.kakao.data.ImageSearchResult;
 import com.simair.android.androidutils.openapi.kakao.data.VideoSearchResult;
 import com.simair.android.androidutils.openapi.kakao.data.WebSearchResult;
 
@@ -79,6 +80,16 @@ public class APISearch {
         return WebSearchResult.parse(response);
     }
 
+    /**
+     * 동영상 검색
+     * @param keyword
+     * @param sort
+     * @param page
+     * @param count
+     * @return
+     * @throws NetworkException
+     * @throws JSONException
+     */
     public VideoSearchResult requestVideoSearch(String keyword, SortParam sort, int page, int count) throws NetworkException, JSONException {
         Properties header = new Properties();
         header.setProperty("Authorization", "KakaoAK " + appKey);
@@ -91,5 +102,29 @@ public class APISearch {
 
         String response = Network.get(protocol, hostPath, "vclip", header, body);
         return VideoSearchResult.parse(response);
+    }
+
+    /**
+     * 이미지 검색
+     * @param keyword
+     * @param sort
+     * @param page
+     * @param count
+     * @return
+     * @throws NetworkException
+     * @throws JSONException
+     */
+    public ImageSearchResult requestImageSearch(String keyword, SortParam sort, int page, int count) throws NetworkException, JSONException {
+        Properties header = new Properties();
+        header.setProperty("Authorization", "KakaoAK " + appKey);
+
+        Properties body = new Properties();
+        body.setProperty("query", keyword);
+        body.setProperty("sort", sort.name());
+        body.setProperty("page", (page < 1) ? "1" : String.valueOf(page));
+        body.setProperty("size", (count < 10) ? "10" : String.valueOf(count));
+
+        String response = Network.get(protocol, hostPath, "image", header, body);
+        return ImageSearchResult.parse(response);
     }
 }

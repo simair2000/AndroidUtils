@@ -1,7 +1,9 @@
 package com.simair.android.androidutils.ui;
 
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 
 /**
  * Created by simair on 17. 7. 10.
@@ -19,12 +21,12 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
 
     private int current_page = 1;
 
-    private LinearLayoutManager mLinearLayoutManager;
+    private RecyclerView.LayoutManager layoutManager;
 
     boolean loadingTop;
 
-    public EndlessRecyclerOnScrollListener(LinearLayoutManager linearLayoutManager) {
-        this.mLinearLayoutManager = linearLayoutManager;
+    public EndlessRecyclerOnScrollListener(RecyclerView.LayoutManager layoutManager) {
+        this.layoutManager = layoutManager;
     }
 
     public void reset() {
@@ -41,8 +43,14 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
         super.onScrolled(recyclerView, dx, dy);
 
         visibleItemCount = recyclerView.getChildCount();
-        totalItemCount = mLinearLayoutManager.getItemCount();
-        firstVisibleItem = mLinearLayoutManager.findFirstVisibleItemPosition();
+        totalItemCount = layoutManager.getItemCount();
+        if(layoutManager instanceof StaggeredGridLayoutManager) {
+            firstVisibleItem = ((StaggeredGridLayoutManager)layoutManager).findFirstVisibleItemPositions(null)[0];
+        } else if(layoutManager instanceof LinearLayoutManager) {
+            firstVisibleItem = ((LinearLayoutManager)layoutManager).findFirstVisibleItemPosition();
+        } else if(layoutManager instanceof GridLayoutManager) {
+            firstVisibleItem = ((GridLayoutManager)layoutManager).findFirstVisibleItemPosition();
+        }
 
         if (loading) {
             if (totalItemCount > previousTotal) {
