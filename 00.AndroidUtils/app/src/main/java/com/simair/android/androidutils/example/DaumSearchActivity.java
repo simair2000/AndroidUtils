@@ -141,7 +141,7 @@ public class DaumSearchActivity extends AppCompatActivity
             @Override
             public void doAction(Bundle data) throws NetworkException, JSONException, Exception {
                 String keyword = editSearch.getText().toString();
-                ImageSearchResult result = APISearch.getInstance().requestImageSearch(keyword, APISearch.SortParam.accuracy, page, MAX_COUNT);
+                ImageSearchResult result = APISearch.getInstance().requestImageSearch(keyword, APISearch.SortParam.accuracy, page, MAX_COUNT * 3);
                 data.putSerializable("result", result);
                 data.putInt("page", page);
             }

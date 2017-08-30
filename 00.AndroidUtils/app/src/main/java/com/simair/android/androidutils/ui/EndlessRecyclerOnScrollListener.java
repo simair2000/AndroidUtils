@@ -29,6 +29,10 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
         this.layoutManager = layoutManager;
     }
 
+    public void setVisibleThreshold(int count) {
+        visibleThreshold = count < 5 ? 5 : count;
+    }
+
     public void reset() {
         previousTotal = 0;
         loading = true;

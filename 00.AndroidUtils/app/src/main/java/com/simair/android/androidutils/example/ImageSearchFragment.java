@@ -33,7 +33,8 @@ public class ImageSearchFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerAdapter recyclerAdapter;
     private EndlessRecyclerOnScrollListener endlessRecyclerOnScrollListener;
-    private StaggeredGridLayoutManager layoutManager;
+//    private StaggeredGridLayoutManager layoutManager;
+    private GridLayoutManager layoutManager;
 
     public ImageSearchFragment() {
     }
@@ -94,8 +95,8 @@ public class ImageSearchFragment extends Fragment {
 
     private void initView(View root) {
         recyclerView = (RecyclerView)root.findViewById(R.id.recyclerView);
-//        layoutManager = new GridLayoutManager(getContext(), 3);
-        layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        layoutManager = new GridLayoutManager(getContext(), 3);
+//        layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
 
         recyclerAdapter = new RecyclerAdapter();
@@ -109,6 +110,7 @@ public class ImageSearchFragment extends Fragment {
                 }
             }
         };
+        endlessRecyclerOnScrollListener.setVisibleThreshold(15);
 
         recyclerView.addOnScrollListener(endlessRecyclerOnScrollListener);
     }
@@ -126,7 +128,7 @@ public class ImageSearchFragment extends Fragment {
         @Override
         public void onBindViewHolder(RecyclerAdapter.ViewHolder holder, int position) {
             ImageSearchDocument item = getItem(position);
-            holder.setData(item);
+            holder.setData(item, position);
         }
 
         @Override
@@ -162,15 +164,14 @@ public class ImageSearchFragment extends Fragment {
                 view = itemView;
             }
 
-            public void setData(final ImageSearchDocument item) {
+            public void setData(final ImageSearchDocument item, final int position) {
                 ImageView imgThumbnail = (ImageView) view.findViewById(R.id.imgThumbnail);
                 Glide.with(getActivity()).load(Uri.parse(item.getThumbnailUrl())).into(imgThumbnail);
 
                 imgThumbnail.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String url = item.getSourceUrl();
-                        Utils.startWebBrowser(getContext(), url);
+                        startActivity(ImageGalleryActivity.getIntent(getContext(), list, position));
                     }
                 });
             }
