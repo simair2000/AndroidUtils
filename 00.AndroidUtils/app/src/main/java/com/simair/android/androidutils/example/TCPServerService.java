@@ -89,6 +89,11 @@ public class TCPServerService extends Service {
                 Toast.makeText(context, "네트워크 오류!", Toast.LENGTH_SHORT).show();
                 stopSelf();
             }
+
+            @Override
+            public void onProgressUpdated(Command command, Bundle data) {
+
+            }
         });
 
 //        ip = NetworkUtil.getIPAddress(true);

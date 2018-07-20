@@ -195,6 +195,11 @@ public class VisitKoreaActivity extends BaseActivity implements AdapterView.OnIt
     }
 
     @Override
+    public void onProgressUpdated(Command command, Bundle data) {
+
+    }
+
+    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         VisitKoreaLocationBasedListObject item = listAdapter.getItem(position);
         startActivity(TourGuideDetailActivity.getIntent(this, item));

@@ -122,6 +122,11 @@ public class TourGuideDetailActivity extends BaseActivity implements Command.Com
     }
 
     @Override
+    public void onProgressUpdated(Command command, Bundle data) {
+
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnNavi:

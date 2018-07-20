@@ -276,6 +276,11 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
     }
 
     @Override
+    public void onProgressUpdated(Command command, Bundle data) {
+
+    }
+
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnMap:

@@ -165,4 +165,9 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
             }
         }
     }
+
+    @Override
+    public void onProgressUpdated(Command command, Bundle data) {
+
+    }
 }

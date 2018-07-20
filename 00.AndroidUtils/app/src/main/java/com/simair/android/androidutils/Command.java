@@ -43,6 +43,7 @@ public abstract class Command implements Serializable {
     public interface CommandListener extends Serializable {
         void onSuccess(Command command, Bundle data);
         void onFail(Command command, int errorCode, String errorMessage);
+        void onProgressUpdated(Command command, Bundle data);
     }
 
     public interface DownloadListener {
@@ -176,11 +177,16 @@ public abstract class Command implements Serializable {
         return this;
     }
 
+    public void publishProgress() {
+        handler.obtainMessage(WHAT_PUBLISH_PROGRESS).sendToTarget();
+    }
+
     private static final int WHAT_SUCCESS = 1;
     private static final int WHAT_FAIL = 2;
     public static final int WHAT_DOWN_START = 3;
     public static final int WHAT_DOWNLOADING = 4;
     public static final int WHAT_DOWN_END = 5;
+    public static final int WHAT_PUBLISH_PROGRESS = 6;
     private CommandHandler handler = new CommandHandler(this);
 
     public static class CommandHandler extends Handler {
@@ -226,6 +232,11 @@ public abstract class Command implements Serializable {
                     if(command.downListener != null) {
                         Bundle extra = (Bundle) msg.obj;
                         command.downListener.onDownloadEnd(command.instance, extra.getString("url"), extra.getLong("total"));
+                    }
+                    break;
+                case Command.WHAT_PUBLISH_PROGRESS:
+                    if(command.listener != null) {
+                        command.listener.onProgressUpdated(command.instance, command.data);
                     }
                     break;
             }

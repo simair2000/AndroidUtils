@@ -155,6 +155,11 @@ public class InfoWindowWeather extends LinearLayout implements Command.CommandLi
 
     }
 
+    @Override
+    public void onProgressUpdated(Command command, Bundle data) {
+
+    }
+
     public void showWait(boolean show) {
         imgWait.setVisibility(show ? VISIBLE : GONE);
     }

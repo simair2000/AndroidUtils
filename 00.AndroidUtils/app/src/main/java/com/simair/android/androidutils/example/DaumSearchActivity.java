@@ -178,6 +178,11 @@ public class DaumSearchActivity extends AppCompatActivity implements TextView.On
     }
 
     @Override
+    public void onProgressUpdated(Command command, Bundle data) {
+
+    }
+
+    @Override
     public void onLoadMore(WebSearchFragment fragment, int page, int totalItemsCount) {
         requestSearch(page + 1);
     }

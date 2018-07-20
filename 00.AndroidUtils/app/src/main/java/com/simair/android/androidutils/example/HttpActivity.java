@@ -128,4 +128,9 @@ public class HttpActivity extends AppCompatActivity implements TextView.OnEditor
             });
         }
     }
+
+    @Override
+    public void onProgressUpdated(Command command, Bundle data) {
+
+    }
 }
