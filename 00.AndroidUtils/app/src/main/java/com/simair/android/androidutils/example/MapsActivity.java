@@ -22,8 +22,11 @@ import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -71,8 +74,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public enum MapType {
         TYPE_WEATHER,
-        TYPE_VISITKOREA,
-        ;
+        TYPE_VISITKOREA,;
     }
 
     public static Intent getIntent(Context context, MapType type, double latitude, double longitude) {
@@ -88,8 +90,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
 
         Bundle data = getIntent().getExtras();
-        if(data != null) {
-            this.mapType = (MapType)data.getSerializable("type");
+        if (data != null) {
+            this.mapType = (MapType) data.getSerializable("type");
             this.latitude = data.getDouble("latitude", 0);
             this.longitude = data.getDouble("longitude", 0);
         }
@@ -105,6 +107,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
 
         if (mGoogleApiClient != null)
             mGoogleApiClient.connect();

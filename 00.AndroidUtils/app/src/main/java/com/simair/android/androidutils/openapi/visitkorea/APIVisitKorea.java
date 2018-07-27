@@ -1,5 +1,6 @@
 package com.simair.android.androidutils.openapi.visitkorea;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -27,16 +28,19 @@ public class APIVisitKorea {
     private static final String appName = " com.simair.android.androidutils";
 
     private static volatile APIVisitKorea instance;
+    private final Context context;
     private String protocol;
     private String host;
     private String path;
 
-    private APIVisitKorea(){}
+    private APIVisitKorea(Context context){
+        this.context = context;
+    }
 
-    public static APIVisitKorea getInstance() {
+    public static APIVisitKorea getInstance(Context context) {
         if(instance == null) {
             synchronized (APIVisitKorea.class) {
-                instance = new APIVisitKorea();
+                instance = new APIVisitKorea(context);
                 instance.initProperties();
             }
         }
@@ -54,7 +58,7 @@ public class APIVisitKorea {
         body.setProperty("numOfRows", String.valueOf(count));
         body.setProperty("pageNo", String.valueOf(pageNo));
         body.setProperty("listYN", "Y");
-        body.setProperty("contentTypeId", String.valueOf(type.getCode()));
+        body.setProperty("contentTypeId", String.valueOf(type.getCode(context)));
         body.setProperty("mapX", String.valueOf(longitude));
         body.setProperty("mapY", String.valueOf(latitude));
         body.setProperty("radius", String.valueOf(radius));
@@ -155,7 +159,7 @@ public class APIVisitKorea {
     }
 
     private String getService() {
-        String locale = Utils.getCurrentLocale();
+        String locale = Utils.getCurrentLocale(context);
         if(locale.contains("ko")) {
             return "KorService/";
         } else if(locale.contains("JP_ja")) {

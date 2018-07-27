@@ -32,7 +32,7 @@ public class FacadeDetailCommon extends DataFacade<Long, VisitKoreaDetailCommonO
     static DataChain<Long, VisitKoreaDetailCommonObject> networkChain = new DataChain<Long, VisitKoreaDetailCommonObject>() {
         @Override
         protected VisitKoreaDetailCommonObject getData(Long key) throws NetworkException, JSONException, Exception {
-            return APIVisitKorea.getInstance().requestDetailCommon(key);
+            return APIVisitKorea.getInstance(context).requestDetailCommon(key);
         }
     };
 

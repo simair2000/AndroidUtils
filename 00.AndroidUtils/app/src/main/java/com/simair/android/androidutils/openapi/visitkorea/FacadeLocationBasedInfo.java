@@ -37,7 +37,7 @@ public class FacadeLocationBasedInfo extends DataFacade<LocationBasedInfoParam, 
     private static DataChain<LocationBasedInfoParam, ArrayList<VisitKoreaLocationBasedListObject>> networkChain = new DataChain<LocationBasedInfoParam, ArrayList<VisitKoreaLocationBasedListObject>>() {
         @Override
         protected ArrayList<VisitKoreaLocationBasedListObject> getData(LocationBasedInfoParam key) throws NetworkException, JSONException, Exception {
-            return APIVisitKorea.getInstance().requestLocationBasedInfo(key.getCount(), key.getPageNo(), key.getType(), key.getLongitude(), key.getLatitude(), key.getRange());
+            return APIVisitKorea.getInstance(context).requestLocationBasedInfo(key.getCount(), key.getPageNo(), key.getType(), key.getLongitude(), key.getLatitude(), key.getRange());
         }
     };
 

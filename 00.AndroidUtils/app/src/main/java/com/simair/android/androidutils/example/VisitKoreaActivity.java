@@ -209,7 +209,8 @@ public class VisitKoreaActivity extends BaseActivity implements AdapterView.OnIt
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnMap:
-                startActivityForResult(MapsActivity.getIntent(this, MapsActivity.MapType.TYPE_VISITKOREA, latitude, longitude), REQ_LOCATION);
+//                startActivityForResult(MapsActivity.getIntent(this, MapsActivity.MapType.TYPE_VISITKOREA, latitude, longitude), REQ_LOCATION);
+                startActivityForResult(DaumMapActivity.getIntent(this, MapsActivity.MapType.TYPE_VISITKOREA, latitude, longitude), REQ_LOCATION);
                 break;
         }
     }

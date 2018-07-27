@@ -1,6 +1,8 @@
 package com.simair.android.androidutils.openapi.visitkorea;
 
 
+import android.content.Context;
+
 import com.simair.android.androidutils.R;
 import com.simair.android.androidutils.Utils;
 
@@ -10,8 +12,8 @@ import com.simair.android.androidutils.Utils;
 
 public enum TourType {
     TOUR_SPOT(R.string.tour_spot) {
-        public int getCode() {
-            String locale = Utils.getCurrentLocale();
+        public int getCode(Context context) {
+            String locale = Utils.getCurrentLocale(context);
             if(locale.contains("ko")) {
                 return 12;
             } else {
@@ -20,8 +22,8 @@ public enum TourType {
         }
     },
     CULTURAL_FACILITIES(R.string.cultural_facilities) {
-        public int getCode() {
-            String locale = Utils.getCurrentLocale();
+        public int getCode(Context context) {
+            String locale = Utils.getCurrentLocale(context);
             if(locale.contains("ko")) {
                 return 14;
             } else {
@@ -30,8 +32,8 @@ public enum TourType {
         }
     },
     EVENTS(R.string.tour_event) {
-        public int getCode() {
-            String locale = Utils.getCurrentLocale();
+        public int getCode(Context context) {
+            String locale = Utils.getCurrentLocale(context);
             if(locale.contains("ko")) {
                 return 15;
             } else {
@@ -40,8 +42,8 @@ public enum TourType {
         }
     },
     TOUR_COURSE(R.string.tour_course) {
-        public int getCode() {
-            String locale = Utils.getCurrentLocale();
+        public int getCode(Context context) {
+            String locale = Utils.getCurrentLocale(context);
             if(locale.contains("ko")) {
                 return 25;
             } else {
@@ -50,8 +52,8 @@ public enum TourType {
         }
     },          // 한국어만 지원
     LEISURE_SPORTS(R.string.leports) {
-        public int getCode() {
-            String locale = Utils.getCurrentLocale();
+        public int getCode(Context context) {
+            String locale = Utils.getCurrentLocale(context);
             if(locale.contains("ko")) {
                 return 28;
             } else {
@@ -60,8 +62,8 @@ public enum TourType {
         }
     },
     ACCOMMODATIONS(R.string.accommodation) {
-        public int getCode() {
-            String locale = Utils.getCurrentLocale();
+        public int getCode(Context context) {
+            String locale = Utils.getCurrentLocale(context);
             if(locale.contains("ko")) {
                 return 32;
             } else {
@@ -70,8 +72,8 @@ public enum TourType {
         }
     },
     SHOPPING(R.string.shopping) {
-        public int getCode() {
-            String locale = Utils.getCurrentLocale();
+        public int getCode(Context context) {
+            String locale = Utils.getCurrentLocale(context);
             if(locale.contains("ko")) {
                 return 38;
             } else {
@@ -80,8 +82,8 @@ public enum TourType {
         }
     },
     DINING(R.string.dining) {
-        public int getCode() {
-            String locale = Utils.getCurrentLocale();
+        public int getCode(Context context) {
+            String locale = Utils.getCurrentLocale(context);
             if(locale.contains("ko")) {
                 return 39;
             } else {
@@ -90,8 +92,8 @@ public enum TourType {
         }
     },
     TRANSPORTATION(R.string.transportation) {
-        public int getCode() {
-            String locale = Utils.getCurrentLocale();
+        public int getCode(Context context) {
+            String locale = Utils.getCurrentLocale(context);
             if(locale.contains("ko")) {
                 return 0;
             } else {
@@ -107,5 +109,5 @@ public enum TourType {
         this.stringRes = stringRes;
     }
 
-    abstract int getCode();
+    abstract int getCode(Context context);
 }

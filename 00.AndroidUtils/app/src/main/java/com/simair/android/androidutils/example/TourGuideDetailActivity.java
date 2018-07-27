@@ -141,7 +141,7 @@ public class TourGuideDetailActivity extends BaseActivity implements Command.Com
         NaviOptions options = NaviOptions.newBuilder().setCoordType(CoordType.WGS84).setVehicleType(VehicleType.FIRST).setRpOption(RpOption.SHORTEST).build();
         KakaoNaviParams.Builder builder = KakaoNaviParams.newBuilder(destination).setNaviOptions(options);
         KakaoNaviParams params = builder.build();
-        KakaoNaviService.navigate(this, params);
+        KakaoNaviService.getInstance().navigate(this, params);
     }
 
     private class ViewPagerAdapter extends FragmentStatePagerAdapter {

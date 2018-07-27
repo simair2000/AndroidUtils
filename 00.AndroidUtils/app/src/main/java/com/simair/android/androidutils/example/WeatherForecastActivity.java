@@ -284,7 +284,8 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnMap:
-                startActivityForResult(MapsActivity.getIntent(context, MapsActivity.MapType.TYPE_WEATHER, latitude, longitude), REQ_LOCATION);
+//                startActivityForResult(MapsActivity.getIntent(context, MapsActivity.MapType.TYPE_WEATHER, latitude, longitude), REQ_LOCATION);
+                startActivityForResult(DaumMapActivity.getIntent(context, MapsActivity.MapType.TYPE_WEATHER, latitude, longitude), REQ_LOCATION);
                 break;
             case R.id.btnRefrersh:
                 requestForecast(latitude, longitude);

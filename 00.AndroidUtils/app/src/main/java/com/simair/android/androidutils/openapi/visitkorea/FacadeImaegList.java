@@ -37,7 +37,7 @@ public class FacadeImaegList extends DataFacade<ImageListParam, ArrayList<VisitK
     static DataChain<ImageListParam, ArrayList<VisitKoreaImageObject>> networkChain = new DataChain<ImageListParam, ArrayList<VisitKoreaImageObject>>() {
         @Override
         protected ArrayList<VisitKoreaImageObject> getData(ImageListParam key) throws NetworkException, JSONException, Exception {
-            return APIVisitKorea.getInstance().requestImageList(key.getContentId(), key.getContentTypeId());
+            return APIVisitKorea.getInstance(context).requestImageList(key.getContentId(), key.getContentTypeId());
         }
     };
 

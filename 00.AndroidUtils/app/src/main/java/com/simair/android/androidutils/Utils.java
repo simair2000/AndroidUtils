@@ -11,6 +11,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
+import android.os.LocaleList;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -35,6 +37,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import static com.kakao.util.helper.Utility.getPackageInfo;
+
 
 /**
  * Created by simair on 16. 11. 22.
@@ -159,6 +162,7 @@ public class Utils {
         }
     }
 
+    @Deprecated
     public static String getCurrentLocale() {
         try {
             Class<?> systemProperties = Class.forName("android.os.SystemProperties");
@@ -181,6 +185,41 @@ public class Utils {
             }
         } catch (ClassNotFoundException e) {
             return "SystemProperties class is not found";
+        }
+    }
+
+    public static String getCurrentLocale(Context context) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            LocaleList locales = context.getResources().getConfiguration().getLocales();
+            for(int i = 0; i < locales.size(); i++) {
+                Locale locale = locales.get(i);
+                Log.i(TAG, "locale : " + locale.toString());
+            }
+            return context.getResources().getConfiguration().getLocales().get(0).toString();
+        } else {
+
+            try {
+                Class<?> systemProperties = Class.forName("android.os.SystemProperties");
+                try {
+                    Method get = systemProperties.getMethod("get", String.class, String.class);
+                    if (get == null) {
+                        return "Failure!?";
+                    }
+                    try {
+                        return get.invoke(systemProperties, "persist.sys.country", "") + "_" + get.invoke(systemProperties, "persist.sys.language", "");
+                    } catch (IllegalAccessException e) {
+                        return "IllegalAccessException";
+                    } catch (IllegalArgumentException e) {
+                        return "IllegalArgumentException";
+                    } catch (InvocationTargetException e) {
+                        return "InvocationTargetException";
+                    }
+                } catch (NoSuchMethodException e) {
+                    return "SystemProperties.get(String key, String def) method is not found";
+                }
+            } catch (ClassNotFoundException e) {
+                return "SystemProperties class is not found";
+            }
         }
     }
 
