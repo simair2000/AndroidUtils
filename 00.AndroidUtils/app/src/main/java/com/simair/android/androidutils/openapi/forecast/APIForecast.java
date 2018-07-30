@@ -33,6 +33,7 @@ public class APIForecast {
 
     private static final String APIForecastGrib = "ForecastGrib";
     private static final String APIForecastTimeData = "ForecastTimeData";
+    private static final String APIForecastSpaceData = "ForecastSpaceData";
 
     /**
      * 앞으로 몇시간 날씨 조회
@@ -52,7 +53,8 @@ public class APIForecast {
         params.setProperty("base_time", getCurrentTime());
         params.setProperty("numOfRows", "1000");
 
-        String strResponse = Network.get(protocol, hostPath, APIForecastTimeData, null, params);
+//        String strResponse = Network.get(protocol, hostPath, APIForecastTimeData, null, params);
+        String strResponse = Network.get(protocol, hostPath, APIForecastSpaceData, null, params);
         JSONObject response = new JSONObject(strResponse).getJSONObject("response");
         JSONObject header = response.getJSONObject("header");
         if(header.getString("resultCode").equals("0000") && header.getString("resultMsg").equals("OK")) {

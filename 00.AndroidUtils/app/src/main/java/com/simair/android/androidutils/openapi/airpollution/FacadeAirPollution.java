@@ -37,7 +37,8 @@ public class FacadeAirPollution extends DataFacade<AirPollutionParam, ArrayList<
     static DataChain<AirPollutionParam, ArrayList<DustObject>> networkChain = new DataChain<AirPollutionParam, ArrayList<DustObject>>() {
         @Override
         protected ArrayList<DustObject> getData(AirPollutionParam key) throws NetworkException, JSONException, Exception {
-            return APIAirPollutionSK.getInstance().getDust(key.getLatitude(), key.getLongitude());
+            return null;
+//            return APIAirPollutionSK.getInstance().getDust(key.getLatitude(), key.getLongitude());
         }
     };
 

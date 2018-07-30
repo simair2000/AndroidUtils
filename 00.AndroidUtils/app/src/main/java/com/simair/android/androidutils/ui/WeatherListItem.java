@@ -83,7 +83,11 @@ public class WeatherListItem extends LinearLayout {
             textSky.setText(WeatherIcon.CLOUDY_3.strRes);
         }
 
-        textDegree.setText(String.valueOf(data.getData().getDegree()) + "°C");
+        float degree = data.getData().getDegree();
+        if(degree == 0) {
+            degree = data.getData().getDegree3();
+        }
+        textDegree.setText(String.valueOf(degree) + "°C");
 
         if(data.getData().getPrecipitationType() > 0) {
             // 강수 형태가 있음

@@ -204,7 +204,8 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
                 Glide.with(this).load(R.drawable.cloudy1).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(imgBg);
             }
 
-            textDegree.setText(String.valueOf(forecast.getDegree()) + "°C");
+            textDegree.setText(String.valueOf(forecast.getDegree() == 0 ? forecast.getDegree3() : forecast.getDegree()) + "°C");
+
 
             // 비
             if(forecast.getPrecipitationType() > 0) {

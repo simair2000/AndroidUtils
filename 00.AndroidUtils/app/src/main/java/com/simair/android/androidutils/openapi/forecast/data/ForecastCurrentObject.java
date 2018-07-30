@@ -12,6 +12,7 @@ import java.io.Serializable;
 
 public class ForecastCurrentObject implements Serializable {
     @SerializedName("T1H")      float degree;                 // 기온 [℃]
+    @SerializedName("T3H")      float degree3;                 //  3시간 기온 [℃]
     @SerializedName("RN1")      float hourlyPrecipitation;    // 시간당 강수량 [mm]
     @SerializedName("SKY")      int sky;                    // 맑음(1), 구름조금(2), 구름많음(3), 흐림(4)
     @SerializedName("UUU")      float EWWind;                 // 동서바람성분 [m/s] 동풍(+표기), 서풍(-표기)
@@ -51,6 +52,8 @@ public class ForecastCurrentObject implements Serializable {
             setWindDirection(Integer.valueOf(value));
         } else if(item.getCategory().equals("WSD")) {
             setWindSpeed(Float.valueOf(value));
+        } else if(item.getCategory().equals("T3H")) {
+            setDegree3(Float.valueOf(value));
         }
     }
 
@@ -153,5 +156,13 @@ public class ForecastCurrentObject implements Serializable {
 
     public void setWindSpeed(float windSpeed) {
         this.windSpeed = windSpeed;
+    }
+
+    public float getDegree3() {
+        return degree3;
+    }
+
+    public void setDegree3(float degree3) {
+        this.degree3 = degree3;
     }
 }
