@@ -106,7 +106,11 @@ public class TourGuideDetailActivity extends BaseActivity implements Command.Com
     @Override
     public void onSuccess(Command command, Bundle data) {
         textTitle.setText(detailCommon.getTitle());
-        viewPagerAdapter.setList(imageList);
+        if(imageList != null && imageList.size() > 0) {
+            viewPagerAdapter.setList(imageList);
+        } else {
+            viewPagerAdapter.setFirstImage(detailCommon.getImgURL());
+        }
 
         if(!TextUtils.isEmpty(detailCommon.getOverview())) {
             textOverview.setText(Html.fromHtml(detailCommon.getOverview()));
@@ -165,6 +169,16 @@ public class TourGuideDetailActivity extends BaseActivity implements Command.Com
 
         public void setList(ArrayList<VisitKoreaImageObject> imageList) {
             list = imageList;
+            notifyDataSetChanged();
+        }
+
+        public void setFirstImage(String imgURL) {
+            VisitKoreaImageObject imageObject = new VisitKoreaImageObject();
+            imageObject.setImgUrl(imgURL);
+            if(list == null) {
+                list = new ArrayList<>();
+            }
+            list.add(imageObject);
             notifyDataSetChanged();
         }
     }
