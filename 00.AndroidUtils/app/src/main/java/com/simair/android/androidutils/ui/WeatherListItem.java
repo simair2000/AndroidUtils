@@ -61,10 +61,11 @@ public class WeatherListItem extends LinearLayout {
 
     public void setData(ForecastTimeObject data) {
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("HHmm");
-            Date date = sdf.parse(data.getForecastTime());
-            sdf = new SimpleDateFormat("HH:mm");
-            textDate.setText(sdf.format(date));
+            String dateTime = data.getForecastDate() + data.getForecastTime();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
+            Date time = sdf.parse(dateTime);
+            sdf = new SimpleDateFormat("MM/dd HH:mm");
+            textDate.setText(sdf.format(time));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -117,6 +118,7 @@ public class WeatherListItem extends LinearLayout {
         }
 
         textHumidity.setText("습도 : " + data.getData().getHumidity() + "%");
-        textRain.setText(data.getData().getHourlyPrecipitation() + "mm/h");
+//        textRain.setText(data.getData().getHourlyPrecipitation() + "mm/h");
+        textRain.setText(data.getData().getPrecipitationProbability() + "%");
     }
 }

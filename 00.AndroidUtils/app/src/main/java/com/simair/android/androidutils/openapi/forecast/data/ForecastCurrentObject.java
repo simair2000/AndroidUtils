@@ -22,6 +22,8 @@ public class ForecastCurrentObject implements Serializable {
     @SerializedName("LGT")      int thunderbolt;            // 낙뢰 [없음(0), 있음(1)]
     @SerializedName("VEC")      int windDirection;          // 풍향
     @SerializedName("WSD")      float windSpeed;              // 풍속
+    @SerializedName("POP")      int precipitationProbability;   // 강수확률
+
     private String baseDate;
     private String baseTime;
 
@@ -54,6 +56,8 @@ public class ForecastCurrentObject implements Serializable {
             setWindSpeed(Float.valueOf(value));
         } else if(item.getCategory().equals("T3H")) {
             setDegree3(Float.valueOf(value));
+        } else if(item.getCategory().equals("POP")) {
+            setPrecipitationProbability(Integer.valueOf(value));
         }
     }
 
@@ -164,5 +168,13 @@ public class ForecastCurrentObject implements Serializable {
 
     public void setDegree3(float degree3) {
         this.degree3 = degree3;
+    }
+
+    public int getPrecipitationProbability() {
+        return precipitationProbability;
+    }
+
+    public void setPrecipitationProbability(int precipitationProbability) {
+        this.precipitationProbability = precipitationProbability;
     }
 }

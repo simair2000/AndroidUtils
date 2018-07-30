@@ -242,7 +242,9 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
             textRain.setText(forecast.getHourlyPrecipitation() + "mm/h");
 
             HashMap<String, ForecastTimeObject> timeData = (HashMap<String, ForecastTimeObject>) data.getSerializable("timeData");
-            recyclerAdapter.setData(timeData);
+            if(timeData != null) {
+                recyclerAdapter.setData(timeData);
+            }
 
             ArrayList<DustObject> dustList = (ArrayList<DustObject>) data.getSerializable("dustList");
             if(dustList != null) {

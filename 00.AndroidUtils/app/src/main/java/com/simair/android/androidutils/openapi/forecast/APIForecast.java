@@ -1,6 +1,7 @@
 package com.simair.android.androidutils.openapi.forecast;
 
 import com.google.gson.Gson;
+import com.simair.android.androidutils.Utils;
 import com.simair.android.androidutils.network.NetworkException;
 import com.simair.android.androidutils.network.http.Network;
 import com.simair.android.androidutils.openapi.forecast.data.ForecastCurrentObject;
@@ -50,7 +51,7 @@ public class APIForecast {
         params.setProperty("ny", String.valueOf((int)y));
 
         params.setProperty("base_date", getTodayDate());
-        params.setProperty("base_time", getCurrentTime());
+        params.setProperty("base_time", getSpaceTime(new Date()));
         params.setProperty("numOfRows", "1000");
 
 //        String strResponse = Network.get(protocol, hostPath, APIForecastTimeData, null, params);
@@ -59,6 +60,9 @@ public class APIForecast {
         JSONObject header = response.getJSONObject("header");
         if(header.getString("resultCode").equals("0000") && header.getString("resultMsg").equals("OK")) {
             JSONObject body = response.getJSONObject("body");
+            if(body.getInt("totalCount") == 0) {
+                return null;
+            }
             JSONArray items = body.getJSONObject("items").getJSONArray("item");
             HashMap<String, ForecastTimeObject> map = new HashMap<>();
             for(int i = 0; i < items.length(); i++) {
@@ -112,6 +116,20 @@ public class APIForecast {
         return sdf.format(date);
     }
 
+    private static String getSpaceTime(Date time) {
+        // 0200, 0500, 0800, 1100, 1400, 1700, 2000, 2300 (1일 8회)
+        int[] baseTimeArray = new int[]{200, 500, 800, 1100, 1400, 1700, 2000, 2300};
+        SimpleDateFormat sdf = new SimpleDateFormat("HHmm", Locale.getDefault());
+        int t = Integer.valueOf(sdf.format(time));
+        int baseTime = 200;
+        for(int item : baseTimeArray) {
+            if(item <= t) {
+                baseTime = item;
+            }
+        }
+        return String.format(Locale.getDefault(), "%04d", baseTime);
+    }
+
     private static String getTime(Date time) {
         SimpleDateFormat sdfMinutes = new SimpleDateFormat("mm", Locale.getDefault());
         int minutes = Integer.valueOf(sdfMinutes.format(time));
@@ -125,6 +143,7 @@ public class APIForecast {
         } else {
             sdf = new SimpleDateFormat("HH30", Locale.getDefault());
         }
+
         return sdf.format(time);
     }
 
