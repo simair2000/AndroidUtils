@@ -133,17 +133,8 @@ public class APIForecast {
     private static String getTime(Date time) {
         SimpleDateFormat sdfMinutes = new SimpleDateFormat("mm", Locale.getDefault());
         int minutes = Integer.valueOf(sdfMinutes.format(time));
-        if(minutes < 40) {
-            // API 제공 시간이 매시간 40분 마다 제공이 되므로 40분 이전이면 30분 전 데이터를 받아와야 함
-            time = new Date(time.getTime() - (1000 * 60 * 30));
-        }
-        SimpleDateFormat sdf;
-        if(minutes <= 30) {
-            sdf = new SimpleDateFormat("HH00", Locale.getDefault());
-        } else {
-            sdf = new SimpleDateFormat("HH30", Locale.getDefault());
-        }
-
+        time = new Date(time.getTime() - (1000 * 60 * 40));
+        SimpleDateFormat sdf = new SimpleDateFormat("HH00", Locale.getDefault());
         return sdf.format(time);
     }
 
