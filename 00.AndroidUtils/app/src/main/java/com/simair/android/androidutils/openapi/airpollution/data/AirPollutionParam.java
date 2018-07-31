@@ -13,6 +13,9 @@ public class AirPollutionParam implements Serializable {
     double latitude;
     double longitude;
     String dateTime;
+    String adminName;
+    String localityName;
+    String thoroughFare;
 
     public AirPollutionParam() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH");
@@ -46,5 +49,29 @@ public class AirPollutionParam implements Serializable {
 
     public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
+    }
+
+    public String getAdminName() {
+        return adminName;
+    }
+
+    public void setAdminName(String adminName) {
+        this.adminName = adminName;
+    }
+
+    public String getLocalityName() {
+        return localityName;
+    }
+
+    public void setLocalityName(String localityName) {
+        this.localityName = localityName;
+    }
+
+    public String getThoroughFare() {
+        return thoroughFare;
+    }
+
+    public void setThoroughFare(String thoroughFare) {
+        this.thoroughFare = thoroughFare;
     }
 }

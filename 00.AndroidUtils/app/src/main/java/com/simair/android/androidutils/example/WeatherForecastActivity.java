@@ -2,6 +2,7 @@ package com.simair.android.androidutils.example;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -135,11 +136,6 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
         commandForecast = new Command() {
             @Override
             public void doAction(Bundle data) throws NetworkException, JSONException, Exception {
-                AirPollutionParam param = new AirPollutionParam();
-                param.setLatitude(latitude);
-                param.setLongitude(longitude);
-                ArrayList<DustObject> dustList = FacadeAirPollution.getInstance(context).get(param);
-                data.putSerializable("dustList", dustList);
 
                 CoordinatesConverter.Coord coord = CoordinatesConverter.getInstance().geo2coord((float) latitude, (float) longitude);
                 ForecastCurrentObject forecast = FacadeForecastCurrent.getInstance(context).get(coord);
@@ -149,6 +145,16 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
 
                 HashMap<String, ForecastTimeObject> timeData = FacadeForecastTime.getInstance(context).get(coord);
                 data.putSerializable("timeData", timeData);
+
+                AirPollutionParam param = new AirPollutionParam();
+                param.setLatitude(latitude);
+                param.setLongitude(longitude);
+                Address addr = Utils.getAddressClass(context, latitude, longitude);
+                param.setAdminName(addr.getAdminArea());
+                param.setLocalityName(addr.getLocality());
+                param.setThoroughFare(addr.getThoroughfare());
+                ArrayList<DustObject> dustList = FacadeAirPollution.getInstance(context).get(param);
+                data.putSerializable("dustList", dustList);
 
             }
         }.setOnCommandListener(this).showWaitDialog(this, PopupWait.getPopupView(this, true)).start();

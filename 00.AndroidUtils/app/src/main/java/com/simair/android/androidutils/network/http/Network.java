@@ -630,7 +630,9 @@ public class Network {
                     } else {
                         endpoint += "?";
                     }
-                    endpoint += bodyString;
+                    StringBuilder sb = new StringBuilder(endpoint);
+                    sb.append(bodyString);
+                    endpoint = sb.toString();
                 }
             }
 
@@ -700,8 +702,9 @@ public class Network {
                 conn.setFixedLengthStreamingMode(postBytes.length);
             }
 
-            Log.d(TAG + ".RAW", method.name + " " + endpoint + " " + "HTTP/1.1      - tryCount : " + tryCount);
+            Log.d(TAG + ".RAW", method.name + " " + conn.getURL().toString() + " " + "HTTP/1.1      - tryCount : " + tryCount);
             Log.d(TAG + ".RAW", "Host: " + url.getHost() + ":" + url.getPort());
+
             Map<String, List<String>> headers = conn.getRequestProperties();
             Set<String> keys = headers.keySet();
             for(String name : keys) {
@@ -773,7 +776,7 @@ public class Network {
             }
 
             String response = InputStreamToString(is);
-            Log.v(TAG + ".RAW", "request - response : " + response);
+            Log.v(TAG + ".RAW", response);
             tryCount = 1;
 
             return response;

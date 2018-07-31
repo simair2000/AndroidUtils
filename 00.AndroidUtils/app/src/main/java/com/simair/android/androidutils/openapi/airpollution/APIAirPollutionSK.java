@@ -18,6 +18,7 @@ import java.util.Properties;
  * site : <a href="https://developers.skplanetx.com/apidoc/kor/weather">https://developers.skplanetx.com/apidoc/kor/weather/</a>
  */
 
+@Deprecated
 public class APIAirPollutionSK {
     private static final String appKey = "8437c528-74cf-3513-a5fd-b34923aec856";
     private static final String userId = "simair2000";
