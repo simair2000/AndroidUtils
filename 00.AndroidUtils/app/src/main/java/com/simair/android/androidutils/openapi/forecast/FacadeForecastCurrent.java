@@ -44,7 +44,7 @@ public class FacadeForecastCurrent extends DataFacade<CoordinatesConverter.Coord
         @Override
         protected ForecastCurrentObject onSuccess(CoordinatesConverter.Coord key, ForecastCurrentObject value) {
             String cacheKey = APIForecast.getTodayDate() + APIForecast.getCurrentTime() + String.valueOf((int)key.x) + String.valueOf((int)key.y);
-            CacheManager.getInstance().insert(context, CacheManager.CacheCategory.CACHE_FORCAST_CURRENT, cacheKey, value);
+            CacheManager.getInstance().insert(context, CacheManager.CacheCategory.CACHE_FORCAST_CURRENT, cacheKey, value, 60000);
             return value;
         }
     };

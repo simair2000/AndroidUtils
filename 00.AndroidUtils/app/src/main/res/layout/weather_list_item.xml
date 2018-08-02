@@ -6,13 +6,15 @@
               android:layout_width="match_parent"
               android:paddingLeft="20dp"
               android:paddingRight="20dp"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+    android:background="#10000000">
 
     <TextView
         android:id="@+id/textDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="12:30"/>
+        android:text="-:-"
+        android:textColor="#fff" />
 
     <ImageView
         android:id="@+id/imgIcon"
@@ -24,22 +26,25 @@
         android:id="@+id/textSky"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="맑음"/>
+        android:text="-"
+        android:textColor="#fff" />
 
     <TextView
         android:id="@+id/textDegree"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="온도"
+        android:text="-"
+        android:textColor="#fff"
         android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/textHumidity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="습도"
-        android:textSize="12sp"/>
+        android:textColor="#fff"
+        android:textSize="12sp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -47,17 +52,19 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/weather_026"/>
+            android:text="강수확률 "
+            android:textColor="#fff"
+            android:textSize="10sp"/>
 
         <TextView
             android:id="@+id/textRain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textSize="10sp"/>
+            android:text="0%"
+            android:textColor="#fff"
+            android:textSize="10sp" />
     </LinearLayout>
 </LinearLayout>

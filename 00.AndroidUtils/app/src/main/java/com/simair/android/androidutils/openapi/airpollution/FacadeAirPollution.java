@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
-import com.simair.android.androidutils.Utils;
 import com.simair.android.androidutils.model.CacheManager;
 import com.simair.android.androidutils.model.DataChain;
 import com.simair.android.androidutils.model.DataFacade;
@@ -22,27 +21,27 @@ import java.util.ArrayList;
  * Created by simair on 17. 7. 21.
  */
 
-public class FacadeAirPollution extends DataFacade<AirPollutionParam, ArrayList<DustObject>> {
+public class FacadeAirPollution extends DataFacade<AirPollutionParam, AirPollutionObject> {
 
     static volatile FacadeAirPollution instance;
     static Context context;
-    static DataChain<AirPollutionParam, ArrayList<DustObject>> cacheChain = new DataChain<AirPollutionParam, ArrayList<DustObject>>() {
+    static DataChain<AirPollutionParam, AirPollutionObject> cacheChain = new DataChain<AirPollutionParam, AirPollutionObject>() {
         @Override
-        protected ArrayList<DustObject> getData(AirPollutionParam key) throws NetworkException, JSONException, Exception {
-            return (ArrayList<DustObject>) CacheManager.getInstance().get(CacheManager.CacheCategory.CACHE_AIRPOLLUTION_DUST, key.toString());
+        protected AirPollutionObject getData(AirPollutionParam key) throws NetworkException, JSONException, Exception {
+            return (AirPollutionObject) CacheManager.getInstance().get(CacheManager.CacheCategory.CACHE_AIRPOLLUTION_DUST, key.toString());
         }
 
         @Override
-        protected ArrayList<DustObject> onSuccess(AirPollutionParam key, ArrayList<DustObject> value) {
+        protected AirPollutionObject onSuccess(AirPollutionParam key, AirPollutionObject value) {
             CacheManager.getInstance().insert(context, CacheManager.CacheCategory.CACHE_AIRPOLLUTION_DUST, key.toString(), value);
             return value;
         }
     };
 
     private static final String TAG = FacadeAirPollution.class.getSimpleName();
-    static DataChain<AirPollutionParam, ArrayList<DustObject>> networkChain = new DataChain<AirPollutionParam, ArrayList<DustObject>>() {
+    static DataChain<AirPollutionParam, AirPollutionObject> networkChain = new DataChain<AirPollutionParam,AirPollutionObject>() {
         @Override
-        protected ArrayList<DustObject> getData(AirPollutionParam key) throws NetworkException, JSONException, Exception {
+        protected AirPollutionObject getData(AirPollutionParam key) throws NetworkException, JSONException, Exception {
             Pair<Double, Double> tmCoord = APIAirPollution.getTMCoord(key.getThoroughFare(), key.getAdminName(), key.getLocalityName());
             Log.d(TAG, "tmCoord : " + tmCoord.first + ", " + tmCoord.second);
             if(tmCoord != null) {
@@ -51,6 +50,7 @@ public class FacadeAirPollution extends DataFacade<AirPollutionParam, ArrayList<
                 if(!TextUtils.isEmpty(stationName)) {
                     AirPollutionObject airPollution = APIAirPollution.getAirPollutionInfoByStationName(stationName);
                     Log.i(TAG, "AirPollution : " + airPollution);
+                    return airPollution;
                 }
             }
             return null;
@@ -58,7 +58,7 @@ public class FacadeAirPollution extends DataFacade<AirPollutionParam, ArrayList<
         }
     };
 
-    public FacadeAirPollution(DataChain<AirPollutionParam, ArrayList<DustObject>> chains) {
+    public FacadeAirPollution(DataChain<AirPollutionParam, AirPollutionObject> chains) {
         super(chains);
     }
 

@@ -55,7 +55,8 @@
         <activity android:name=".example.TourGuideDetailActivity" />
         <activity android:name=".example.DaumSearchActivity" />
         <activity android:name=".example.ImageGalleryActivity" />
-        <activity android:name=".example.DaumMapActivity"></activity>
+        <activity android:name=".example.DaumMapActivity" />
+        <activity android:name=".example.WeatherForecastActivity2"></activity>
     </application>
 
 </manifest>

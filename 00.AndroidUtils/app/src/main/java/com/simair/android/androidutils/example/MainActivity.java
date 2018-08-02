@@ -88,22 +88,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public static class ListAdapter extends BaseAdapter {
 
         public enum ListItem {
-            HTTP_GET_TEST(HttpActivity.getIntent(context), R.drawable.if_bad_egg, "HTTP Get 테스트", false),
-            DOWNLOAD_TEST(DownloadActivity.getIntent(context), R.drawable.if_happy, "파일 다운로드 테스트", false),
-            UI_TEST(UIExamActivity.getIntent(context), R.drawable.if_victory, "UI관련 유틸 테스트", false),
-            FORECAST_TEST(WeatherForecastActivity.getIntent(context), R.drawable.if_victory, "날씨 정보", true),
-            VISIT_KOREA(VisitKoreaActivity.getIntent(context), R.drawable.if_happy, "관광 정보", true),
-            DAUM_SEARCH(DaumSearchActivity.getIntent(context), R.drawable.if_amazing, "Daum 검색", true),
+            HTTP_GET_TEST(HttpActivity.getIntent(context), "HTTP Get 테스트", false),
+            DOWNLOAD_TEST(DownloadActivity.getIntent(context), "파일 다운로드 테스트", false),
+            UI_TEST(UIExamActivity.getIntent(context), "UI관련 유틸 테스트", false),
+
+            FORECAST_TEST(WeatherForecastActivity.getIntent(context), "날씨 정보", true),
+            FORECAST_TEST_NEW(WeatherForecastActivity2.getIntent(context), "날씨 정보 - NEW", true),
+            VISIT_KOREA(VisitKoreaActivity.getIntent(context), "관광 정보", true),
+            DAUM_SEARCH(DaumSearchActivity.getIntent(context), "Daum 검색", true),
             ;
 
             private final Intent intent;
-            private final int iconRes;
             private final String title;
             private final boolean show;
 
-            ListItem(Intent intent, int iconRes, String title, boolean show) {
+            ListItem(Intent intent, String title, boolean show) {
                 this.intent = intent;
-                this.iconRes = iconRes;
                 this.title = title;
                 this.show = show;
             }
@@ -119,6 +119,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
 
+        int[] iconList = new int[] {
+                R.drawable.if_amazing, R.drawable.if_anger, R.drawable.if_bad_egg,
+                R.drawable.if_bad_smile, R.drawable.if_big_smile, R.drawable.if_black_heart,
+                R.drawable.if_cry, R.drawable.if_electric_shock, R.drawable.if_girl,
+                R.drawable.if_grimace, R.drawable.if_haha, R.drawable.if_happy,
+                R.drawable.if_nothing, R.drawable.if_nothing_to_say, R.drawable.if_red_heart,
+                R.drawable.if_scorn, R.drawable.if_secret_smile, R.drawable.if_super_man,
+                R.drawable.if_the_iron_man, R.drawable.if_unhappy, R.drawable.if_victory
+        };
         private static Context context = null;
 
         public ListAdapter(Context context) {
@@ -146,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 view = LayoutInflater.from(context).inflate(R.layout.list_item, null);
             }
             ListItem item = getItem(i);
-            ((ImageView)view.findViewById(R.id.imgIcon)).setImageResource(item.iconRes);
+            ((ImageView)view.findViewById(R.id.imgIcon)).setImageResource(iconList[i%iconList.length]);
             ((TextView)view.findViewById(R.id.textView)).setText(item.title);
             return view;
         }

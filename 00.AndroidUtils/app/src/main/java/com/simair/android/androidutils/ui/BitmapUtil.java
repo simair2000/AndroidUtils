@@ -1,11 +1,18 @@
 package com.simair.android.androidutils.ui;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
+import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -93,5 +100,56 @@ public class BitmapUtil {
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
         return bitmap;
+    }
+
+    /**
+     *
+     * @param imageView
+     * @param radius 0 < radius <= 25
+     */
+    public static void makeBlur(Context context, ImageView imageView, float radius) {
+        if(imageView != null) {
+            BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
+            if(drawable != null) {
+                Bitmap bitmap = drawable.getBitmap();
+                Bitmap blurredBitmap = blurRenderScript(context, bitmap, radius);
+                imageView.setImageBitmap(blurredBitmap);
+            }
+        }
+    }
+
+    @SuppressLint("NewApi")
+    public static Bitmap blurRenderScript(Context context, Bitmap bitmap, float radius) {
+        if(bitmap != null) {
+            bitmap = RGB565toARGB8888(bitmap);
+            Bitmap tBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+
+            RenderScript renderScript = RenderScript.create(context);
+
+            Allocation blurInput = Allocation.createFromBitmap(renderScript, bitmap);
+            Allocation blurOutput = Allocation.createFromBitmap(renderScript, tBitmap);
+
+            ScriptIntrinsicBlur blur = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript));
+            blur.setInput(blurInput);
+            blur.setRadius(radius);
+            blur.forEach(blurOutput);
+
+            blurOutput.copyTo(tBitmap);
+            renderScript.destroy();
+
+            return tBitmap;
+        }
+        return null;
+    }
+
+    public static Bitmap RGB565toARGB8888(Bitmap bitmap) {
+        if(bitmap != null) {
+            int[] pixels = new int[bitmap.getWidth() * bitmap.getHeight()];
+            bitmap.getPixels(pixels, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+            Bitmap result = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            result.setPixels(pixels, 0, result.getWidth(), 0, 0, result.getWidth(), result.getHeight());
+            return result;
+        }
+        return null;
     }
 }

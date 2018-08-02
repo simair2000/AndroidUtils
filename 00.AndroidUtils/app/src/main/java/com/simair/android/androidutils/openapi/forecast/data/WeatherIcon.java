@@ -2,40 +2,56 @@ package com.simair.android.androidutils.openapi.forecast.data;
 
 import com.simair.android.androidutils.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by simair on 17. 7. 13.
  */
 
 public enum WeatherIcon {
 
-    SUNNY(R.drawable.weather_001, R.string.sunny),
-    CLOUDY_1(R.drawable.weather_003, R.string.cloudy_1),
-    CLOUDY_2(R.drawable.weather_004, R.string.cloudy_2),
-    CLOUDY_3(R.drawable.weather_011, R.string.cloudy_3),
-    CLOUDY_LIGHTNING(R.drawable.weather_016, R.string.lightning),
+    SUNNY(R.drawable.sun, R.drawable.sunny_night, R.string.sunny),
+    CLOUDY_1(R.drawable.cloud1, R.drawable.cloudy1_night, R.string.cloudy_1),
+    CLOUDY_2(R.drawable.cloudy3, R.drawable.cloudy3_night, R.string.cloudy_2),
+    CLOUDY_3(R.drawable.cloudy4, R.drawable.cloudy4_night, R.string.cloudy_3),
+    CLOUDY_LIGHTNING(R.drawable.tstorm3, R.drawable.tstorm3, R.string.lightning),
 
 
-    RAIN_1(R.drawable.weather_012, R.string.rainy),
-    RAIN_2(R.drawable.weather_013, R.string.rainy),
-    RAIN_3(R.drawable.weather_014, R.string.rainy),
+    RAIN_1(R.drawable.shower1, R.drawable.shower1_night, R.string.rainy),
+    RAIN_2(R.drawable.shower2, R.drawable.shower2_night, R.string.rainy),
+    RAIN_3(R.drawable.shower3, R.drawable.shower3, R.string.rainy),
 
-    RAIN_LIGHTNING(R.drawable.weather_015, R.string.rain_lightning),
+    RAIN_LIGHTNING(R.drawable.tstorm1, R.drawable.tstorm1_night, R.string.rain_lightning),
 
-    RAIN_SNOW_1(R.drawable.weather_023, R.string.rain_snow),
+    RAIN_SNOW_1(R.drawable.sleet, R.drawable.sleet, R.string.rain_snow),
 
-    SNOW_1(R.drawable.weather_020, R.string.snow),
-    SNOW_2(R.drawable.weather_021, R.string.snow),
-    SNOW_3(R.drawable.weather_022, R.string.snow),
+    SNOW_1(R.drawable.snow1, R.drawable.snow1_night, R.string.snow),
+    SNOW_2(R.drawable.snow2, R.drawable.snow2_night, R.string.snow),
+    SNOW_3(R.drawable.snow3, R.drawable.snow3_night, R.string.snow),
 
-    LIGHTNING(R.drawable.weather_029, R.string.lightning),
+    LIGHTNING(R.drawable.thunder, R.drawable.thunder, R.string.lightning),
     ;
 
     public int iconRes;
+    public int iconResNight;
     public int strRes;
 
-    WeatherIcon(int iconRes, int strRes) {
+    WeatherIcon(int iconRes, int iconResNight, int strRes) {
         this.iconRes = iconRes;
+        this.iconResNight = iconResNight;
         this.strRes = strRes;
+    }
+
+    public int getTimedIcon(int hour) {
+        if(hour < 0) {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH");
+            hour = Integer.parseInt(sdf.format(new Date()));
+        }
+        if(6 < hour && hour <= 18) {
+            return iconRes;
+        }
+        return iconResNight;
     }
 
     /**

@@ -146,7 +146,7 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
                 HashMap<String, ForecastTimeObject> timeData = FacadeForecastTime.getInstance(context).get(coord);
                 data.putSerializable("timeData", timeData);
 
-                AirPollutionParam param = new AirPollutionParam();
+                /*AirPollutionParam param = new AirPollutionParam();
                 param.setLatitude(latitude);
                 param.setLongitude(longitude);
                 Address addr = Utils.getAddressClass(context, latitude, longitude);
@@ -154,7 +154,7 @@ public class WeatherForecastActivity extends AppCompatActivity implements Comman
                 param.setLocalityName(addr.getLocality());
                 param.setThoroughFare(addr.getThoroughfare());
                 ArrayList<DustObject> dustList = FacadeAirPollution.getInstance(context).get(param);
-                data.putSerializable("dustList", dustList);
+                data.putSerializable("dustList", dustList);*/
 
             }
         }.setOnCommandListener(this).showWaitDialog(this, PopupWait.getPopupView(this, true)).start();

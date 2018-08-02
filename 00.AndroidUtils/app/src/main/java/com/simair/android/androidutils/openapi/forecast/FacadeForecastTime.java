@@ -46,7 +46,7 @@ public class FacadeForecastTime extends DataFacade<CoordinatesConverter.Coord, H
         @Override
         protected HashMap<String, ForecastTimeObject> onSuccess(CoordinatesConverter.Coord key, HashMap<String, ForecastTimeObject> value) {
             String cacheKey = APIForecast.getTodayDate() + APIForecast.getCurrentTime() + String.valueOf((int)key.x) + String.valueOf((int)key.y);
-            CacheManager.getInstance().insert(context, CacheManager.CacheCategory.CACHE_FORCAST_TIME, cacheKey, value);
+            CacheManager.getInstance().insert(context, CacheManager.CacheCategory.CACHE_FORCAST_TIME, cacheKey, value, 60000);
             return value;
         }
     };
