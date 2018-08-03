@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.simair.android.androidutils.Command;
 import com.simair.android.androidutils.R;
@@ -45,8 +47,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TreeMap;
 
-public class WeatherForecastActivity2 extends AppCompatActivity implements Command.CommandListener {
+public class WeatherForecastActivity2 extends AppCompatActivity implements Command.CommandListener, View.OnClickListener {
 
+    private static final int REQ_LOCATION = 100;
     private RecyclerView recyclerView;
     private WeatherRecyclerAdapter recyclerAdapter;
     private Command commandForecast = new Command(){
@@ -91,6 +94,8 @@ public class WeatherForecastActivity2 extends AppCompatActivity implements Comma
     private TextView textPm10;
     private TextView textPm25;
     private ImageView imgAirPollution;
+    private double latitude;
+    private double longitude;
 
     public static Intent getIntent(Context context) {
         Intent i = new Intent(context, WeatherForecastActivity2.class);
@@ -106,6 +111,8 @@ public class WeatherForecastActivity2 extends AppCompatActivity implements Comma
         Utils.getCurrentLocation(this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
                 requestForecast(location.getLatitude(), location.getLongitude());
                 requestAirpollution(location.getLatitude(), location.getLongitude());
             }
@@ -154,6 +161,8 @@ public class WeatherForecastActivity2 extends AppCompatActivity implements Comma
 
         recyclerAdapter = new WeatherForecastActivity2.WeatherRecyclerAdapter();
         recyclerView.setAdapter(recyclerAdapter);
+
+        findViewById(R.id.btnMap).setOnClickListener(this);
     }
 
     @Override
@@ -246,6 +255,29 @@ public class WeatherForecastActivity2 extends AppCompatActivity implements Comma
     @Override
     public void onProgressUpdated(Command command, Bundle data) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnMap:
+                startActivityForResult(DaumMapActivity.getIntent(this, MapsActivity.MapType.TYPE_WEATHER, latitude, longitude), REQ_LOCATION);
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQ_LOCATION) {
+            if(resultCode == RESULT_OK) {
+                LatLng position = data.getParcelableExtra("position");
+                latitude = position.latitude;
+                longitude = position.longitude;
+                requestForecast(position.latitude, position.longitude);
+                requestAirpollution(position.latitude, position.longitude);
+            }
+        }
     }
 
     private class WeatherRecyclerAdapter extends RecyclerView.Adapter<WeatherForecastActivity2.WeatherRecyclerAdapter.ViewHolder> {

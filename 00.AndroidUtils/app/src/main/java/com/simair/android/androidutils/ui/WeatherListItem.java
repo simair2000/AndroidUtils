@@ -60,27 +60,31 @@ public class WeatherListItem extends LinearLayout {
     }
 
     public void setData(ForecastTimeObject data) {
+        Date time = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
         try {
             String dateTime = data.getForecastDate() + data.getForecastTime();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
-            Date time = sdf.parse(dateTime);
+            time = sdf.parse(dateTime);
             sdf = new SimpleDateFormat("MM/dd HH:mm");
             textDate.setText(sdf.format(time));
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
+        sdf = new SimpleDateFormat("HH");
+        int hour = Integer.parseInt(sdf.format(time));
+
         if(data.getData().getSky() == 1) {
-            imgIcon.setImageResource(WeatherIcon.SUNNY.iconRes);
+            imgIcon.setImageResource(WeatherIcon.SUNNY.getTimedIcon(hour));
             textSky.setText(WeatherIcon.SUNNY.strRes);
         } else if(data.getData().getSky() == 2) {
-            imgIcon.setImageResource(WeatherIcon.CLOUDY_1.iconRes);
+            imgIcon.setImageResource(WeatherIcon.CLOUDY_1.getTimedIcon(hour));
             textSky.setText(WeatherIcon.CLOUDY_1.strRes);
         } else if(data.getData().getSky() == 3) {
-            imgIcon.setImageResource(WeatherIcon.CLOUDY_2.iconRes);
+            imgIcon.setImageResource(WeatherIcon.CLOUDY_2.getTimedIcon(hour));
             textSky.setText(WeatherIcon.CLOUDY_2.strRes);
         } else if(data.getData().getSky() == 4) {
-            imgIcon.setImageResource(WeatherIcon.CLOUDY_3.iconRes);
+            imgIcon.setImageResource(WeatherIcon.CLOUDY_3.getTimedIcon(hour));
             textSky.setText(WeatherIcon.CLOUDY_3.strRes);
         }
 
@@ -107,13 +111,13 @@ public class WeatherListItem extends LinearLayout {
             if(data.getData().getThunderbolt() > 0) {
                 imgIcon.setImageResource(WeatherIcon.RAIN_LIGHTNING.iconRes);
             } else {
-                imgIcon.setImageResource(icon.iconRes);
+                imgIcon.setImageResource(icon.getTimedIcon(hour));
             }
             textSky.setText(icon.strRes);
 
         } else {
             if(data.getData().getThunderbolt() > 0) {
-                imgIcon.setImageResource(WeatherIcon.CLOUDY_LIGHTNING.iconRes);
+                imgIcon.setImageResource(WeatherIcon.CLOUDY_LIGHTNING.getTimedIcon(hour));
             }
         }
 
