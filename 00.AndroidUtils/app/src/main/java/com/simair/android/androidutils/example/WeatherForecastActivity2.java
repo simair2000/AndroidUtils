@@ -102,12 +102,29 @@ public class WeatherForecastActivity2 extends AppCompatActivity implements Comma
         return i;
     }
 
+    public static Intent getIntent(Context context, double latitude, double longitude) {
+        Intent i = new Intent(context, WeatherForecastActivity2.class);
+        i.putExtra("latitude", latitude);
+        i.putExtra("longitude", longitude);
+        return i;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.context = this;
         setContentView(R.layout.activity_weather_forecast2);
         initView();
+        Bundle data = getIntent().getExtras();
+        if(data != null) {
+            latitude = data.getDouble("latitude", 0);
+            longitude = data.getDouble("longitude", 0);
+            if(latitude != 0 || longitude != 0) {
+                requestForecast(latitude, longitude);
+                requestAirpollution(latitude, longitude);
+                return;
+            }
+        }
         Utils.getCurrentLocation(this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {

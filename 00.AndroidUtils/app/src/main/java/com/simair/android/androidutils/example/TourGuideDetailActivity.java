@@ -88,6 +88,7 @@ public class TourGuideDetailActivity extends BaseActivity implements Command.Com
         }
 
         findViewById(R.id.btnNavi).setOnClickListener(this);
+        findViewById(R.id.btnWeather).setOnClickListener(this);
     }
 
     private void requestDetailInfo() {
@@ -135,6 +136,11 @@ public class TourGuideDetailActivity extends BaseActivity implements Command.Com
         switch (v.getId()) {
             case R.id.btnNavi:
                 startKakaoNavi();
+                break;
+            case R.id.btnWeather:
+                double latitude = item.getLatitude();
+                double longitude = item.getLongitude();
+                startActivity(WeatherForecastActivity2.getIntent(this, latitude, longitude));
                 break;
         }
     }
