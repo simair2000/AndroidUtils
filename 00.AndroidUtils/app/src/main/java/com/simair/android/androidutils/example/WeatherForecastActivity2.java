@@ -241,7 +241,7 @@ public class WeatherForecastActivity2 extends AppCompatActivity implements Comma
 
             } else {
                 if(forecast.getThunderbolt() > 0) {
-                    imgIcon.setImageResource(WeatherIcon.CLOUDY_LIGHTNING.getTimedIcon(-1));
+                    imgIcon.setImageResource(WeatherIcon.LIGHTNING.getTimedIcon(-1));
                 }
             }
 

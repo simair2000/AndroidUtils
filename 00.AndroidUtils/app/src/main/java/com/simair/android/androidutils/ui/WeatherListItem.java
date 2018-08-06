@@ -122,7 +122,7 @@ public class WeatherListItem extends LinearLayout {
 
         } else {
             if(data.getData().getThunderbolt() > 0) {
-                imgIcon.setImageResource(WeatherIcon.CLOUDY_LIGHTNING.getTimedIcon(hour));
+                imgIcon.setImageResource(WeatherIcon.LIGHTNING.getTimedIcon(hour));
             }
         }
 

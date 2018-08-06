@@ -22,7 +22,7 @@ public enum WeatherIcon {
     RAIN_2(R.drawable.shower2, R.drawable.shower2_night, R.string.rainy),
     RAIN_3(R.drawable.shower3, R.drawable.shower3, R.string.rainy),
 
-    RAIN_LIGHTNING(R.drawable.tstorm1, R.drawable.tstorm1_night, R.string.rain_lightning),
+    RAIN_LIGHTNING(R.drawable.tstorm2, R.drawable.tstorm2_night, R.string.rain_lightning),
 
     RAIN_SNOW_1(R.drawable.sleet, R.drawable.sleet, R.string.rain_snow),
 

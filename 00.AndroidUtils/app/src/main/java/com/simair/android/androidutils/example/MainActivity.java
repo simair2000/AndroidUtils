@@ -92,7 +92,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             DOWNLOAD_TEST(DownloadActivity.getIntent(context), "파일 다운로드 테스트", false),
             UI_TEST(UIExamActivity.getIntent(context), "UI관련 유틸 테스트", false),
 
-            FORECAST_TEST(WeatherForecastActivity.getIntent(context), "날씨 정보", true),
+            FORECAST_TEST(WeatherForecastActivity.getIntent(context), "날씨 정보", false),
+
             FORECAST_TEST_NEW(WeatherForecastActivity2.getIntent(context), "날씨 정보 - NEW", true),
             VISIT_KOREA(VisitKoreaActivity.getIntent(context), "관광 정보", true),
             DAUM_SEARCH(DaumSearchActivity.getIntent(context), "Daum 검색", true),
