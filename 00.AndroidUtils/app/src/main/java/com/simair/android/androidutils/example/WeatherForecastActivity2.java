@@ -47,6 +47,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TreeMap;
 
+import jp.wasabeef.glide.transformations.BlurTransformation;
+
 public class WeatherForecastActivity2 extends AppCompatActivity implements Command.CommandListener, View.OnClickListener {
 
     private static final int REQ_LOCATION = 100;
@@ -154,12 +156,13 @@ public class WeatherForecastActivity2 extends AppCompatActivity implements Comma
         ImageView imgBG = findViewById(R.id.imgBG);
         SimpleDateFormat sdf = new SimpleDateFormat("HH");
         int hour = Integer.parseInt(sdf.format(new Date()));
+        int backgroundResId = R.drawable.bg_day;
         if(6 < hour && hour <= 18) {
-            imgBG.setImageResource(R.drawable.bg_day);
+            backgroundResId = R.drawable.bg_day;
         } else {
-            imgBG.setImageResource(R.drawable.bg_night);
+            backgroundResId = R.drawable.bg_night;
         }
-        BitmapUtil.makeBlur(this, imgBG, 1);
+        Glide.with(this).load(backgroundResId).bitmapTransform(new BlurTransformation(this)).into(imgBG);
 
         textAddress = (TextView)findViewById(R.id.textAddress);
         imgIcon = (ImageView)findViewById(R.id.imgIcon);

@@ -11,10 +11,12 @@ import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -39,6 +41,7 @@ public class DaumMapActivity extends AppCompatActivity implements MapView.POIIte
     private DaumMapActivity mActivity;
     private MapPOIItem markerCurrent;
     private MapPOIItem markerTouched;
+    private DrawerLayout drawerLayout;
 
     public static Intent getIntent(Context context, MapsActivity.MapType type, double latitude, double longitude) {
         Intent i = new Intent(context, DaumMapActivity.class);
@@ -71,7 +74,10 @@ public class DaumMapActivity extends AppCompatActivity implements MapView.POIIte
         mapView.setMapViewEventListener(this);
         mapView.setPOIItemEventListener(this);
 
+        drawerLayout = (DrawerLayout)findViewById(R.id.drawerLayout);
+
         findViewById(R.id.btnCurrentLocation).setOnClickListener(this);
+        findViewById(R.id.btnMenu).setOnClickListener(this);
     }
 
     @Override
@@ -276,6 +282,17 @@ public class DaumMapActivity extends AppCompatActivity implements MapView.POIIte
             case R.id.btnCurrentLocation:
                 setCurrentLocation();
                 break;
+            case R.id.btnMenu:
+                toggleDrawerLayout();
+                break;
+        }
+    }
+
+    private void toggleDrawerLayout() {
+        if(!drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            drawerLayout.openDrawer(Gravity.LEFT, true);
+        } else {
+            drawerLayout.closeDrawer(Gravity.LEFT, true);
         }
     }
 }
