@@ -32,6 +32,7 @@ public abstract class Command implements Serializable {
     private ProgressDialog popup = null;
     private CustomPopup customPopup = null;
     private DownloadListener downListener;
+    private Object tag;
 
     public Command() {
         showWait = false;
@@ -92,6 +93,15 @@ public abstract class Command implements Serializable {
 
     public Bundle getData() {
         return this.data;
+    }
+
+    public Object getTag() {
+        return tag;
+    }
+
+    public Command setTag(Object tag) {
+        this.tag = tag;
+        return this;
     }
 
     public CommandHandler getHandler() {

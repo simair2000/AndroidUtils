@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.simair.android.androidutils.Command;
@@ -26,22 +25,18 @@ import com.simair.android.androidutils.openapi.airpollution.FacadeAirPollution;
 import com.simair.android.androidutils.openapi.airpollution.data.AirPollutionIcon;
 import com.simair.android.androidutils.openapi.airpollution.data.AirPollutionObject;
 import com.simair.android.androidutils.openapi.airpollution.data.AirPollutionParam;
-import com.simair.android.androidutils.openapi.airpollution.data.DustObject;
 import com.simair.android.androidutils.openapi.forecast.CoordinatesConverter;
 import com.simair.android.androidutils.openapi.forecast.FacadeForecastCurrent;
 import com.simair.android.androidutils.openapi.forecast.FacadeForecastTime;
 import com.simair.android.androidutils.openapi.forecast.data.ForecastCurrentObject;
 import com.simair.android.androidutils.openapi.forecast.data.ForecastTimeObject;
 import com.simair.android.androidutils.openapi.forecast.data.WeatherIcon;
-import com.simair.android.androidutils.ui.BitmapUtil;
 import com.simair.android.androidutils.ui.WeatherListItem;
 
 import org.json.JSONException;
-import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;

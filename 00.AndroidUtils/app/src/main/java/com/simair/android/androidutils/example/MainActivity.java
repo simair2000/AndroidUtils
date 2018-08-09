@@ -96,8 +96,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             FORECAST_TEST_NEW(WeatherForecastActivity2.getIntent(context), "날씨 정보 - NEW", true),
             VISIT_KOREA(VisitKoreaActivity.getIntent(context), "관광 정보", true),
-
             DAUM_SEARCH(DaumSearchActivity.getIntent(context), "Daum 검색", true),
+            MAP(DaumMapActivity.getIntent(context, MapsActivity.MapType.TYPE_NONE, 0, 0), "DAUM MAP", true),
+            BLE_TEST(BleScanActivity.getIntent(context), "BLE 테스트", true),
             ;
 
             private final Intent intent;

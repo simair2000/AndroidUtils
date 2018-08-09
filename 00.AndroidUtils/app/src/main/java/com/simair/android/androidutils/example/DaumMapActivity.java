@@ -8,27 +8,42 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.simair.android.androidutils.Command;
 import com.simair.android.androidutils.R;
 import com.simair.android.androidutils.Utils;
+import com.simair.android.androidutils.network.NetworkException;
+import com.simair.android.androidutils.openapi.kakao.map.APIDaumMap;
+import com.simair.android.androidutils.openapi.kakao.CategoryGroup;
+import com.simair.android.androidutils.openapi.kakao.CoordType;
+import com.simair.android.androidutils.openapi.kakao.Sort;
+import com.simair.android.androidutils.openapi.kakao.map.SearchCategoryResult;
 
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
 
-public class DaumMapActivity extends AppCompatActivity implements MapView.POIItemEventListener, MapView.MapViewEventListener, View.OnClickListener {
+import org.json.JSONException;
+
+import java.util.ArrayList;
+
+public class DaumMapActivity extends AppCompatActivity implements MapView.POIItemEventListener, MapView.MapViewEventListener, View.OnClickListener, TextView.OnEditorActionListener, Command.CommandListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2002;
     private static final String TAG = DaumMapActivity.class.getSimpleName();
@@ -42,6 +57,13 @@ public class DaumMapActivity extends AppCompatActivity implements MapView.POIIte
     private MapPOIItem markerCurrent;
     private MapPOIItem markerTouched;
     private DrawerLayout drawerLayout;
+    private Command commandSearchAddress;
+    private Command commandRegionCode;
+    private Command commandAddress;
+    private Command commandConvertCoord;
+    private Command commandSearchKeyword;
+    private Command commandSearchCategory;
+    private ArrayList<MapPOIItem> markersSearchCategory = new ArrayList<>();
 
     public static Intent getIntent(Context context, MapsActivity.MapType type, double latitude, double longitude) {
         Intent i = new Intent(context, DaumMapActivity.class);
@@ -56,9 +78,8 @@ public class DaumMapActivity extends AppCompatActivity implements MapView.POIIte
         super.onCreate(savedInstanceState);
         mActivity = this;
         setContentView(R.layout.activity_daum_map);
-
         askPermissionOnceAgain = false;
-
+        initCommands();
         initView();
 
         Bundle data = getIntent().getExtras();
@@ -69,12 +90,72 @@ public class DaumMapActivity extends AppCompatActivity implements MapView.POIIte
         }
     }
 
+    private void initCommands() {
+        commandSearchAddress = new Command() {
+            @Override
+            public void doAction(Bundle data) throws NetworkException, JSONException, Exception {
+                APIDaumMap.getInstance().searchAddress(data.getString("keyword"));
+            }
+        }.setOnCommandListener(this);
+
+        commandRegionCode = new Command() {
+            @Override
+            public void doAction(Bundle data) throws NetworkException, JSONException, Exception {
+                APIDaumMap.getInstance().requestRegionCode(data.getDouble("latitude"), data.getDouble("longitude"));
+            }
+        }.setOnCommandListener(this);
+
+        commandAddress = new Command() {
+            @Override
+            public void doAction(Bundle data) throws NetworkException, JSONException, Exception {
+                APIDaumMap.getInstance().requestAddress(data.getDouble("latitude"), data.getDouble("longitude"));
+            }
+        }.setOnCommandListener(this);
+
+        commandConvertCoord = new Command() {
+            @Override
+            public void doAction(Bundle data) throws NetworkException, JSONException, Exception {
+                String input = data.getString("input");
+                String output = data.getString("output");
+                String x = data.getString("x");
+                String y = data.getString("y");
+                APIDaumMap.getInstance().convertCoord(CoordType.valueOf(input), CoordType.valueOf(output), x, y);
+            }
+        }.setOnCommandListener(this);
+
+        commandSearchKeyword = new Command() {
+            @Override
+            public void doAction(Bundle data) throws NetworkException, JSONException, Exception {
+                String keyword = data.getString("keyword");
+                String category = data.getString("category");
+                double latitude = data.getDouble("latitude");
+                double longitude = data.getDouble("longitude");
+                int radius = data.getInt("radius");
+                String sort = data.getString("sort");
+                APIDaumMap.getInstance().searchKeyword(keyword, CategoryGroup.valueOf(category), latitude, longitude, radius, Sort.valueOf(sort));
+            }
+        }.setOnCommandListener(this);
+
+        commandSearchCategory = new Command(){
+            @Override
+            public void doAction(Bundle data) throws NetworkException, JSONException, Exception {
+                String category = data.getString("category");
+                double latitude = data.getDouble("latitude");
+                double longitude = data.getDouble("longitude");
+                int radius = data.getInt("radius");
+                String sort = data.getString("sort");
+                SearchCategoryResult result = APIDaumMap.getInstance().searchCategory(CategoryGroup.valueOf(category), latitude, longitude, radius, Sort.valueOf(sort));
+                setTag(result);
+            }
+        }.setOnCommandListener(this);
+    }
+
     private void initView() {
         mapView = (MapView)findViewById(R.id.mapView);
         mapView.setMapViewEventListener(this);
         mapView.setPOIItemEventListener(this);
-
         drawerLayout = (DrawerLayout)findViewById(R.id.drawerLayout);
+        ((EditText)findViewById(R.id.editSearch)).setOnEditorActionListener(this);
 
         findViewById(R.id.btnCurrentLocation).setOnClickListener(this);
         findViewById(R.id.btnMenu).setOnClickListener(this);
@@ -97,6 +178,22 @@ public class DaumMapActivity extends AppCompatActivity implements MapView.POIIte
                 moveLocation(latitude, longitude);
             }
         }
+    }
+
+    private MapPOIItem addMarker(String name, int imgResId, MapPoint point) {
+        MapPOIItem marker = new MapPOIItem();
+        marker.setItemName(name);
+        marker.setMapPoint(point);
+        if(imgResId > 0) {
+            marker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
+//            marker.setCustomImageAutoscale(false);
+            marker.setCustomImageResourceId(imgResId);
+            marker.setCustomImageAnchor(0.5f, 1.0f);
+        } else {
+            markerCurrent.setMarkerType(MapPOIItem.MarkerType.RedPin);
+        }
+        mapView.addPOIItem(marker);
+        return marker;
     }
 
     private void moveLocation(double latitude, double longitude) {
@@ -134,6 +231,8 @@ public class DaumMapActivity extends AppCompatActivity implements MapView.POIIte
         Utils.getCurrentLocation(this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
                 markerCurrent = new MapPOIItem();
                 markerCurrent.setItemName("Current Location");
                 markerCurrent.setTag(0);
@@ -249,6 +348,13 @@ public class DaumMapActivity extends AppCompatActivity implements MapView.POIIte
             markerTouched.moveWithAnimation(mapPoint, false);
         }
         mapView.setMapCenterPoint(mapPoint, true);
+
+        requestRegionCode(mapPoint.getMapPointGeoCoord().latitude, mapPoint.getMapPointGeoCoord().longitude);
+        requestAddress(mapPoint.getMapPointGeoCoord().latitude, mapPoint.getMapPointGeoCoord().longitude);
+        convertCoord(CoordType.WGS84,
+                CoordType.TM,
+                String.valueOf(mapPoint.getMapPointGeoCoord().longitude),
+                String.valueOf(mapPoint.getMapPointGeoCoord().latitude));
     }
 
     @Override
@@ -294,5 +400,89 @@ public class DaumMapActivity extends AppCompatActivity implements MapView.POIIte
         } else {
             drawerLayout.closeDrawer(Gravity.LEFT, true);
         }
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if(!TextUtils.isEmpty(v.getText())) {
+            requestSearchAddress(v.getText().toString());
+            requestSearchKeyword(v.getText().toString(), CategoryGroup.ALL, latitude, longitude, 1000, Sort.accuracy);
+            requestSearchCategory(CategoryGroup.ConvStore, latitude, longitude, 1000, Sort.distance);
+            return true;
+        }
+        return false;
+    }
+
+    private void requestSearchCategory(CategoryGroup categoryGroup, double latitude, double longitude, int radius, Sort sort) {
+        Bundle data = commandSearchCategory.getData();
+        data.putString("category", categoryGroup.name());
+        data.putDouble("latitude", latitude);
+        data.putDouble("longitude", longitude);
+        data.putInt("radius", radius);
+        data.putString("sort", sort.name());
+        commandSearchCategory.start();
+    }
+
+    private void requestSearchKeyword(String keyword, CategoryGroup categoryGroup, double latitude, double longitude, int radius, Sort sort) {
+        Bundle data = commandSearchKeyword.getData();
+        data.putString("keyword", keyword);
+        data.putString("category", categoryGroup.name());
+        data.putDouble("latitude", latitude);
+        data.putDouble("longitude", longitude);
+        data.putInt("radius", radius);
+        data.putString("sort", sort.name());
+        commandSearchKeyword.start();
+    }
+
+    private void requestSearchAddress(String keyword) {
+        commandSearchAddress.getData().putString("keyword", keyword);
+        commandSearchAddress.start();
+    }
+
+    private void requestRegionCode(double latitude, double longitude) {
+        Bundle data = commandRegionCode.getData();
+        data.putDouble("latitude", latitude);
+        data.putDouble("longitude", longitude);
+        commandRegionCode.start();
+    }
+
+    private void requestAddress(double latitude, double longitude) {
+        Bundle data = commandAddress.getData();
+        data.putDouble("latitude", latitude);
+        data.putDouble("longitude", longitude);
+        commandAddress.start();
+    }
+
+    private void convertCoord(CoordType input, CoordType output, String x, String y) {
+        Bundle data = commandConvertCoord.getData();
+        data.putString("input", input.name());
+        data.putString("output", output.name());
+        data.putString("x", x);
+        data.putString("y", y);
+        commandConvertCoord.start();
+    }
+
+    @Override
+    public void onSuccess(Command command, Bundle data) {
+        if(command == commandSearchCategory) {
+            SearchCategoryResult result = (SearchCategoryResult) command.getTag();
+            if(result != null && result.documents != null && result.documents.size() > 0) {
+                for(SearchCategoryResult.Document document : result.documents) {
+                    MapPoint point = MapPoint.mapPointWithGeoCoord(Double.parseDouble(document.y), Double.parseDouble(document.x));
+                    MapPOIItem marker = addMarker(document.placeName, R.drawable.pin_pink, point);
+                    markersSearchCategory.add(marker);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onFail(Command command, int errorCode, String errorMessage) {
+        Log.e(TAG, "error[" + errorCode + "] : " + errorMessage);
+    }
+
+    @Override
+    public void onProgressUpdated(Command command, Bundle data) {
+
     }
 }

@@ -8,6 +8,12 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -31,6 +37,7 @@
         <service
             android:name=".example.TCPServerService"
             android:enabled="true" />
+        <service android:name=".ble.BleService" />
 
         <activity android:name=".example.WeatherForecastActivity" />
         <!--
@@ -56,7 +63,8 @@
         <activity android:name=".example.DaumSearchActivity" />
         <activity android:name=".example.ImageGalleryActivity" />
         <activity android:name=".example.DaumMapActivity" />
-        <activity android:name=".example.WeatherForecastActivity2"></activity>
+        <activity android:name=".example.WeatherForecastActivity2" />
+        <activity android:name=".example.BleScanActivity"></activity>
     </application>
 
 </manifest>

@@ -23,7 +23,7 @@ import java.util.Properties;
  */
 
 public class APISearch {
-    private static final String appKey = "e6844a2f1a38385b9739daa75f36e34a";
+    private static final String appKey = KaKaoAppKey.KEY_REST_API.key;
 
     private static volatile APISearch instance;
     private String protocol;

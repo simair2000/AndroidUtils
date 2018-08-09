@@ -73,6 +73,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public enum MapType {
+        TYPE_NONE,
         TYPE_WEATHER,
         TYPE_VISITKOREA,;
     }
