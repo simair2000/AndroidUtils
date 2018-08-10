@@ -159,7 +159,7 @@ public class BleScanActivity extends AppCompatActivity implements BleManager.Ble
             ((TextView)view.findViewById(R.id.textUUID)).setText("UUID : " + item.getUuid());
             ((TextView)view.findViewById(R.id.textMajor)).setText("Major : " + item.getMajor());
             ((TextView)view.findViewById(R.id.textMinor)).setText("Minor : " + item.getMinor());
-
+            ((TextView)view.findViewById(R.id.textTxLevel)).setText("TxPowerLevel : " + item.getTxPowerLevel());
             return view;
         }
 

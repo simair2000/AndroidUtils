@@ -3,10 +3,8 @@ package com.simair.android.androidutils.ble;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
-import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
-import android.bluetooth.le.ScanRecord;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
@@ -17,13 +15,9 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.ParcelUuid;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.text.TextUtils;
 import android.util.Log;
-
-import com.simair.android.androidutils.Utils;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -33,8 +27,8 @@ import java.util.UUID;
 public class BleService extends Service {
 
     private static final String TAG = BleService.class.getSimpleName();
-//    private static final long SCAN_PERIOD = 2000;
-    private static final long SCAN_CHECK_INTERVAL = 3500;
+//    private static final long SCAN_CHECK_INTERVAL = 3500;
+    private static final long SCAN_CHECK_INTERVAL = 3000;
     IBinder localBinder = new BleServiceBinder();
     public boolean isSupportBLE;
     private BluetoothAdapter bluetoothAdapter;

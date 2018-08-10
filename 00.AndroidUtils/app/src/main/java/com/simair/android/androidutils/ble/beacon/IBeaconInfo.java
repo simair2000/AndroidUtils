@@ -15,6 +15,7 @@ public class IBeaconInfo {
     private int major;
     private int minor;
     private String uuid;
+    private int txPowerLevel;
 
 
     public static IBeaconInfo parse(ScanResult result) {
@@ -36,6 +37,7 @@ public class IBeaconInfo {
             info.setName(result.getDevice().getName());
             info.setAddress(result.getDevice().getAddress());
             info.setRssi(result.getRssi());
+            info.setTxPowerLevel(result.getScanRecord().getTxPowerLevel());
             //Convert to hex String
             byte[] uuidBytes = new byte[16];
             System.arraycopy(scanRecord, startByte+4, uuidBytes, 0, 16);
@@ -109,5 +111,13 @@ public class IBeaconInfo {
 
     public void setMinor(int minor) {
         this.minor = minor;
+    }
+
+    public int getTxPowerLevel() {
+        return txPowerLevel;
+    }
+
+    public void setTxPowerLevel(int txPowerLevel) {
+        this.txPowerLevel = txPowerLevel;
     }
 }
