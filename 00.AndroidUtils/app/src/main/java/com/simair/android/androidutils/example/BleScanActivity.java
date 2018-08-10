@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.simair.android.androidutils.R;
 import com.simair.android.androidutils.ble.BleManager;
+import com.simair.android.androidutils.ble.beacon.IBeaconInfo;
 
 import java.util.ArrayList;
 
@@ -109,14 +110,23 @@ public class BleScanActivity extends AppCompatActivity implements BleManager.Ble
     @Override
     public void onScanResult(ArrayList<ScanResult> list) {
         if(listAdapter != null) {
-            listAdapter.setList(list);
+            ArrayList<IBeaconInfo> tList = new ArrayList<>();
+            if(list != null && list.size() > 0) {
+                for(ScanResult result : list) {
+                    IBeaconInfo beaconInfo = IBeaconInfo.parse(result);
+                    if(beaconInfo != null) {
+                        tList.add(beaconInfo);
+                    }
+                }
+            }
+            listAdapter.setList(tList);
         }
     }
 
     class ListAdapter extends BaseAdapter {
 
         private final LayoutInflater inflater;
-        private ArrayList<ScanResult> list;
+        private ArrayList<IBeaconInfo> list;
 
         public ListAdapter(Context context) {
             inflater = (LayoutInflater)context.getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -128,7 +138,7 @@ public class BleScanActivity extends AppCompatActivity implements BleManager.Ble
         }
 
         @Override
-        public ScanResult getItem(int i) {
+        public IBeaconInfo getItem(int i) {
             return list.get(i);
         }
 
@@ -142,19 +152,18 @@ public class BleScanActivity extends AppCompatActivity implements BleManager.Ble
             if(view == null) {
                 view = inflater.inflate(R.layout.ble_scanlist_item, null);
             }
-            ScanResult item = getItem(i);
-            ((TextView)view.findViewById(R.id.textDeviceName)).setText(item.getDevice().getName());
-            ((TextView)view.findViewById(R.id.textDeviceAddress)).setText(item.getDevice().getAddress());
-            ((TextView)view.findViewById(R.id.textRSSI)).setText("" + item.getRssi());
-            String bondState = "NOT BONDED";
-            if(item.getDevice().getBondState() == BluetoothDevice.BOND_BONDED) {
-                bondState = "BONDED";
-            }
-            ((TextView)view.findViewById(R.id.textStatus)).setText(bondState);
+            IBeaconInfo item = getItem(i);
+            ((TextView)view.findViewById(R.id.textDeviceName)).setText(item.getName());
+            ((TextView)view.findViewById(R.id.textDeviceAddress)).setText(item.getAddress());
+            ((TextView)view.findViewById(R.id.textRSSI)).setText("RSSI : " + item.getRssi());
+            ((TextView)view.findViewById(R.id.textUUID)).setText("UUID : " + item.getUuid());
+            ((TextView)view.findViewById(R.id.textMajor)).setText("Major : " + item.getMajor());
+            ((TextView)view.findViewById(R.id.textMinor)).setText("Minor : " + item.getMinor());
+
             return view;
         }
 
-        public void setList(ArrayList<ScanResult> list) {
+        public void setList(ArrayList<IBeaconInfo> list) {
             this.list = list;
             notifyDataSetChanged();
         }

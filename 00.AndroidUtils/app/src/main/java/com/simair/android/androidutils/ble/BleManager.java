@@ -1,6 +1,5 @@
 package com.simair.android.androidutils.ble;
 
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.ScanResult;
 import android.content.ComponentName;
 import android.content.Context;
@@ -33,12 +32,6 @@ public class BleManager {
             for(String key : keys) {
                 ScanResult result = scanResultHashMap.get(key);
                 results.add(result);
-                int status = result.getDevice().getBondState();
-                String bond = "Not Bonded";
-                if(status == BluetoothDevice.BOND_BONDED) {
-                    bond = "Bonded";
-                }
-                Log.w(TAG, result.getDevice().getName() + "[" + result.getDevice().getAddress() + "] " + result.getRssi() + " - " + bond);
             }
         }
         if(scanResultListeners != null && scanResultListeners.size() > 0) {

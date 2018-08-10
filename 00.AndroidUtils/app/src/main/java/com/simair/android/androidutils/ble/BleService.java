@@ -3,9 +3,12 @@ package com.simair.android.androidutils.ble;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanRecord;
 import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,19 +17,24 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.ParcelUuid;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.text.TextUtils;
 import android.util.Log;
+
+import com.simair.android.androidutils.Utils;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class BleService extends Service {
 
     private static final String TAG = BleService.class.getSimpleName();
-    private static final long SCAN_PERIOD = 1000;
-    private static final long SCAN_INTERVAL = 2000;
+//    private static final long SCAN_PERIOD = 2000;
+    private static final long SCAN_CHECK_INTERVAL = 3500;
     IBinder localBinder = new BleServiceBinder();
     public boolean isSupportBLE;
     private BluetoothAdapter bluetoothAdapter;
@@ -35,16 +43,24 @@ public class BleService extends Service {
     private HashMap<String, ScanResult> scanResultHashMap = new HashMap<>();
     private ScanCallback scanCallback = new ScanCallback() {
         @Override
-        public void onScanResult(int callbackType, ScanResult result) {
+        public void onScanResult(int callbackType, final ScanResult result) {
             super.onScanResult(callbackType, result);
-            scanResultHashMap.put(result.getDevice().getAddress(), result);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    scanResultHashMap.put(result.getDevice().getAddress(), result);
+                }
+            }).start();
         }
 
         @Override
         public void onBatchScanResults(List<ScanResult> results) {
             super.onBatchScanResults(results);
             Log.i(TAG, "++ onBatchScanResults ++");
-            Log.d(TAG, "results : " + results);
+            /*HashMap<String, ScanResult> result = new HashMap<>();
+            result.putAll(scanResultHashMap);
+            bleManager.onScanFinished(result);
+            scanResultHashMap.clear();*/
         }
 
         @Override
@@ -55,6 +71,12 @@ public class BleService extends Service {
         }
     };
     private BleManager bleManager;
+
+    public String getUUID(ScanResult result){
+        String UUIDx = UUID.nameUUIDFromBytes(result.getScanRecord().getBytes()).toString();
+        Log.e("UUID", " as String ->>" + UUIDx);
+        return UUIDx;
+    }
 
     public void scanDevice(boolean scan) {
         Log.d(TAG, "++ scanDevice() ++");
@@ -125,7 +147,7 @@ public class BleService extends Service {
     }
 
     private static final int WHAT_START_SCAN = 0;
-    private static final int WHAT_SCAN_FINISHED = 1;
+    private static final int WHAT_CHECK_SCAN = 1;
     private static final int WHAT_STOP_SCAN = 2;
     private static boolean isScanning;
     private static class InternalHandler extends Handler {
@@ -145,24 +167,32 @@ public class BleService extends Service {
                         if(!isScanning) {
                             isScanning = true;
                             bleScanner = service.bluetoothAdapter.getBluetoothLeScanner();
-                            bleScanner.startScan(service.scanCallback);
-                            sendEmptyMessageDelayed(WHAT_SCAN_FINISHED, SCAN_PERIOD);
+                            ScanSettings.Builder settingBuilder = new ScanSettings.Builder();
+                            settingBuilder.setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)/*.setReportDelay(SCAN_INTERVAL)*/;
+                            ScanSettings setting = settingBuilder.build();
+//                            bleScanner.startScan(service.scanCallback);
+                            bleScanner.startScan(null, setting, service.scanCallback);
+                            sendEmptyMessageDelayed(WHAT_CHECK_SCAN, SCAN_CHECK_INTERVAL);
                         }
                         break;
-                    case WHAT_SCAN_FINISHED:
+                    case WHAT_CHECK_SCAN:
                         if(service.bleManager != null) {
-                            service.bleManager.onScanFinished(service.scanResultHashMap);
+                            HashMap<String, ScanResult> result = new HashMap<>();
+                            result.putAll(service.scanResultHashMap);
+                            service.scanResultHashMap.clear();
+                            service.bleManager.onScanFinished(result);
                         }
-                        isScanning = false;
-                        bleScanner.stopScan(service.scanCallback);
-                        sendEmptyMessageDelayed(WHAT_START_SCAN, SCAN_INTERVAL);
+//                        isScanning = false;
+//                        bleScanner.stopScan(service.scanCallback);
+                        sendEmptyMessageDelayed(WHAT_CHECK_SCAN, SCAN_CHECK_INTERVAL);
                         break;
                     case WHAT_STOP_SCAN:
                         Log.e(TAG, "WHAT_STOP_SCAN");
                         bleScanner.stopScan(service.scanCallback);
                         isScanning = false;
-                        removeMessages(WHAT_SCAN_FINISHED);
+                        removeMessages(WHAT_CHECK_SCAN);
                         removeMessages(WHAT_START_SCAN);
+                        service.scanResultHashMap.clear();
                         break;
                 }
             }
