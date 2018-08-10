@@ -16,10 +16,10 @@ public class IBeaconInfo {
     private int minor;
     private String uuid;
     private int txPowerLevel;
-
+    private boolean isBeacon;
 
     public static IBeaconInfo parse(ScanResult result) {
-        IBeaconInfo info = null;
+        IBeaconInfo info = new IBeaconInfo();
         byte[] scanRecord = result.getScanRecord().getBytes();
         int startByte = 2;
         boolean patternFound = false;
@@ -32,11 +32,12 @@ public class IBeaconInfo {
             startByte++;
         }
 
+        info.setName(result.getDevice().getName());
+        info.setAddress(result.getDevice().getAddress());
+        info.setRssi(result.getRssi());
+
         if (patternFound) {
-            info = new IBeaconInfo();
-            info.setName(result.getDevice().getName());
-            info.setAddress(result.getDevice().getAddress());
-            info.setRssi(result.getRssi());
+            info.setBeacon(true);
             info.setTxPowerLevel(result.getScanRecord().getTxPowerLevel());
             //Convert to hex String
             byte[] uuidBytes = new byte[16];
@@ -119,5 +120,13 @@ public class IBeaconInfo {
 
     public void setTxPowerLevel(int txPowerLevel) {
         this.txPowerLevel = txPowerLevel;
+    }
+
+    public boolean isBeacon() {
+        return isBeacon;
+    }
+
+    public void setBeacon(boolean beacon) {
+        isBeacon = beacon;
     }
 }

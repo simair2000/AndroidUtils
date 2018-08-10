@@ -10,11 +10,10 @@
         android:id="@+id/btnScanStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:text="스캔시작"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -22,11 +21,10 @@
         android:id="@+id/btnScanStop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:text="스캔종료"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnScanStart" />
 
@@ -42,4 +40,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnScanStop" />
+
+    <CheckBox
+        android:id="@+id/checkOnlyBeacon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="비콘장치만 스캔"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/btnScanStop"
+        app:layout_constraintTop_toTopOf="@+id/btnScanStop" />
 </android.support.constraint.ConstraintLayout>

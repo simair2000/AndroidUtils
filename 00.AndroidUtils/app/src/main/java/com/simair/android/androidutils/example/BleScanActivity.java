@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -30,6 +31,7 @@ public class BleScanActivity extends AppCompatActivity implements BleManager.Ble
     private boolean isbleManagerReady;
     private ListView listView;
     private ListAdapter listAdapter;
+    private CheckBox checkOnlyBeacon;
 
     public static Intent getIntent(Context context) {
         Intent i = new Intent(context, BleScanActivity.class);
@@ -51,6 +53,8 @@ public class BleScanActivity extends AppCompatActivity implements BleManager.Ble
 
         findViewById(R.id.btnScanStart).setOnClickListener(this);
         findViewById(R.id.btnScanStop).setOnClickListener(this);
+
+        checkOnlyBeacon = (CheckBox)findViewById(R.id.checkOnlyBeacon);
     }
 
     @Override
@@ -114,7 +118,11 @@ public class BleScanActivity extends AppCompatActivity implements BleManager.Ble
             if(list != null && list.size() > 0) {
                 for(ScanResult result : list) {
                     IBeaconInfo beaconInfo = IBeaconInfo.parse(result);
-                    if(beaconInfo != null) {
+                    if(checkOnlyBeacon.isChecked()) {
+                        if(beaconInfo.isBeacon()) {
+                            tList.add(beaconInfo);
+                        }
+                    } else {
                         tList.add(beaconInfo);
                     }
                 }
@@ -156,10 +164,25 @@ public class BleScanActivity extends AppCompatActivity implements BleManager.Ble
             ((TextView)view.findViewById(R.id.textDeviceName)).setText(item.getName());
             ((TextView)view.findViewById(R.id.textDeviceAddress)).setText(item.getAddress());
             ((TextView)view.findViewById(R.id.textRSSI)).setText("RSSI : " + item.getRssi());
-            ((TextView)view.findViewById(R.id.textUUID)).setText("UUID : " + item.getUuid());
-            ((TextView)view.findViewById(R.id.textMajor)).setText("Major : " + item.getMajor());
-            ((TextView)view.findViewById(R.id.textMinor)).setText("Minor : " + item.getMinor());
-            ((TextView)view.findViewById(R.id.textTxLevel)).setText("TxPowerLevel : " + item.getTxPowerLevel());
+
+            TextView textUUID = (TextView) view.findViewById(R.id.textUUID);
+            TextView textMajor = (TextView) view.findViewById(R.id.textMajor);
+            TextView textMinor = (TextView) view.findViewById(R.id.textMinor);
+            TextView textTxLevel = (TextView) view.findViewById(R.id.textTxLevel);
+            textUUID.setVisibility(View.GONE);
+            textMajor.setVisibility(View.GONE);
+            textMinor.setVisibility(View.GONE);
+            textTxLevel.setVisibility(View.GONE);
+            if(item.isBeacon()) {
+                textUUID.setText("UUID : " + item.getUuid());
+                textMajor.setText("Major : " + item.getMajor());
+                textMinor.setText("Minor : " + item.getMinor());
+                textTxLevel.setText("TxPowerLevel : " + item.getTxPowerLevel());
+                textUUID.setVisibility(View.VISIBLE);
+                textMajor.setVisibility(View.VISIBLE);
+                textMinor.setVisibility(View.VISIBLE);
+                textTxLevel.setVisibility(View.VISIBLE);
+            }
             return view;
         }
 
