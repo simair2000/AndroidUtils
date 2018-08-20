@@ -24,6 +24,11 @@ public class ForecastCurrentObject implements Serializable {
     @SerializedName("WSD")      float windSpeed;              // 풍속
     @SerializedName("POP")      int precipitationProbability;   // 강수확률
 
+    @SerializedName("RO6")      float rain6;       // 6시간 강수량
+    @SerializedName("SO6")      float snow6;        // 6시간 적설량
+    @SerializedName("TMN")      float minDegree;    // 아침 최저기온
+    @SerializedName("TMX")      float maxDegree;    // 낮 최고기온
+
     private String baseDate;
     private String baseTime;
 
@@ -58,6 +63,14 @@ public class ForecastCurrentObject implements Serializable {
             setDegree3(Float.valueOf(value));
         } else if(item.getCategory().equals("POP")) {
             setPrecipitationProbability(Integer.valueOf(value));
+        } else if(item.getCategory().equals("RO6")) {
+            setRain6(Float.valueOf(value));
+        } else if(item.getCategory().equals("SO6")) {
+            setSnow6(Float.valueOf(value));
+        } else if(item.getCategory().equals("TMN")) {
+            setMinDegree(Float.valueOf(value));
+        } else if(item.getCategory().equals("TMX")) {
+            setMaxDegree(Float.valueOf(value));
         }
     }
 
@@ -176,5 +189,37 @@ public class ForecastCurrentObject implements Serializable {
 
     public void setPrecipitationProbability(int precipitationProbability) {
         this.precipitationProbability = precipitationProbability;
+    }
+
+    public float getRain6() {
+        return rain6;
+    }
+
+    public void setRain6(float rain6) {
+        this.rain6 = rain6;
+    }
+
+    public float getSnow6() {
+        return snow6;
+    }
+
+    public void setSnow6(float snow6) {
+        this.snow6 = snow6;
+    }
+
+    public float getMinDegree() {
+        return minDegree;
+    }
+
+    public void setMinDegree(float minDegree) {
+        this.minDegree = minDegree;
+    }
+
+    public float getMaxDegree() {
+        return maxDegree;
+    }
+
+    public void setMaxDegree(float maxDegree) {
+        this.maxDegree = maxDegree;
     }
 }

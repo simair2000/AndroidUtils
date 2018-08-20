@@ -4,12 +4,14 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.simair.android.androidutils.R;
 import com.simair.android.androidutils.openapi.forecast.data.ForecastTimeObject;
 import com.simair.android.androidutils.openapi.forecast.data.WeatherIcon;
@@ -23,6 +25,7 @@ import java.util.Date;
  */
 
 public class WeatherListItem extends LinearLayout {
+    private static final String TAG = WeatherListItem.class.getSimpleName();
     private Context context;
     private ImageView imgIcon;
     private TextView textSky;
@@ -102,15 +105,16 @@ public class WeatherListItem extends LinearLayout {
         if(data.getData().getPrecipitationType() > 0) {
             // 강수 형태가 있음
             WeatherIcon icon = WeatherIcon.CLOUDY_3;
+            float rain = data.getData().getHourlyPrecipitation();
             if(data.getData().getPrecipitationType() == 1) {
                 // 비
-                icon = WeatherIcon.getRainIcon(data.getData().getHourlyPrecipitation());
+                icon = WeatherIcon.getRainIcon(rain <= 0 ? data.getData().getRain6() : rain);
             } else if(data.getData().getPrecipitationType() == 2) {
                 // 진눈개비
-                icon = WeatherIcon.getRainSnowIcon(data.getData().getHourlyPrecipitation());
+                icon = WeatherIcon.getRainIcon(rain <= 0 ? data.getData().getRain6() : rain);
             } else if(data.getData().getPrecipitationType() == 3) {
                 // 눈
-                icon = WeatherIcon.getSnowIcon(data.getData().getHourlyPrecipitation());
+                icon = WeatherIcon.getRainIcon(rain <= 0 ? data.getData().getSnow6() : rain);
             }
 
             if(data.getData().getThunderbolt() > 0) {

@@ -60,9 +60,9 @@ public enum WeatherIcon {
      * @return
      */
     public static WeatherIcon getRainIcon(float hourlyPrecipitation) {
-        if(hourlyPrecipitation < 10) {
+        if(hourlyPrecipitation < 5) {
             return RAIN_1;
-        } else if(10 <= hourlyPrecipitation && hourlyPrecipitation < 40) {
+        } else if(5 <= hourlyPrecipitation && hourlyPrecipitation < 15) {
             return RAIN_2;
         }
         return RAIN_3;
